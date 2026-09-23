@@ -6,7 +6,7 @@
 
 ## 불러오기
 
-- 스크립트 태그: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.1/dist/vfunc.min.js" integrity="sha384-…" crossorigin="anonymous"></script>` → 전역 `vf`. 운영에서는 정확한 버전과 SRI를 붙입니다. `dist/vfunc.js`는 경고가 나오는 개발용입니다.
+- 스크립트 태그: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.1/dist/vfunc.min.js" integrity="sha384-H78Y1ikWGI/wFoyBRhzd9DpOIYQz2rx7pAYHUxpl3KbtPDLVz7sNNXGYHE3p1yAa" crossorigin="anonymous"></script>` → 전역 `vf`. 운영에서는 정확한 버전과 SRI를 붙입니다. integrity 값은 버전·파일마다 다릅니다(이 값은 1.0.0-rc.1의 vfunc.min.js). `dist/vfunc.js`는 경고가 나오는 개발용입니다.
 - ES 모듈: `import vf from 'vfunc'` 또는 `import { vfunc, html, router } from 'vfunc'`. ES 모듈은 `window.vf`를 건드리지 않습니다.
 - IE11·Edge IE 모드: `vfunc.legacy.min.js`(1.0에 포함 예정). 앱 코드도 ES5여야 하므로 템플릿 리터럴 대신 `vf.tpl`을 씁니다.
 
