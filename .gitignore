@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Test and build artifacts (dist/ is committed; see CLAUDE.md rule 15)
+test-results/
+playwright-report/
+coverage/
+*.tgz
+
+# Environment and secrets — never commit (CLAUDE.md rule 25)
+.env
+.env.*
+*.pem
+*.key
+
+# Local agent settings (personal permissions, paths)
+.claude/settings.local.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp

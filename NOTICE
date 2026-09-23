@@ -1,0 +1,20 @@
+vfunc.js
+Copyright 2026 vidkid (https://github.com/vidkid-indy)
+
+This product is licensed under the Apache License, Version 2.0.
+See the LICENSE file for the full license text.
+
+Trademarks
+----------
+"vfunc", "vfunc.js" and "VClass" are names used by the vfunc.js project.
+The Apache License does not grant permission to use these names or any
+logos except as required for reasonable and customary use in describing
+the origin of the work (Apache License 2.0, Section 6). Extensions and
+forks must not present themselves as the official vfunc.js project.
+
+Third-party software
+--------------------
+The distributed files of this project currently bundle no third-party code.
+When third-party code is bundled, its notices are listed below and its full
+license texts are provided in THIRD_PARTY_LICENSES.txt.
+(This section is generated from third-party.json by the build script.)

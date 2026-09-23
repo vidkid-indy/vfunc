@@ -1,0 +1,10 @@
+# Keep LF line endings in the repository and working tree (matches .editorconfig)
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.zip binary

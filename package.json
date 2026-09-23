@@ -1,0 +1,17 @@
+{
+  "name": "vfunc",
+  "version": "0.0.0",
+  "description": "UI as plain functions. A no-build vanilla JavaScript library: keep your HTML, control only what you need.",
+  "license": "Apache-2.0",
+  "author": "vidkid (https://github.com/vidkid-indy)",
+  "homepage": "https://github.com/vidkid-indy/vfunc#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vidkid-indy/vfunc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vidkid-indy/vfunc/issues"
+  },
+  "keywords": ["vanilla", "javascript", "ui", "no-build", "spa", "ai-friendly", "html"],
+  "private": true
+}
