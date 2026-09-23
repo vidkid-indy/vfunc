@@ -7,3 +7,21 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 - Repository foundation: license (Apache-2.0), NOTICE, contribution and security policies, agent rules, decision records.
+- `layer1/src/vfunc.js`: the engine `vf.vfunc` (callable without `new`) and helpers `vf.$`, `vf.$$`, `vf.el`, `vf.node`, `vf.frag`, `vf.idMap`, `vf.form.values`, `vf.form.reset`, `vf.esc`, `vf.nl2br`, `vf.safeUrl`, `vf.version`.
+- Unit tests for the engine, helpers and security rules (`npm test`).
+
+### Changed (compared with the pilot engine)
+- State, methods and element ids are exposed through property accessors instead of a `Proxy`, so the engine can run on IE11 after transpiling.
+- Configuration (`tag`, `opts`, `events`, …) is no longer exposed as instance properties.
+- Event objects: `id` is the id of the bound element and `target` is added.
+- `opts` and `vf.el` refuse `innerHTML`/`outerHTML`/`srcdoc` and string `on*` handlers, and pass URL properties through `vf.safeUrl`.
+- `setState` ignores `__proto__`, `constructor` and `prototype`.
+- `mount` accepts a selector.
+
+### Fixed (compared with the pilot engine)
+- Slots (`childs` with `targetId`) in components without state were appended to the root.
+- Listeners of elements replaced by a refresh were kept until `destroy()`.
+- `form.reset` cleared only text and password inputs.
+
+### Removed (compared with the pilot engine)
+- `_vfnode`, `escapeAttr`, and the `window.vf.com` side effect.

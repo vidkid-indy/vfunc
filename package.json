@@ -12,6 +12,21 @@
   "bugs": {
     "url": "https://github.com/vidkid-indy/vfunc/issues"
   },
-  "keywords": ["vanilla", "javascript", "ui", "no-build", "spa", "ai-friendly", "html"],
-  "private": true
+  "keywords": [
+    "vanilla",
+    "javascript",
+    "ui",
+    "no-build",
+    "spa",
+    "ai-friendly",
+    "html"
+  ],
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test \"layer1/test/*.test.js\""
+  },
+  "devDependencies": {
+    "happy-dom": "^20.14.5"
+  }
 }
