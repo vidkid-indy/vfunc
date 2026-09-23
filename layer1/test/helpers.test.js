@@ -6,7 +6,9 @@ import './setup-dom.js';
 import vf, * as named from '../src/vfunc.js';
 
 test('the default export and the named exports expose the same API', () => {
-  for (const key of ['vfunc', '$', '$$', 'el', 'node', 'frag', 'idMap', 'form', 'esc', 'nl2br', 'safeUrl', 'version']) {
+  for (const key of ['vfunc', 'attach', 'html', 'unsafeHtml', 'tpl', 'esc', 'nl2br', 'safeUrl', '$', '$$', 'el',
+                     'node', 'frag', 'idMap', 'form', 'router', 'store', 'i18n', 't', 'fmt', 'use', 'ext',
+                     'config', 'SafeHtml', 'version']) {
     assert.ok(key in vf, key);
     assert.equal(named[key], vf[key], key);
   }

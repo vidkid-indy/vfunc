@@ -8,7 +8,8 @@ import vf from '../src/vfunc.js';
 test('esc escapes both quote types', () => {
   assert.equal(vf.esc(`<a href="x" title='y'>&</a>`), '&lt;a href=&quot;x&quot; title=&#39;y&#39;&gt;&amp;&lt;/a&gt;');
   assert.equal(vf.esc(null), '');
-  assert.equal(vf.nl2br('a<b>\nc'), 'a&lt;b&gt;<br>c');
+  assert.equal(String(vf.nl2br('a<b>\nc')), 'a&lt;b&gt;<br>c');
+  assert.ok(vf.nl2br('x') instanceof vf.SafeHtml, 'nl2br output is trusted by vf.html');
 });
 
 test('safeUrl allows relative and http(s)/mailto/tel, blocks other schemes', () => {

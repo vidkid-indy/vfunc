@@ -1,7 +1,26 @@
 # Extending vfunc.js / vfunc.js 확장하기
 
-> **Draft (Phase 0).** This document is completed in Phase 2 of stage 1 together with `vf.use`, and extended in stage 2 with component and adapter rules.
-> **초안(Phase 0).** 1단계 Phase 2에서 `vf.use`와 함께 완성하고, 2단계에서 컴포넌트·어댑터 규칙을 보강합니다.
+> `vf.use` and `vf.ext` are implemented (stage 1, Phase 2). Component and adapter rules (C4) are added in stage 2.
+> `vf.use`와 `vf.ext`는 구현되었습니다(1단계 Phase 2). 컴포넌트·어댑터 규칙(C4)은 2단계에서 보강합니다.
+
+## Writing a plugin / 플러그인 작성
+
+```js
+vf.use({
+  name: 'company',          // stored in vf.ext.company
+  version: '1.2.0',
+  requires: '^1.0.0',       // supported vfunc range; a mismatch prints a warning
+  install(vf, options) {
+    // Use only the public API here. Do not add or replace vf.* root members.
+    return { toast: (message) => { /* ... */ } };
+  }
+}, { theme: 'dark' });
+
+vf.ext.company.toast('Saved');
+```
+
+Official `vf.*` members are read-only: assigning `vf.html = ...` throws in strict mode.
+공식 `vf.*` 멤버는 읽기 전용이라 `vf.html = ...` 같은 대입은 strict 모드에서 오류가 납니다.
 
 ## Principle / 원칙
 
