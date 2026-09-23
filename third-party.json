@@ -1,5 +1,26 @@
 {
   "$comment": "Single source of truth for third-party software (CLAUDE.md rule 23, D-010). THIRD_PARTY_LICENSES.txt, the NOTICE third-party section and the site /licenses page are generated from this file. Entry fields: name, version, license, copyright, url, usedIn, bundled (true = redistributed in our dist files), licenseFile.",
   "allowedLicenses": ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "ISC", "OFL-1.1"],
-  "entries": []
+  "entries": [
+    {
+      "name": "esbuild",
+      "version": "0.28.2",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2020 Evan Wallace",
+      "url": "https://github.com/evanw/esbuild",
+      "usedIn": ["build (development tool)"],
+      "bundled": false,
+      "licenseFile": ""
+    },
+    {
+      "name": "happy-dom",
+      "version": "20.14.5",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2019 David Ortner (capricorn86)",
+      "url": "https://github.com/capricorn86/happy-dom",
+      "usedIn": ["tests (development tool)"],
+      "bundled": false,
+      "licenseFile": ""
+    }
+  ]
 }

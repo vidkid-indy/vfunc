@@ -1,0 +1,27 @@
+{
+  "$comment": "Generated from third-party.json by build/licenses.mjs. Do not edit.",
+  "entries": [
+    {
+      "name": "esbuild",
+      "version": "0.28.2",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2020 Evan Wallace",
+      "url": "https://github.com/evanw/esbuild",
+      "usedIn": [
+        "build (development tool)"
+      ],
+      "bundled": false
+    },
+    {
+      "name": "happy-dom",
+      "version": "20.14.5",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2019 David Ortner (capricorn86)",
+      "url": "https://github.com/capricorn86/happy-dom",
+      "usedIn": [
+        "tests (development tool)"
+      ],
+      "bundled": false
+    }
+  ]
+}

@@ -17,6 +17,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - `vf.i18n` (`setup`, `set`, `locale`, `add`, `subscribe`, `apply`), `vf.t` with placeholders and plurals, `vf.fmt` (`number`, `currency`, `date`, `relative`).
 - `vf.use` and `vf.ext` for extensions; `vf.config({ strict, strictRender })`.
 - Official `vf` members are read-only.
+- Distributed files in `dist/`: `vfunc.js` and `vfunc.min.js` for `<script>` (they join `window.vf` without replacing existing members), `vfunc.esm.js` and `vfunc.esm.min.js` for ES modules, each with a source map. The version is stamped in the banner and in `vf.version`.
+- Type declarations: `types/vfunc.d.ts` (the public API boundary) and `types/global.d.ts` (the global `vf` of the `<script>` build).
+- `THIRD_PARTY_LICENSES.txt` and the third-party section of `NOTICE`, generated from `third-party.json`.
+- `llms.txt` (English) and `llms.ko.txt` (Korean) drafts for AI code generation.
+- Minified files do not contain development warnings. Security checks work the same in every build; the minified files report a blocked value with one short message.
+- `vf.config({ strictRender })` warns only in the development builds.
 
 ### Changed (compared with the pilot engine)
 - State, methods and element ids are exposed through property accessors instead of a `Proxy`, so the engine can run on IE11 after transpiling.

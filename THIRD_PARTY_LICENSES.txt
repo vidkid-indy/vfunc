@@ -1,0 +1,4 @@
+vfunc.js - third-party licenses
+(Generated from third-party.json by build/licenses.mjs. Do not edit.)
+
+The distributed files of vfunc.js bundle no third-party code.

@@ -7,6 +7,9 @@ playwright-report/
 coverage/
 *.tgz
 
+# npm package staging (assembled by build/build.mjs; publish from there)
+build/out/
+
 # Environment and secrets — never commit (CLAUDE.md rule 25)
 .env
 .env.*

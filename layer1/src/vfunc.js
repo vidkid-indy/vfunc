@@ -11,7 +11,16 @@
 // Compatibility rule (CLAUDE.md rule 19): this file is also transpiled to ES5 for IE11 /
 // Edge IE mode. Do not use APIs that cannot be polyfilled (Proxy, WeakRef, regex lookbehind).
 
-const VERSION = '0.0.0-dev';
+/* global __VFUNC_VERSION__, __VFUNC_DEV__ */
+// The build (build/build.mjs) defines both constants. Importing this source directly gives a
+// development build: version "0.0.0-dev" and all warnings on.
+const VERSION = typeof __VFUNC_VERSION__ === 'undefined' ? '0.0.0-dev' : __VFUNC_VERSION__;
+
+/**
+ * Development mode. The minified builds set it to false, so every `if (DEV) warn(...)` call and
+ * its message string are removed. Security checks never depend on this flag; only messages do.
+ */
+const DEV = typeof __VFUNC_DEV__ === 'undefined' ? true : __VFUNC_DEV__;
 
 // ---------------------------------------------------------------------------------------------
 // Internal utilities
@@ -114,9 +123,14 @@ function config(options) {
   return { strict: settings.strict, strictRender: settings.strictRender };
 }
 
+/**
+ * Reports a blocked interpolation. The value has already been dropped by the caller; this only
+ * tells the developer. The minified builds pass `false` and print a short generic message.
+ */
 function unsafe(message) {
-  if (settings.strict) throw new Error('[vfunc] ' + message);
-  report('error', message);
+  const text = message || 'vf.html blocked an unsafe value; use vfunc.js (development build) for details.';
+  if (settings.strict) throw new Error('[vfunc] ' + text);
+  report('error', text);
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -319,7 +333,7 @@ function textValue(value) {
     return joined;
   }
   if (typeof value === 'function') {
-    unsafe('vf.html: a function was interpolated; call it or pass its result.');
+    unsafe(DEV && 'vf.html: a function was interpolated; call it or pass its result.');
     return '';
   }
   return esc(value);
@@ -333,11 +347,11 @@ function plainString(value) {
 
 function attrValue(ctx, value) {
   if (/^on/.test(ctx.name)) {
-    unsafe('vf.html: interpolation into the event handler attribute "' + ctx.name + '" is not allowed.');
+    unsafe(DEV && 'vf.html: interpolation into the event handler attribute "' + ctx.name + '" is not allowed.');
     return '';
   }
   if (ctx.name === 'srcdoc') {
-    unsafe('vf.html: interpolation into "srcdoc" is not allowed.');
+    unsafe(DEV && 'vf.html: interpolation into "srcdoc" is not allowed.');
     return '';
   }
   let text = plainString(value);
@@ -355,7 +369,7 @@ function tagValue(value) {
   const text = plainString(value);
   // Only bare attribute names such as "disabled" or "checked hidden".
   if (/^[A-Za-z0-9_\-: ]*$/.test(text) && !/(^|\s)on/i.test(text)) return text;
-  unsafe('vf.html: only bare attribute names may be interpolated inside a tag; got "' + text + '".');
+  unsafe(DEV && 'vf.html: only bare attribute names may be interpolated inside a tag; got "' + text + '".');
   return '';
 }
 
@@ -368,7 +382,7 @@ const BLOCKED_TAGS = {
 function tagNameValue(value) {
   const text = plainString(value);
   if (/^[A-Za-z][A-Za-z0-9-]*$/.test(text) && !hasOwn.call(BLOCKED_TAGS, text.toLowerCase())) return text;
-  unsafe('vf.html: "' + text + '" is not allowed as an interpolated tag name.');
+  unsafe(DEV && 'vf.html: "' + text + '" is not allowed as an interpolated tag name.');
   return '';
 }
 
@@ -398,9 +412,9 @@ function html(strings) {
     else if (ctx.kind === 'tag') piece = tagValue(value);
     else if (ctx.kind === 'tagname') piece = tagNameValue(value);
     else {
-      unsafe(ctx.kind === 'unquoted'
+      unsafe(DEV && (ctx.kind === 'unquoted'
         ? 'vf.html: quote the value of attribute "' + ctx.name + '" (unquoted interpolation is not allowed).'
-        : 'vf.html: interpolation inside <' + ctx.kind + '> is not allowed.');
+        : 'vf.html: interpolation inside <' + ctx.kind + '> is not allowed.'));
       piece = '';
     }
     scanner.feed(piece);
@@ -461,11 +475,11 @@ function assignProps(element, props, where) {
     if (!hasOwn.call(props, key) || isDangerousKey(key)) continue;
     const value = props[key];
     if (hasOwn.call(HTML_SINK_PROPS, key)) {
-      warn(where + ': "' + key + '" is not allowed. Put markup in render or innerHTML and build it with vf.html.');
+      if (DEV) warn(where + ': "' + key + '" is not allowed. Put markup in render or innerHTML and build it with vf.html.');
       continue;
     }
     if (/^on/i.test(key) && typeof value !== 'function') {
-      warn(where + ': "' + key + '" must be a function; string handlers are not allowed.');
+      if (DEV) warn(where + ': "' + key + '" must be a function; string handlers are not allowed.');
       continue;
     }
     element[key] = (hasOwn.call(URL_PROPS, key) && typeof value === 'string') ? safeUrl(value) : value;
@@ -787,7 +801,7 @@ const proto = vfunc.prototype;
 proto._renderMarkup = function () {
   try {
     const out = this._cfg.render.call(this, this.state);
-    if (settings.strictRender && typeof out === 'string' && out !== '') {
+    if (DEV && settings.strictRender && typeof out === 'string' && out !== '') {
       warn('render returned a plain string; build markup with vf.html so values are escaped.');
     }
     return out == null ? '' : String(out);
@@ -826,7 +840,7 @@ function collectKept(root) {
       ? element.parentNode.closest('[data-vf-keep]') : null;
     if (outer && root.contains(outer) && outer !== root) continue; // moves with its kept ancestor
     if (hasOwn.call(kept, key)) {
-      warn('data-vf-keep="' + key + '" is used more than once; only the first element is kept.');
+      if (DEV) warn('data-vf-keep="' + key + '" is used more than once; only the first element is kept.');
       continue;
     }
     kept[key] = element;
@@ -945,7 +959,7 @@ proto.setState = function (patch) {
   for (key in patch) {
     if (!hasOwn.call(patch, key)) continue;
     if (isDangerousKey(key)) {
-      warn('setState: ignored the key "' + key + '".');
+      if (DEV) warn('setState: ignored the key "' + key + '".');
       continue;
     }
     next[key] = patch[key];
@@ -963,7 +977,7 @@ proto._defineStateAccessors = function (source) {
     if (!hasOwn.call(source, key) || isDangerousKey(key)) continue;
     if (this._accessors[key] === 'state') continue;
     if (isReserved(key)) {
-      warn('state key "' + key + '" is a reserved name; use instance.state.' + key + ' instead.');
+      if (DEV) warn('state key "' + key + '" is a reserved name; use instance.state.' + key + ' instead.');
       continue;
     }
     // State wins over a method or id with the same name (same priority as the pilot).
@@ -981,7 +995,7 @@ proto._defineMethodAccessors = function () {
   for (const name in this.methods) {
     if (!hasOwn.call(this.methods, name) || this._accessors[name]) continue;
     if (isReserved(name)) {
-      warn('method "' + name + '" is a reserved name; call instance.methods.' + name + '() instead.');
+      if (DEV) warn('method "' + name + '" is a reserved name; call instance.methods.' + name + '() instead.');
       continue;
     }
     this._accessors[name] = 'method';
@@ -1001,7 +1015,7 @@ proto._defineIdAccessors = function () {
   for (key in this.ids) {
     if (!hasOwn.call(this.ids, key) || this._accessors[key]) continue;
     if (isReserved(key)) {
-      warn('element id "' + key + '" is a reserved name; use instance.ids["' + key + '"] instead.');
+      if (DEV) warn('element id "' + key + '" is a reserved name; use instance.ids["' + key + '"] instead.');
       continue;
     }
     if (hasOwn.call(this, key)) continue; // an own property set by the user is left alone
@@ -1114,7 +1128,7 @@ proto._appendChilds = function () {
 proto.mount = function (parent) {
   const target = resolveElement(parent);
   if (!target) {
-    warn('mount: parent element not found.');
+    if (DEV) warn('mount: parent element not found.');
   } else if (this.$node && this.$node.parentNode !== target) {
     // Compare with the target parent, not just "has a parent": with replaceRoot the initial root
     // still points at the detached wrapper it was parsed in (pilot decision #13).
@@ -1160,7 +1174,7 @@ proto.toString = function () {
 function attach(target, options) {
   const element = resolveElement(target);
   if (!element) {
-    warn('attach: target element not found.');
+    if (DEV) warn('attach: target element not found.');
     return null;
   }
   const o = safeMerge({}, options || {}, false);
@@ -1373,7 +1387,7 @@ function router(options) {
 
   function go(path, goOptions) {
     if (!isAppPath(path)) {
-      warn('router.go: refused "' + path + '"; only app paths starting with "/" are allowed.');
+      if (DEV) warn('router.go: refused "' + path + '"; only app paths starting with "/" are allowed.');
       return;
     }
     const replaceEntry = !!(goOptions && goOptions.replace);
@@ -1458,7 +1472,7 @@ function addMessages(locale, messages) {
 function setLocale(locale) {
   const chosen = pickLocale(locale);
   if (!chosen) {
-    warn('i18n: locale "' + locale + '" is not allowed; staying on "' + i18nState.locale + '".');
+    if (DEV) warn('i18n: locale "' + locale + '" is not allowed; staying on "' + i18nState.locale + '".');
     return Promise.resolve(i18nState.locale);
   }
   const ready = (!hasOwn.call(i18nState.messages, chosen) && i18nState.load)
@@ -1499,7 +1513,7 @@ function t(key, params) {
   let message = lookupMessage(i18nState.locale, key);
   if (message === undefined) message = lookupMessage(i18nState.fallback, key);
   if (message === undefined) {
-    warn('i18n: missing message "' + key + '" for "' + i18nState.locale + '".');
+    if (DEV) warn('i18n: missing message "' + key + '" for "' + i18nState.locale + '".');
     return key;
   }
   if (message && typeof message === 'object') {
@@ -1541,7 +1555,7 @@ function applyI18n(root) {
       const key = pairs[j].slice(index + 1).trim();
       if (!key) continue;
       if (!hasOwn.call(I18N_ATTRS, attr)) {
-        warn('i18n: attribute "' + attr + '" cannot be translated (allowed: title, alt, placeholder, aria-label, aria-description, value).');
+        if (DEV) warn('i18n: attribute "' + attr + '" cannot be translated (allowed: title, alt, placeholder, aria-label, aria-description, value).');
         continue;
       }
       element.setAttribute(attr, t(key));
@@ -1668,14 +1682,14 @@ function satisfies(version, range) {
 function use(plugin, options) {
   if (!plugin || typeof plugin.install !== 'function' || typeof plugin.name !== 'string' ||
       !/^[A-Za-z_$][\w$-]*$/.test(plugin.name) || isDangerousKey(plugin.name)) {
-    warn('use: plugin "' + (plugin && plugin.name) + '" needs a valid "name" and an "install" function.');
+    if (DEV) warn('use: plugin "' + (plugin && plugin.name) + '" needs a valid "name" and an "install" function.');
     return undefined;
   }
   if (hasOwn.call(ext, plugin.name)) {
-    warn('use: "' + plugin.name + '" is already installed.');
+    if (DEV) warn('use: "' + plugin.name + '" is already installed.');
     return ext[plugin.name];
   }
-  if (plugin.requires && !satisfies(VERSION, plugin.requires)) {
+  if (DEV && plugin.requires && !satisfies(VERSION, plugin.requires)) {
     warn('use: "' + plugin.name + '" requires vfunc ' + plugin.requires + ' but this is ' + VERSION + '.');
   }
   const result = plugin.install(vf, options || {});

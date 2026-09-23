@@ -1,0 +1,96 @@
+# vfunc.js
+
+> vfunc.js is a no-build vanilla JavaScript UI library (Apache-2.0). No virtual DOM: components render with innerHTML, events use delegation, and elements are reached through `data-ref`. Idea: keep your HTML as it is and use vfunc only where you need control. One global `vf`.
+
+Draft for 1.0.0-rc.1 (Phase 3). The full reference is ai-docs/vfunc_manual.md; this file keeps only what is needed to write correct code. Korean: llms.ko.txt.
+
+## Load
+
+- Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.1/dist/vfunc.min.js" integrity="sha384-…" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production. `dist/vfunc.js` is the development build with warnings.
+- ES module: `import vf from 'vfunc'` or `import { vfunc, html, router } from 'vfunc'`. The ES modules never touch `window.vf`.
+- IE11 / Edge IE mode: `vfunc.legacy.min.js` (coming in 1.0), and the app code must be ES5: use `vf.tpl`, not template literals.
+
+## Rules for generated code
+
+1. Build every dynamic markup with `vf.html` (tagged template) or `vf.tpl`. Never concatenate user data into HTML strings. `vf.unsafeHtml` only for markup you wrote, with a comment explaining why it is safe.
+2. Bind events with `delegates` on `data-action` selectors, or `events` on ids. Never select by CSS class; never write `onclick="…"`.
+3. Reach elements with `data-ref` (`inst.refs.name`) or `id` (`inst.ids.id`).
+4. Keep design out of JS: no colors, fonts or spacing in scripts; CSS uses `var(--vf-*)` tokens.
+5. Never modify `vf.*` members or native prototypes. Extensions go to `vf.ext` through `vf.use`.
+6. Client routes are not access control; the server checks permissions. Keep tokens out of the store; prefer HttpOnly cookies.
+7. No `eval`, `new Function`, or string `setTimeout`.
+
+## vf.vfunc(options) — a component (with or without `new`)
+
+Options: `tag` ('div'), `opts` (root properties; innerHTML/outerHTML/srcdoc and string on* refused), `innerHTML` (trusted initial markup), `render(state)` → vf.html result (`this` is the instance), `replaceRoot`, `state`, `methods`, `events: [{ id?, eventType, onEvent? }]`, `delegates: [{ selector, eventType, onEvent? }]`, `childs: [instance | node | { targetId, component }]`, `onEvent`, `onError`, `onMount`, `onUpdate`, `onDestroy`.
+
+Event object `e`: `sender` (instance), `event`, `eventType`, `target` (bound or matched element), `id`, `data`.
+
+Instance: `$node`, `state`, `methods`, `ids`, `refs`, `setState(patch)` (batched, one render per tick), `scheduleRefresh()`, `refresh()`, `mount(parentOrSelector)` → Promise, `destroy()`, `toString()` (outerHTML). Shortcuts: `inst.count` ↔ `inst.state.count` (assignment schedules a render), `inst.save()` → methods, `inst.btnSave` → ids; priority state > methods > ids. Reserved names cannot be shortcuts: $node, state, methods, ids, refs, isvfunc, setState, refresh, scheduleRefresh, mount, destroy, toString, valueOf, names starting with `_`.
+
+```js
+const counter = vf.vfunc({
+  state: { count: 0 },
+  render: (s) => vf.html`<button type="button" data-action="inc">${s.count}</button>`,
+  delegates: [{ selector: '[data-action="inc"]', eventType: 'click',
+                onEvent: (e) => { e.sender.count++; } }]
+});
+counter.mount('#app');
+```
+
+Refresh: the root's content is replaced; `childs` are moved back (their state kept); `data-vf-keep="key"` elements are moved, not rebuilt (third-party widgets live there; create them in `onMount`, release them in `onDestroy`); focus and caret are restored. `onMount` runs only for `mount()` and `vf.attach()`, not for children in `childs`. The engine does not destroy children: use delegation on containers, or destroy children in the parent's `onDestroy`.
+
+## vf.html and friends
+
+- `vf.html\`…\`` escapes by position: text (escaped; arrays joined; vf.html results and instances inserted as markup; null/undefined/false → ''), quoted attribute (escaped), URL attributes href/src/action/formaction/poster/cite… (escaped + `vf.safeUrl`), inside a tag only bare names (`<button ${disabled ? 'disabled' : ''}>`), tag names except script/style/iframe/svg….
+- Refused: `on*` attributes, `srcdoc`, unquoted values (`class=${x}`), content of `<script>`/`<style>`, functions. The value is dropped and reported; `vf.config({ strict: true })` throws instead (use in development and tests).
+- `vf.tpl('<a href="{url}">{label}</a>', data)` — the same protection without template literals (ES5).
+- `vf.esc(v)` → string, `vf.nl2br(v)` → SafeHtml, `vf.safeUrl(u)` → http/https/mailto/tel/relative or '#', `vf.unsafeHtml(markup)`.
+
+## vf.attach(target, options) — control published HTML
+
+Without `render`/`innerHTML` the existing element becomes the root (markup, input values and listeners stay). With `render` the new markup replaces it (`replaceRoot` defaults to true). Returns null if not found.
+
+```js
+vf.attach('#search', {
+  delegates: [{ selector: '[data-action="submit"]', eventType: 'click',
+                onEvent: (e) => search(vf.form.values(e.sender.$node)) }]
+});
+```
+
+## Helpers
+
+`vf.$(sel, root?)`, `vf.$$(sel, root?)` → array, `vf.el(tag, props?)` (same safety rules as opts), `vf.node(html)`, `vf.frag(html)`, `vf.idMap(root)`, `vf.form.values(target, { skipPassword? })` (checkbox/radio → boolean, multiple select → array), `vf.form.reset(target)`. Never log form values.
+
+## SPA
+
+```js
+const r = vf.router({
+  mode: 'hash',                                   // or 'history' (server returns index.html), base: '/app'
+  routes: { '/': home, '/users/:id': (ctx) => user(ctx.params.id, ctx.query.tab), '/files/*': files },
+  notFound: notFound, onChange: (ctx) => {}, linkSelector: 'a[data-link]', focus: 'main'
+});
+r.start(); r.go('/users/7'); r.replace('/'); r.current(); r.href('/x');
+```
+`go` accepts only app paths starting with "/". Links: `<a data-link href="#/users/7">`.
+
+`const s = vf.store({ items: [] }); const off = s.subscribe(fn); s.set((st) => ({ items: st.items.concat(x) })); s.get('items');` — one notification per tick.
+
+## i18n
+
+```js
+await vf.i18n.setup({ locales: ['ko', 'en'], fallback: 'en', messages: { en: { hello: 'Hello, {name}' } },
+                      load: (l) => fetch(`./locales/${l}.json`).then((r) => r.json()), persist: true });
+vf.t('hello', { name: 'Min' });                  // plain text; plural: { zero?, one, other } with params.count
+vf.i18n.set('ko'); vf.i18n.subscribe(() => app.refresh()); vf.i18n.apply(); // data-i18n, data-i18n-attr
+vf.fmt.number(n); vf.fmt.currency(n, 'KRW'); vf.fmt.date(d); vf.fmt.relative(-3, 'day');
+```
+
+## Extensions
+
+`vf.use({ name: 'company', requires: '^1.0.0', install(vf, options) { return api; } }, options)` → `vf.ext.company`. Never add members to the `vf` root.
+
+## Optional
+
+- Types: `types/vfunc.d.ts` (ES modules), `types/global.d.ts` (global `vf` of the script build).
+- Full manual: ai-docs/vfunc_manual.md · Extending: EXTENDING.md · Security: SECURITY.md
