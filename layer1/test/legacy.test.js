@@ -132,10 +132,8 @@ test('hash router, link interception, store and i18n work without native Promise
   assert.equal(calls, 1);
   assert.equal(s.get('n'), 2);
 
-  let chosen = '';
-  vf.i18n.setup({ locales: ['ko', 'en'], locale: 'ko', messages: { ko: { hi: '안녕 {name}' } } })
-    .then(function (locale) { chosen = locale; });
-  await wait();
+  // Await the polyfilled Promise itself: a fixed wait was flaky under load.
+  const chosen = await vf.i18n.setup({ locales: ['ko', 'en'], locale: 'ko', messages: { ko: { hi: '안녕 {name}' } } });
   assert.equal(chosen, 'ko');
   assert.equal(vf.t('hi', { name: '민수' }), '안녕 민수');
 });

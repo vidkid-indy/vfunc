@@ -1,9 +1,9 @@
-/*! vfunc.js v1.0.0-rc.5 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
+/*! vfunc.js v1.0.0-rc.6 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
 // layer1/src/vfunc.js
-var VERSION = false ? "0.0.0-dev" : "1.0.0-rc.5";
+var VERSION = false ? "0.0.0-dev" : "1.0.0-rc.6";
 var DEV = false ? true : true;
 var hasOwn = Object.prototype.hasOwnProperty;
 function ownValue(obj, key) {
@@ -568,6 +568,7 @@ function vfunc(options) {
   this._accessors = /* @__PURE__ */ Object.create(null);
   this._scheduled = false;
   this._destroyed = false;
+  this._adopted = !!o._adopt;
   this.isvfunc = true;
   this.state = o.state || {};
   this.methods = o.methods || {};
@@ -679,6 +680,15 @@ function restoreKept(holder, kept) {
   }
 }
 __name(restoreKept, "restoreKept");
+function sameAction(root, action) {
+  const out = [];
+  const list = root.querySelectorAll("[data-action]");
+  for (let i = 0; i < list.length; i++) {
+    if (list[i].getAttribute("data-action") === action) out.push(list[i]);
+  }
+  return out;
+}
+__name(sameAction, "sameAction");
 proto._captureFocus = function() {
   if (typeof document === "undefined") return null;
   const active = document.activeElement;
@@ -688,9 +698,12 @@ proto._captureFocus = function() {
     id: active.id || "",
     ref: active.getAttribute("data-ref") || "",
     name: active.getAttribute("name") || "",
+    action: active.getAttribute("data-action") || "",
+    index: 0,
     start: null,
     end: null
   };
+  if (snapshot.action) snapshot.index = sameAction(this.$node, snapshot.action).indexOf(active);
   try {
     snapshot.start = active.selectionStart;
     snapshot.end = active.selectionEnd;
@@ -709,6 +722,8 @@ proto._restoreFocus = function(snapshot) {
     for (let i = 0; i < named.length && !target; i++) {
       if (named[i].getAttribute("name") === snapshot.name) target = named[i];
     }
+  } else if (snapshot.action) {
+    target = sameAction(this.$node, snapshot.action)[snapshot.index] || null;
   }
   if (!target || typeof target.focus !== "function") return;
   target.focus();
@@ -721,7 +736,11 @@ proto._restoreFocus = function(snapshot) {
 };
 proto.refresh = function() {
   const cfg = this._cfg;
-  if (!cfg.render || this._destroyed) return;
+  if (this._destroyed) return;
+  if (!cfg.render) {
+    this._hook("onUpdate");
+    return;
+  }
   const focus = this._captureFocus();
   const kept = collectKept(this.$node);
   const holder = document.createElement(cfg.tag);
@@ -761,7 +780,18 @@ proto.scheduleRefresh = function() {
   });
 };
 proto.setState = function(patch) {
-  if (!patch || typeof patch !== "object") return;
+  if (typeof patch === "function") {
+    try {
+      patch = patch.call(this, this.state);
+    } catch (err) {
+      this._handleError(err);
+      return;
+    }
+  }
+  if (!patch || typeof patch !== "object") {
+    if (DEV && patch != null) warn("setState: expected an object or a function that returns one.");
+    return;
+  }
   const next = {};
   let key;
   for (key in this.state) {
@@ -939,7 +969,13 @@ proto.destroy = function() {
   this._hook("onDestroy");
   this._destroyed = true;
   this._releaseListeners(null);
-  if (this.$node && this.$node.parentNode) this.$node.parentNode.removeChild(this.$node);
+  if (this._adopted) {
+    if (this._cfg.render || this._cfg.innerHTML) {
+      while (this.$node.firstChild) this.$node.removeChild(this.$node.firstChild);
+    }
+  } else if (this.$node && this.$node.parentNode) {
+    this.$node.parentNode.removeChild(this.$node);
+  }
   this.ids = {};
   this.refs = {};
   this._defineIdAccessors();
@@ -1247,7 +1283,9 @@ function setLocale(locale) {
 __name(setLocale, "setLocale");
 function lookupMessage(locale, key) {
   const table = ownValue(i18nState.messages, locale);
-  return table ? lookupPath(table, key) : void 0;
+  if (!table) return void 0;
+  const whole = isDangerousKey(key) ? void 0 : ownValue(table, key);
+  return whole !== void 0 ? whole : lookupPath(table, key);
 }
 __name(lookupMessage, "lookupMessage");
 function pluralCategory(count) {

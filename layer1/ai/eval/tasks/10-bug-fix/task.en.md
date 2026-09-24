@@ -12,7 +12,7 @@ The "Team board" page below works in part. Users and testers reported the proble
 | 4 | "After I click 'Close clock', the 'Clock updates' counter at the bottom keeps growing." |
 | 5 | "Since the last design update, the Remove buttons of the tasks do nothing." (The designer renamed the class `task__remove` to `task__delete`.) |
 | 6 | Security: "A comment `<b>hi</b>` shows bold text. A comment can run script." |
-| 7 | "Keyboard users lose the focus after ticking a task with Space." |
+| 7 | "When a keyboard user ticks a task with Space, the focus jumps to another task's checkbox." |
 
 Expected behaviour after the fixes:
 - `#notice` is one element whose text is `Open tasks: <n>` and follows the tasks.
@@ -21,4 +21,4 @@ Expected behaviour after the fixes:
 - Closing the clock stops its timer.
 - Remove (`data-action="remove"`) removes the task.
 - Comments are shown as text.
-- After Space on a task's checkbox (`data-action="toggle"`), the focus stays on that checkbox.
+- Open tasks are still listed first. After Space on a task's checkbox (`data-action="toggle"`), the focus stays on that task's checkbox, wherever the task moves.

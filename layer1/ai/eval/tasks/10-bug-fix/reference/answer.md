@@ -81,11 +81,11 @@ vf.attach('#details-panel', {
   onMount: (inst) => inst.$node.querySelector('[data-action="details"]').setAttribute('aria-expanded', 'false')
 });
 
-// Tasks. Each checkbox has an id so the focus survives a refresh.
+// Tasks, open ones first. Each checkbox has an id, so the focus follows its task when the order changes.
 const tasks = vf.attach('#tasks', {
   render: () => vf.html`
     <h2 class="panel__title">Tasks</h2>
-    <ul class="tasks">${store.get('tasks').map((t) => vf.html`
+    <ul class="tasks">${store.get('tasks').slice().sort((a, b) => a.done - b.done).map((t) => vf.html`
       <li class="task" data-id="${t.id}" data-state="${t.done ? 'done' : 'open'}">
         <input type="checkbox" id="task-${t.id}" data-action="toggle" aria-label="Done" ${t.done ? 'checked' : ''}>
         <span class="task__title">${t.title}</span>

@@ -140,6 +140,12 @@ function checkJs(file, src, add) {
   each(/\.(?:innerHTML|outerHTML)\s*\+?=(?!=)\s*(['"`]?)/g, (m) => {
     const rest = code.slice(m.index + m[0].length - m[1].length, m.index + m[0].length + 2);
     if (/^(''|""|``)/.test(rest)) return; // clearing is harmless
+    // Markup escaped by vf.html is safe, only not the idiom (render or vf.frag): a warning.
+    const value = code.slice(m.index + m[0].length - m[1].length, m.index + m[0].length + 40).replace(/\s+/g, '');
+    if (/^(String\()?(vf\.)?html`/.test(value)) {
+      at('html-string', 'warn', m.index, 'innerHTML from vf.html (safe; prefer render or vf.frag)');
+      return;
+    }
     at('html-string', 'error', m.index);
   });
   each(/\binsertAdjacentHTML\s*\(|\bdocument\.write(?:ln)?\s*\(|\.createContextualFragment\s*\(/g, (m) => at('html-string', 'error', m.index));
@@ -149,8 +155,6 @@ function checkJs(file, src, add) {
   each(/([\w$]+)\.\_[A-Za-z$][\w$]*\s*=(?!=)/g, (m) => {
     at('instance-property', /^(inst|instance|sender|self|this|component|comp)$/.test(m[1]) ? 'error' : 'warn', m.index);
   });
-  // setState takes an object; a function is ignored (vf.store's set is the one that takes a function).
-  each(/\bsetState\s*\(\s*(?:function\b|\(?[\w$,\s]*\)?\s*=>)/g, (m) => at('setstate-argument', 'error', m.index, 'setState called with a function (it takes an object)'));
   each(/\bgetElementsByClassName\s*\(/g, (m) => at('class-selector', 'error', m.index));
   each(/\.style\.(?:color|background\w*|font\w*|margin\w*|padding\w*|border\w*|boxShadow|outline\w*)\s*=(?!=)/g, (m) => at('design-in-js', 'error', m.index));
 
@@ -169,7 +173,8 @@ function checkJs(file, src, add) {
   each(/setAttribute\(\s*['"]aria-[a-z]+['"]\s*,\s*(['"])\1\s*\)/g, (m) => at('aria-value', 'error', m.index));
 
   for (const s of strings) {
-    if (/^(#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\()/.test(s.value.trim())) at('design-in-js', 'error', s.start);
+    // A whole string that is a color (#rgb, #rrggbb, #rrggbbaa, rgb(…), hsl(…)); "#1042" is an order number.
+    if (/^(#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$|rgba?\(|hsla?\()/.test(s.value.trim())) at('design-in-js', 'error', s.start);
     if (/\saria-[a-z]+=""/.test(s.value)) at('aria-value', 'error', s.start);
     if (!/<\/?[A-Za-z]/.test(s.value)) continue;
     const before = code.slice(0, s.start).replace(/\s+$/, '');

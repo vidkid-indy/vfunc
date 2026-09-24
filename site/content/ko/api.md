@@ -21,10 +21,10 @@
 | `onEvent`, `onError` | 기본 핸들러, 오류 알림(엔진은 복구하지 않음) |
 | `onMount`, `onUpdate`, `onDestroy` | 라이프사이클 |
 
-인스턴스: `$node`, `state`, `methods`, `ids`, `refs`, `setState(patch)`, `scheduleRefresh()`, `refresh()`, `mount(parent)` → `Promise`, `destroy()`, `toString()`. 예약어(`state`, `refresh`, `mount` 등과 `_`로 시작하는 이름)는 상태 키·메서드·id의 바로 접근 이름으로 쓸 수 없습니다. 인스턴스에 직접 속성을 붙이지 말고, 리스너 함수와 타이머는 클로저에 둡니다.
+인스턴스: `$node`, `state`, `methods`, `ids`, `refs`, `setState(patch | (state) => patch)`(얕은 병합, 한 tick에 한 번 렌더), `scheduleRefresh()`, `refresh()`, `mount(parent)` → `Promise`, `destroy()`, `toString()`. 예약어(`state`, `refresh`, `mount` 등과 `_`로 시작하는 이름)는 상태 키·메서드·id의 바로 접근 이름으로 쓸 수 없습니다. 인스턴스에 직접 속성을 붙이지 말고, 리스너 함수와 타이머는 클로저에 둡니다.
 
 ### `vf.attach(target, options)`
-이미 페이지에 있는 요소를 컴포넌트로 만듭니다. 옵션은 `vf.vfunc`와 같습니다. 그 요소가 루트가 되고 속성과 리스너가 유지됩니다. `render`가 없으면 마크업과 입력값도 그대로입니다. `render`가 있으면 요소의 **안쪽만** 돌려줍니다. 요소 자신의 태그 안으로 파싱하므로 `<tbody>`에 바로 행을 그릴 수 있습니다. 상태에 따라 바뀌는 루트 속성은 `onMount`/`onUpdate`에서 설정합니다. `replaceRoot: true`면 마크업의 첫 요소가 요소를 대체합니다. 대상이 없으면 `null`.
+이미 페이지에 있는 요소를 컴포넌트로 만듭니다. 옵션은 `vf.vfunc`와 같습니다. 그 요소가 루트가 되고 속성과 리스너가 유지됩니다. `render`가 없으면 마크업과 입력값도 그대로입니다. `render`가 있으면 요소의 **안쪽만** 돌려줍니다. 요소 자신의 태그 안으로 파싱하므로 `<tbody>`에 바로 행을 그릴 수 있습니다. 상태에 따라 바뀌는 루트 속성은 `onMount`/`onUpdate`에서 설정합니다. `replaceRoot: true`면 마크업의 첫 요소가 요소를 대체합니다. 대상이 없으면 `null`. `destroy()`는 요소를 페이지에 남기고 리스너를 해제하며, `render`/`innerHTML`로 그린 안쪽만 지웁니다. 같은 요소에 다시 attach할 수 있습니다.
 
 ## 안전한 HTML
 
@@ -89,7 +89,7 @@
 `setup({ locale, fallback, locales, messages, load, persist })` → `Promise<locale>`, `set(locale)`, `locale()`, `add(locale, messages)`, `subscribe(fn)`, `apply(root?)`.
 
 ### `vf.t(key, params?)`
-메시지를 평문으로. `{name}` 치환, `params.count`로 복수형 선택.
+메시지를 평문으로. `{name}` 치환, `params.count`로 복수형 선택. `vf.t('nav.home')`은 `{ "nav": { "home": "…" } }`와 `{ "nav.home": "…" }`를 모두 찾습니다.
 
 ### `vf.fmt`
 `number(n, opts)`, `currency(n, code, opts)`, `date(d, opts)`, `relative(n, unit)`. 현재 로케일의 `Intl`을 쓰고, 없으면 단순 문자열.

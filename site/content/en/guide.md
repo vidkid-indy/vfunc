@@ -66,7 +66,7 @@ const results = vf.attach('#results', { state: { items: [] }, render: (s) => vf.
 | Hook | When | Do |
 |---|---|---|
 | `onMount` | right after `mount()` / `vf.attach()` put it in the page | create charts and editors, load data, subscribe |
-| `onUpdate` | after every render | push the new state into widgets |
+| `onUpdate` | after every render (without `render`, after every state change) | push the new state into widgets or adopted markup |
 | `onDestroy` | at the start of `destroy()` | release widgets, timers, subscriptions |
 
 Mark elements that must survive renders (a chart canvas) with `data-vf-keep="chart"`: the element is moved, not rebuilt. See [example 15](examples.md).

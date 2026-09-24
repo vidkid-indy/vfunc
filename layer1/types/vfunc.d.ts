@@ -117,7 +117,7 @@ export interface VfuncOptions<S extends object = Record<string, any>, M extends 
   onError?: (error: unknown) => void;
   /** After mount() or vf.attach() put the element in the page. Create third-party widgets here. */
   onMount?: (instance: VfuncInstance<S, M>) => void;
-  /** After every refresh. */
+  /** After every refresh. Without `render` nothing is drawn again, but it still runs after each state change. */
   onUpdate?: (instance: VfuncInstance<S, M>) => void;
   /** At the start of destroy(), while the element is still in the page. Release widgets and timers here. */
   onDestroy?: (instance: VfuncInstance<S, M>) => void;
@@ -136,15 +136,21 @@ export interface VfuncBase<S extends object = Record<string, any>, M extends obj
   /** Descendant elements with `data-ref`. Updated on every refresh. */
   refs: Record<string, HTMLElement>;
   readonly isvfunc: true;
-  /** Shallow merge and schedule one refresh per tick. `__proto__`, `constructor`, `prototype` are ignored. */
-  setState(patch: Partial<S> & Record<string, unknown>): void;
+  /**
+   * Shallow merge and schedule one refresh per tick. Takes a patch or, like vf.store's set, a
+   * function `(state) => patch`. `__proto__`, `constructor`, `prototype` are ignored.
+   */
+  setState(patch: (Partial<S> & Record<string, unknown>) | ((state: S) => Partial<S> & Record<string, unknown>)): void;
   /** Schedule one refresh after changing `instance.state` directly. */
   scheduleRefresh(): void;
   /** Render again now. */
   refresh(): void;
   /** Append to an element or selector and call onMount. */
   mount(parent: Element | string): Promise<this>;
-  /** Call onDestroy, release listeners, remove the root, clear ids and refs. Safe to call twice. */
+  /**
+   * Call onDestroy, release listeners, remove the root, clear ids and refs. Safe to call twice.
+   * A vf.attach root stays in the page: only what render or innerHTML drew inside it is removed.
+   */
   destroy(): void;
   /** The root's outerHTML, so an instance can be inserted with vf.html. */
   toString(): string;

@@ -21,10 +21,10 @@ Creates a component (`new` optional). Options:
 | `onEvent`, `onError` | fallback handler, error report (the engine does not recover) |
 | `onMount`, `onUpdate`, `onDestroy` | lifecycle |
 
-Instance: `$node`, `state`, `methods`, `ids`, `refs`, `setState(patch)`, `scheduleRefresh()`, `refresh()`, `mount(parent)` → `Promise`, `destroy()`, `toString()`. Reserved names (`state`, `refresh`, `mount` … and names starting with `_`) cannot be used as shortcut names for state keys, methods or ids. Do not add your own properties to an instance; keep listener functions and timers in a closure.
+Instance: `$node`, `state`, `methods`, `ids`, `refs`, `setState(patch | (state) => patch)` (shallow merge, one render per tick), `scheduleRefresh()`, `refresh()`, `mount(parent)` → `Promise`, `destroy()`, `toString()`. Reserved names (`state`, `refresh`, `mount` … and names starting with `_`) cannot be used as shortcut names for state keys, methods or ids. Do not add your own properties to an instance; keep listener functions and timers in a closure.
 
 ### `vf.attach(target, options)`
-Turns an element already in the page into a component. The options are those of `vf.vfunc`. The element is the root and keeps its attributes and listeners. Without `render` its markup and typed values stay as they are. With `render`, return **only the inside** of the element; it is parsed as content of the element's own tag, so rows can go straight into a `<tbody>`. Set state-dependent attributes of the root in `onMount`/`onUpdate`. `replaceRoot: true` replaces the element with the first element of the markup. Returns `null` when the target is missing.
+Turns an element already in the page into a component. The options are those of `vf.vfunc`. The element is the root and keeps its attributes and listeners. Without `render` its markup and typed values stay as they are. With `render`, return **only the inside** of the element; it is parsed as content of the element's own tag, so rows can go straight into a `<tbody>`. Set state-dependent attributes of the root in `onMount`/`onUpdate`. `replaceRoot: true` replaces the element with the first element of the markup. Returns `null` when the target is missing. `destroy()` keeps the element in the page, releases the listeners and removes only what `render`/`innerHTML` drew, so the element can be attached again.
 
 ## Safe HTML
 
@@ -89,7 +89,7 @@ A DocumentFragment with every top-level node.
 `setup({ locale, fallback, locales, messages, load, persist })` → `Promise<locale>`, `set(locale)`, `locale()`, `add(locale, messages)`, `subscribe(fn)`, `apply(root?)`.
 
 ### `vf.t(key, params?)`
-A message as plain text: `{name}` placeholders, plural forms chosen by `params.count`.
+A message as plain text: `{name}` placeholders, plural forms chosen by `params.count`. `vf.t('nav.home')` finds `{ "nav": { "home": "…" } }` and `{ "nav.home": "…" }` alike.
 
 ### `vf.fmt`
 `number(n, opts)`, `currency(n, code, opts)`, `date(d, opts)`, `relative(n, unit)`, with `Intl` in the current locale, or plain strings without it.

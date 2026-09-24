@@ -762,6 +762,7 @@ function vfunc(options) {
   this._accessors = Object.create(null); // instance key -> 'state' | 'method' | 'id' (no inherited keys)
   this._scheduled = false;
   this._destroyed = false;
+  this._adopted = !!o._adopt; // vf.attach: the root belongs to the page (kept on destroy)
 
   this.isvfunc = true;
   this.state = o.state || {};
@@ -889,13 +890,25 @@ function restoreKept(holder, kept) {
   }
 }
 
+/** Elements inside `root` whose data-action equals `action`, in document order. */
+function sameAction(root, action) {
+  const out = [];
+  const list = root.querySelectorAll('[data-action]');
+  for (let i = 0; i < list.length; i++) {
+    if (list[i].getAttribute('data-action') === action) out.push(list[i]);
+  }
+  return out;
+}
+
 /** Remembers which element inside the root has focus, so it can be focused again after a refresh. */
 proto._captureFocus = function () {
   if (typeof document === 'undefined') return null;
   const active = document.activeElement;
   if (!active || active === this.$node || !this.$node.contains(active)) return null;
   const snapshot = { element: active, id: active.id || '', ref: active.getAttribute('data-ref') || '',
-    name: active.getAttribute('name') || '', start: null, end: null };
+    name: active.getAttribute('name') || '', action: active.getAttribute('data-action') || '', index: 0,
+    start: null, end: null };
+  if (snapshot.action) snapshot.index = sameAction(this.$node, snapshot.action).indexOf(active);
   try { snapshot.start = active.selectionStart; snapshot.end = active.selectionEnd; } catch (e) { /* not a text field */ }
   return snapshot;
 };
@@ -911,6 +924,9 @@ proto._restoreFocus = function (snapshot) {
     for (let i = 0; i < named.length && !target; i++) {
       if (named[i].getAttribute('name') === snapshot.name) target = named[i];
     }
+  } else if (snapshot.action) {
+    // No id, data-ref or name: the same data-action at the same position.
+    target = sameAction(this.$node, snapshot.action)[snapshot.index] || null;
   }
   if (!target || typeof target.focus !== 'function') return;
   target.focus();
@@ -923,10 +939,16 @@ proto._restoreFocus = function (snapshot) {
  * Re-renders immediately from the current state. Children in `childs` and elements marked with
  * `data-vf-keep` are moved into the new markup; focus inside the component is restored;
  * listeners on replaced elements are released and bound again. Calls `onUpdate` at the end.
+ * Without `render` nothing is drawn again, but `onUpdate` still runs, so a component that adopts
+ * published markup can keep its state in `state` and write it to the DOM in `onUpdate`.
  */
 proto.refresh = function () {
   const cfg = this._cfg;
-  if (!cfg.render || this._destroyed) return;
+  if (this._destroyed) return;
+  if (!cfg.render) {
+    this._hook('onUpdate');
+    return;
+  }
 
   const focus = this._captureFocus();
   const kept = collectKept(this.$node);
@@ -974,10 +996,22 @@ proto.scheduleRefresh = function () {
 /**
  * Merges a partial state and schedules a refresh. Keys that could reach the prototype
  * (`__proto__`, `constructor`, `prototype`) are ignored, so outside JSON can be passed safely.
- * @param {Object} patch
+ * Like vf.store's set, it also takes a function `(state) => patch` (`this` is the instance).
+ * @param {Object|Function} patch
  */
 proto.setState = function (patch) {
-  if (!patch || typeof patch !== 'object') return;
+  if (typeof patch === 'function') {
+    try {
+      patch = patch.call(this, this.state);
+    } catch (err) {
+      this._handleError(err);
+      return;
+    }
+  }
+  if (!patch || typeof patch !== 'object') {
+    if (DEV && patch != null) warn('setState: expected an object or a function that returns one.');
+    return;
+  }
   const next = {};
   let key;
   for (key in this.state) {
@@ -1165,13 +1199,23 @@ proto.mount = function (parent) {
   return Promise.resolve(this);
 };
 
-/** Calls `onDestroy`, releases every listener, removes the root element and clears ids and refs. */
+/**
+ * Calls `onDestroy`, releases every listener, removes the root element and clears ids and refs.
+ * A root adopted by vf.attach belongs to the page: it stays, and only what the component drew
+ * inside it (render or innerHTML) is removed, so the element can be attached again.
+ */
 proto.destroy = function () {
   if (this._destroyed) return;
   this._hook('onDestroy');
   this._destroyed = true;
   this._releaseListeners(null);
-  if (this.$node && this.$node.parentNode) this.$node.parentNode.removeChild(this.$node);
+  if (this._adopted) {
+    if (this._cfg.render || this._cfg.innerHTML) {
+      while (this.$node.firstChild) this.$node.removeChild(this.$node.firstChild);
+    }
+  } else if (this.$node && this.$node.parentNode) {
+    this.$node.parentNode.removeChild(this.$node);
+  }
   this.ids = {};
   this.refs = {};
   this._defineIdAccessors();
@@ -1517,9 +1561,12 @@ function setLocale(locale) {
   });
 }
 
+/** A message by its whole key ("nav.home": "…"), else by nested path ({ nav: { home: "…" } }). */
 function lookupMessage(locale, key) {
   const table = ownValue(i18nState.messages, locale);
-  return table ? lookupPath(table, key) : undefined;
+  if (!table) return undefined;
+  const whole = isDangerousKey(key) ? undefined : ownValue(table, key);
+  return whole !== undefined ? whole : lookupPath(table, key);
 }
 
 function pluralCategory(count) {

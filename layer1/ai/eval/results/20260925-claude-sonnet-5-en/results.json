@@ -1,0 +1,1754 @@
+{
+  "kit": "1.0.0-rc.6",
+  "graded": "2026-09-24",
+  "engines": [
+    "chromium",
+    "firefox",
+    "webkit"
+  ],
+  "tasks": [
+    {
+      "id": "01-counter-greeting",
+      "title": "Counter and greeting",
+      "answer": "answers/01.md",
+      "files": [
+        "index.html",
+        "app.js",
+        "style.css"
+      ],
+      "notes": [],
+      "static": [
+        {
+          "rule": "css-raw",
+          "severity": "error",
+          "file": "style.css",
+          "line": 11,
+          "lines": [
+            11,
+            26,
+            30
+          ],
+          "text": "raw color outside tokens.css"
+        },
+        {
+          "rule": "css-raw",
+          "severity": "warn",
+          "file": "style.css",
+          "line": 12,
+          "lines": [
+            12
+          ],
+          "text": "raw size outside tokens.css"
+        }
+      ],
+      "engines": {
+        "chromium": {
+          "checks": [
+            {
+              "name": "the input has the visible label \"Your name\"",
+              "pass": true
+            },
+            {
+              "name": "greets a stranger when the input is empty",
+              "pass": true
+            },
+            {
+              "name": "follows every keystroke without losing focus or characters",
+              "pass": true
+            },
+            {
+              "name": "shows the name as text, not markup",
+              "pass": true
+            },
+            {
+              "name": "counts up and down, never below zero",
+              "pass": true
+            },
+            {
+              "name": "reset goes back to zero",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "firefox": {
+          "checks": [
+            {
+              "name": "the input has the visible label \"Your name\"",
+              "pass": true
+            },
+            {
+              "name": "greets a stranger when the input is empty",
+              "pass": true
+            },
+            {
+              "name": "follows every keystroke without losing focus or characters",
+              "pass": true
+            },
+            {
+              "name": "shows the name as text, not markup",
+              "pass": true
+            },
+            {
+              "name": "counts up and down, never below zero",
+              "pass": true
+            },
+            {
+              "name": "reset goes back to zero",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "webkit": {
+          "checks": [
+            {
+              "name": "the input has the visible label \"Your name\"",
+              "pass": true
+            },
+            {
+              "name": "greets a stranger when the input is empty",
+              "pass": true
+            },
+            {
+              "name": "follows every keystroke without losing focus or characters",
+              "pass": true
+            },
+            {
+              "name": "shows the name as text, not markup",
+              "pass": true
+            },
+            {
+              "name": "counts up and down, never below zero",
+              "pass": true
+            },
+            {
+              "name": "reset goes back to zero",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        }
+      },
+      "results": [
+        {
+          "name": "the input has the visible label \"Your name\"",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "greets a stranger when the input is empty",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "follows every keystroke without losing focus or characters",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "shows the name as text, not markup",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "counts up and down, never below zero",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "reset goes back to zero",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "no console errors or warnings",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "clean DOM (aria values, unique ids, no \"undefined\")",
+          "pass": true,
+          "failed": []
+        }
+      ],
+      "checks": {
+        "passed": 8,
+        "total": 8
+      },
+      "staticErrors": 1,
+      "pass": false
+    },
+    {
+      "id": "02-todo",
+      "title": "To-do list",
+      "answer": "answers/02.md",
+      "files": [
+        "app.js",
+        "style.css"
+      ],
+      "notes": [],
+      "static": [],
+      "engines": {
+        "chromium": {
+          "checks": [
+            {
+              "name": "adds with Enter; the input is emptied and keeps the focus",
+              "pass": true
+            },
+            {
+              "name": "adds with the Add button; ignores empty text",
+              "pass": true
+            },
+            {
+              "name": "shows task text as text, not markup",
+              "pass": true
+            },
+            {
+              "name": "toggles with the keyboard and keeps the focus on the checkbox",
+              "pass": true
+            },
+            {
+              "name": "filters with aria-pressed \"true\"/\"false\"",
+              "pass": true
+            },
+            {
+              "name": "shows \"Nothing here.\" only when the filter shows nothing",
+              "pass": true
+            },
+            {
+              "name": "removes a task and updates the count",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "firefox": {
+          "checks": [
+            {
+              "name": "adds with Enter; the input is emptied and keeps the focus",
+              "pass": true
+            },
+            {
+              "name": "adds with the Add button; ignores empty text",
+              "pass": true
+            },
+            {
+              "name": "shows task text as text, not markup",
+              "pass": true
+            },
+            {
+              "name": "toggles with the keyboard and keeps the focus on the checkbox",
+              "pass": true
+            },
+            {
+              "name": "filters with aria-pressed \"true\"/\"false\"",
+              "pass": true
+            },
+            {
+              "name": "shows \"Nothing here.\" only when the filter shows nothing",
+              "pass": true
+            },
+            {
+              "name": "removes a task and updates the count",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "webkit": {
+          "checks": [
+            {
+              "name": "adds with Enter; the input is emptied and keeps the focus",
+              "pass": true
+            },
+            {
+              "name": "adds with the Add button; ignores empty text",
+              "pass": true
+            },
+            {
+              "name": "shows task text as text, not markup",
+              "pass": true
+            },
+            {
+              "name": "toggles with the keyboard and keeps the focus on the checkbox",
+              "pass": true
+            },
+            {
+              "name": "filters with aria-pressed \"true\"/\"false\"",
+              "pass": true
+            },
+            {
+              "name": "shows \"Nothing here.\" only when the filter shows nothing",
+              "pass": true
+            },
+            {
+              "name": "removes a task and updates the count",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        }
+      },
+      "results": [
+        {
+          "name": "adds with Enter; the input is emptied and keeps the focus",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "adds with the Add button; ignores empty text",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "shows task text as text, not markup",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "toggles with the keyboard and keeps the focus on the checkbox",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "filters with aria-pressed \"true\"/\"false\"",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "shows \"Nothing here.\" only when the filter shows nothing",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "removes a task and updates the count",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "no console errors or warnings",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "clean DOM (aria values, unique ids, no \"undefined\")",
+          "pass": true,
+          "failed": []
+        }
+      ],
+      "checks": {
+        "passed": 9,
+        "total": 9
+      },
+      "staticErrors": 0,
+      "pass": true
+    },
+    {
+      "id": "03-dashboard-conversion",
+      "title": "Convert a published dashboard",
+      "answer": "answers/03.md",
+      "files": [
+        "index.html",
+        "app.js"
+      ],
+      "notes": [],
+      "static": [],
+      "engines": {
+        "chromium": {
+          "checks": [
+            {
+              "name": "the menu button opens and closes the menu (aria-expanded, hidden)",
+              "pass": false,
+              "error": "[data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\""
+            },
+            {
+              "name": "Escape and a click outside close the menu",
+              "pass": false,
+              "error": "[data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\""
+            },
+            {
+              "name": "Sign out closes the menu and shows \"Signed out\"",
+              "pass": false,
+              "error": "[data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\""
+            },
+            {
+              "name": "tabs switch the summary with aria-selected and the active class",
+              "pass": false,
+              "error": "#summary: expected \"This month: 1,204 orders, 3.4% refunds.\", got \"Orders are up this week. Most sales came from the keyboard line.\""
+            },
+            {
+              "name": "search filters by customer or order number while typing, focus kept",
+              "pass": true
+            },
+            {
+              "name": "the status filter combines with the search; no match shows \"No orders match.\"",
+              "pass": true
+            },
+            {
+              "name": "search text is never markup",
+              "pass": true
+            },
+            {
+              "name": "the published structure and texts stay (no element rebuilt or nested)",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "firefox": {
+          "checks": [
+            {
+              "name": "the menu button opens and closes the menu (aria-expanded, hidden)",
+              "pass": false,
+              "error": "[data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\""
+            },
+            {
+              "name": "Escape and a click outside close the menu",
+              "pass": false,
+              "error": "[data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\""
+            },
+            {
+              "name": "Sign out closes the menu and shows \"Signed out\"",
+              "pass": false,
+              "error": "[data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\""
+            },
+            {
+              "name": "tabs switch the summary with aria-selected and the active class",
+              "pass": false,
+              "error": "#summary: expected \"This month: 1,204 orders, 3.4% refunds.\", got \"Orders are up this week. Most sales came from the keyboard line.\""
+            },
+            {
+              "name": "search filters by customer or order number while typing, focus kept",
+              "pass": true
+            },
+            {
+              "name": "the status filter combines with the search; no match shows \"No orders match.\"",
+              "pass": true
+            },
+            {
+              "name": "search text is never markup",
+              "pass": true
+            },
+            {
+              "name": "the published structure and texts stay (no element rebuilt or nested)",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "webkit": {
+          "checks": [
+            {
+              "name": "the menu button opens and closes the menu (aria-expanded, hidden)",
+              "pass": false,
+              "error": "[data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\""
+            },
+            {
+              "name": "Escape and a click outside close the menu",
+              "pass": false,
+              "error": "[data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\""
+            },
+            {
+              "name": "Sign out closes the menu and shows \"Signed out\"",
+              "pass": false,
+              "error": "[data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\""
+            },
+            {
+              "name": "tabs switch the summary with aria-selected and the active class",
+              "pass": false,
+              "error": "#summary: expected \"This month: 1,204 orders, 3.4% refunds.\", got \"Orders are up this week. Most sales came from the keyboard line.\""
+            },
+            {
+              "name": "search filters by customer or order number while typing, focus kept",
+              "pass": true
+            },
+            {
+              "name": "the status filter combines with the search; no match shows \"No orders match.\"",
+              "pass": true
+            },
+            {
+              "name": "search text is never markup",
+              "pass": true
+            },
+            {
+              "name": "the published structure and texts stay (no element rebuilt or nested)",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        }
+      },
+      "results": [
+        {
+          "name": "the menu button opens and closes the menu (aria-expanded, hidden)",
+          "pass": false,
+          "failed": [
+            "chromium: [data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\"",
+            "firefox: [data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\"",
+            "webkit: [data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\""
+          ]
+        },
+        {
+          "name": "Escape and a click outside close the menu",
+          "pass": false,
+          "failed": [
+            "chromium: [data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\"",
+            "firefox: [data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\"",
+            "webkit: [data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\""
+          ]
+        },
+        {
+          "name": "Sign out closes the menu and shows \"Signed out\"",
+          "pass": false,
+          "failed": [
+            "chromium: [data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\"",
+            "firefox: [data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\"",
+            "webkit: [data-action=\"menu\"] aria-expanded: expected \"true\", got \"false\""
+          ]
+        },
+        {
+          "name": "tabs switch the summary with aria-selected and the active class",
+          "pass": false,
+          "failed": [
+            "chromium: #summary: expected \"This month: 1,204 orders, 3.4% refunds.\", got \"Orders are up this week. Most sales came from the keyboard line.\"",
+            "firefox: #summary: expected \"This month: 1,204 orders, 3.4% refunds.\", got \"Orders are up this week. Most sales came from the keyboard line.\"",
+            "webkit: #summary: expected \"This month: 1,204 orders, 3.4% refunds.\", got \"Orders are up this week. Most sales came from the keyboard line.\""
+          ]
+        },
+        {
+          "name": "search filters by customer or order number while typing, focus kept",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "the status filter combines with the search; no match shows \"No orders match.\"",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "search text is never markup",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "the published structure and texts stay (no element rebuilt or nested)",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "no console errors or warnings",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "clean DOM (aria values, unique ids, no \"undefined\")",
+          "pass": true,
+          "failed": []
+        }
+      ],
+      "checks": {
+        "passed": 6,
+        "total": 10
+      },
+      "staticErrors": 0,
+      "pass": false
+    },
+    {
+      "id": "04-signup-form",
+      "title": "Sign-up form validation",
+      "answer": "answers/04.md",
+      "files": [
+        "index.html",
+        "app.js",
+        "style.css"
+      ],
+      "notes": [],
+      "static": [],
+      "engines": {
+        "chromium": {
+          "checks": [
+            {
+              "name": "an empty email shows its message on blur (aria-invalid, aria-describedby)",
+              "pass": true
+            },
+            {
+              "name": "a field with an error is checked again while typing",
+              "pass": true
+            },
+            {
+              "name": "submitting an empty form shows every message and focuses the email",
+              "pass": true
+            },
+            {
+              "name": "password needs 8 characters and a digit",
+              "pass": true
+            },
+            {
+              "name": "confirm must match the password; terms must be checked",
+              "pass": true
+            },
+            {
+              "name": "a valid submit hides the form and welcomes; the password is never shown or logged",
+              "pass": false,
+              "error": "[data-ref=\"done\"]: expected \"Welcome, <i>me</i>@example.com!\", got \"\""
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "firefox": {
+          "checks": [
+            {
+              "name": "an empty email shows its message on blur (aria-invalid, aria-describedby)",
+              "pass": true
+            },
+            {
+              "name": "a field with an error is checked again while typing",
+              "pass": true
+            },
+            {
+              "name": "submitting an empty form shows every message and focuses the email",
+              "pass": true
+            },
+            {
+              "name": "password needs 8 characters and a digit",
+              "pass": true
+            },
+            {
+              "name": "confirm must match the password; terms must be checked",
+              "pass": true
+            },
+            {
+              "name": "a valid submit hides the form and welcomes; the password is never shown or logged",
+              "pass": false,
+              "error": "[data-ref=\"done\"]: expected \"Welcome, <i>me</i>@example.com!\", got \"\""
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "webkit": {
+          "checks": [
+            {
+              "name": "an empty email shows its message on blur (aria-invalid, aria-describedby)",
+              "pass": true
+            },
+            {
+              "name": "a field with an error is checked again while typing",
+              "pass": true
+            },
+            {
+              "name": "submitting an empty form shows every message and focuses the email",
+              "pass": true
+            },
+            {
+              "name": "password needs 8 characters and a digit",
+              "pass": true
+            },
+            {
+              "name": "confirm must match the password; terms must be checked",
+              "pass": true
+            },
+            {
+              "name": "a valid submit hides the form and welcomes; the password is never shown or logged",
+              "pass": false,
+              "error": "[data-ref=\"done\"]: expected \"Welcome, <i>me</i>@example.com!\", got \"\""
+            }
+          ],
+          "console": [],
+          "dom": []
+        }
+      },
+      "results": [
+        {
+          "name": "an empty email shows its message on blur (aria-invalid, aria-describedby)",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "a field with an error is checked again while typing",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "submitting an empty form shows every message and focuses the email",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "password needs 8 characters and a digit",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "confirm must match the password; terms must be checked",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "a valid submit hides the form and welcomes; the password is never shown or logged",
+          "pass": false,
+          "failed": [
+            "chromium: [data-ref=\"done\"]: expected \"Welcome, <i>me</i>@example.com!\", got \"\"",
+            "firefox: [data-ref=\"done\"]: expected \"Welcome, <i>me</i>@example.com!\", got \"\"",
+            "webkit: [data-ref=\"done\"]: expected \"Welcome, <i>me</i>@example.com!\", got \"\""
+          ]
+        },
+        {
+          "name": "no console errors or warnings",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "clean DOM (aria values, unique ids, no \"undefined\")",
+          "pass": true,
+          "failed": []
+        }
+      ],
+      "checks": {
+        "passed": 7,
+        "total": 8
+      },
+      "staticErrors": 0,
+      "pass": false
+    },
+    {
+      "id": "05-server-list",
+      "title": "Server list: loading, error, empty and untrusted data",
+      "answer": "answers/05.md",
+      "files": [
+        "app.js",
+        "style.css"
+      ],
+      "notes": [],
+      "static": [],
+      "engines": {
+        "chromium": {
+          "checks": [
+            {
+              "name": "shows the loading state (aria-busy, text) and then the list",
+              "pass": true
+            },
+            {
+              "name": "an HTTP error shows the message and Retry loads again",
+              "pass": true
+            },
+            {
+              "name": "a network error shows the same message",
+              "pass": true
+            },
+            {
+              "name": "an empty list says \"No servers yet.\"",
+              "pass": true
+            },
+            {
+              "name": "untrusted fields stay text; unsafe URLs and unknown statuses are neutralized",
+              "pass": true
+            },
+            {
+              "name": "the status filter narrows the list and the \"Showing\" text",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "firefox": {
+          "checks": [
+            {
+              "name": "shows the loading state (aria-busy, text) and then the list",
+              "pass": true
+            },
+            {
+              "name": "an HTTP error shows the message and Retry loads again",
+              "pass": true
+            },
+            {
+              "name": "a network error shows the same message",
+              "pass": true
+            },
+            {
+              "name": "an empty list says \"No servers yet.\"",
+              "pass": true
+            },
+            {
+              "name": "untrusted fields stay text; unsafe URLs and unknown statuses are neutralized",
+              "pass": true
+            },
+            {
+              "name": "the status filter narrows the list and the \"Showing\" text",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "webkit": {
+          "checks": [
+            {
+              "name": "shows the loading state (aria-busy, text) and then the list",
+              "pass": true
+            },
+            {
+              "name": "an HTTP error shows the message and Retry loads again",
+              "pass": true
+            },
+            {
+              "name": "a network error shows the same message",
+              "pass": true
+            },
+            {
+              "name": "an empty list says \"No servers yet.\"",
+              "pass": true
+            },
+            {
+              "name": "untrusted fields stay text; unsafe URLs and unknown statuses are neutralized",
+              "pass": true
+            },
+            {
+              "name": "the status filter narrows the list and the \"Showing\" text",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        }
+      },
+      "results": [
+        {
+          "name": "shows the loading state (aria-busy, text) and then the list",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "an HTTP error shows the message and Retry loads again",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "a network error shows the same message",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "an empty list says \"No servers yet.\"",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "untrusted fields stay text; unsafe URLs and unknown statuses are neutralized",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "the status filter narrows the list and the \"Showing\" text",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "no console errors or warnings",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "clean DOM (aria values, unique ids, no \"undefined\")",
+          "pass": true,
+          "failed": []
+        }
+      ],
+      "checks": {
+        "passed": 8,
+        "total": 8
+      },
+      "staticErrors": 0,
+      "pass": true
+    },
+    {
+      "id": "06-spa-scaffold",
+      "title": "SPA scaffold: router, store, two languages",
+      "answer": "answers/06.md",
+      "files": [
+        "index.html",
+        "app.js",
+        "store.js",
+        "api.js",
+        "pages/home.js",
+        "pages/servers.js",
+        "pages/server.js",
+        "pages/not-found.js",
+        "locales/en.json",
+        "locales/ko.json",
+        "styles/base.css",
+        "styles/components/header.css",
+        "styles/pages/servers.css"
+      ],
+      "notes": [],
+      "static": [],
+      "engines": {
+        "chromium": {
+          "checks": [
+            {
+              "name": "home: title, intro and the current nav link",
+              "pass": false,
+              "error": "#view h1: expected \"Status board\", got \"(no element)\""
+            },
+            {
+              "name": "a nav link opens the server list and moves the focus to #view",
+              "pass": false,
+              "error": "#view h1: expected \"Status board\", got \"(no element)\""
+            },
+            {
+              "name": "server pages open by URL; unknown ids and routes show their messages",
+              "pass": false,
+              "error": "#view h1: expected \"Oregon batch\", got \"(no element)\""
+            },
+            {
+              "name": "favorites are shared state that survives navigation",
+              "pass": false,
+              "error": "[data-action=\"favorite\"]: expected \"Add to favorites\", got \"(no element)\""
+            },
+            {
+              "name": "switching to Korean translates everything, sets <html lang> and survives a reload",
+              "pass": false,
+              "error": "#view h1: expected \"Status board\", got \"(no element)\""
+            },
+            {
+              "name": "a language switch keeps the favorites (partial store update)",
+              "pass": false,
+              "error": "#view h1: expected \"Frankfurt API\", got \"(no element)\""
+            }
+          ],
+          "console": [
+            "page error: buttons.forEach is not a function"
+          ],
+          "dom": []
+        },
+        "firefox": {
+          "checks": [
+            {
+              "name": "home: title, intro and the current nav link",
+              "pass": false,
+              "error": "#view h1: expected \"Status board\", got \"(no element)\""
+            },
+            {
+              "name": "a nav link opens the server list and moves the focus to #view",
+              "pass": false,
+              "error": "#view h1: expected \"Status board\", got \"(no element)\""
+            },
+            {
+              "name": "server pages open by URL; unknown ids and routes show their messages",
+              "pass": false,
+              "error": "#view h1: expected \"Oregon batch\", got \"(no element)\""
+            },
+            {
+              "name": "favorites are shared state that survives navigation",
+              "pass": false,
+              "error": "[data-action=\"favorite\"]: expected \"Add to favorites\", got \"(no element)\""
+            },
+            {
+              "name": "switching to Korean translates everything, sets <html lang> and survives a reload",
+              "pass": false,
+              "error": "#view h1: expected \"Status board\", got \"(no element)\""
+            },
+            {
+              "name": "a language switch keeps the favorites (partial store update)",
+              "pass": false,
+              "error": "#view h1: expected \"Frankfurt API\", got \"(no element)\""
+            }
+          ],
+          "console": [
+            "page error: buttons.forEach is not a function"
+          ],
+          "dom": []
+        },
+        "webkit": {
+          "checks": [
+            {
+              "name": "home: title, intro and the current nav link",
+              "pass": false,
+              "error": "#view h1: expected \"Status board\", got \"(no element)\""
+            },
+            {
+              "name": "a nav link opens the server list and moves the focus to #view",
+              "pass": false,
+              "error": "#view h1: expected \"Status board\", got \"(no element)\""
+            },
+            {
+              "name": "server pages open by URL; unknown ids and routes show their messages",
+              "pass": false,
+              "error": "#view h1: expected \"Oregon batch\", got \"(no element)\""
+            },
+            {
+              "name": "favorites are shared state that survives navigation",
+              "pass": false,
+              "error": "[data-action=\"favorite\"]: expected \"Add to favorites\", got \"(no element)\""
+            },
+            {
+              "name": "switching to Korean translates everything, sets <html lang> and survives a reload",
+              "pass": false,
+              "error": "#view h1: expected \"Status board\", got \"(no element)\""
+            },
+            {
+              "name": "a language switch keeps the favorites (partial store update)",
+              "pass": false,
+              "error": "#view h1: expected \"Frankfurt API\", got \"(no element)\""
+            }
+          ],
+          "console": [
+            "page error: TypeError: buttons.forEach is not a function. (In 'buttons.forEach((btn) => {\n    const pressed = btn.getAttribute('data-locale') === currentLocale;\n    btn.setAttribute('aria-pressed', pressed ? 'tru..."
+          ],
+          "dom": []
+        }
+      },
+      "results": [
+        {
+          "name": "home: title, intro and the current nav link",
+          "pass": false,
+          "failed": [
+            "chromium: #view h1: expected \"Status board\", got \"(no element)\"",
+            "firefox: #view h1: expected \"Status board\", got \"(no element)\"",
+            "webkit: #view h1: expected \"Status board\", got \"(no element)\""
+          ]
+        },
+        {
+          "name": "a nav link opens the server list and moves the focus to #view",
+          "pass": false,
+          "failed": [
+            "chromium: #view h1: expected \"Status board\", got \"(no element)\"",
+            "firefox: #view h1: expected \"Status board\", got \"(no element)\"",
+            "webkit: #view h1: expected \"Status board\", got \"(no element)\""
+          ]
+        },
+        {
+          "name": "server pages open by URL; unknown ids and routes show their messages",
+          "pass": false,
+          "failed": [
+            "chromium: #view h1: expected \"Oregon batch\", got \"(no element)\"",
+            "firefox: #view h1: expected \"Oregon batch\", got \"(no element)\"",
+            "webkit: #view h1: expected \"Oregon batch\", got \"(no element)\""
+          ]
+        },
+        {
+          "name": "favorites are shared state that survives navigation",
+          "pass": false,
+          "failed": [
+            "chromium: [data-action=\"favorite\"]: expected \"Add to favorites\", got \"(no element)\"",
+            "firefox: [data-action=\"favorite\"]: expected \"Add to favorites\", got \"(no element)\"",
+            "webkit: [data-action=\"favorite\"]: expected \"Add to favorites\", got \"(no element)\""
+          ]
+        },
+        {
+          "name": "switching to Korean translates everything, sets <html lang> and survives a reload",
+          "pass": false,
+          "failed": [
+            "chromium: #view h1: expected \"Status board\", got \"(no element)\"",
+            "firefox: #view h1: expected \"Status board\", got \"(no element)\"",
+            "webkit: #view h1: expected \"Status board\", got \"(no element)\""
+          ]
+        },
+        {
+          "name": "a language switch keeps the favorites (partial store update)",
+          "pass": false,
+          "failed": [
+            "chromium: #view h1: expected \"Frankfurt API\", got \"(no element)\"",
+            "firefox: #view h1: expected \"Frankfurt API\", got \"(no element)\"",
+            "webkit: #view h1: expected \"Frankfurt API\", got \"(no element)\""
+          ]
+        },
+        {
+          "name": "no console errors or warnings",
+          "pass": false,
+          "failed": [
+            "chromium: page error: buttons.forEach is not a function",
+            "firefox: page error: buttons.forEach is not a function",
+            "webkit: page error: TypeError: buttons.forEach is not a function. (In 'buttons.forEach((btn) => {\n    const pressed = btn.getAttribute('data-locale') === currentLocale;\n    btn.setAttribute('aria-pressed', pressed ? 'tru..."
+          ]
+        },
+        {
+          "name": "clean DOM (aria values, unique ids, no \"undefined\")",
+          "pass": true,
+          "failed": []
+        }
+      ],
+      "checks": {
+        "passed": 1,
+        "total": 8
+      },
+      "staticErrors": 0,
+      "pass": false
+    },
+    {
+      "id": "07-react-port",
+      "title": "Port a React component",
+      "answer": "answers/07.md",
+      "files": [
+        "index.html",
+        "app.js",
+        "styles.css"
+      ],
+      "notes": [],
+      "static": [],
+      "engines": {
+        "chromium": {
+          "checks": [
+            {
+              "name": "loads and lists the products sorted by name",
+              "pass": true
+            },
+            {
+              "name": "shows the loading and error states",
+              "pass": true
+            },
+            {
+              "name": "search filters while typing, ignoring case, focus kept",
+              "pass": true
+            },
+            {
+              "name": "category and \"In stock only\" combine; the count is singular for one",
+              "pass": true
+            },
+            {
+              "name": "sorts by price both ways",
+              "pass": true
+            },
+            {
+              "name": "out-of-stock products are marked; prices are USD",
+              "pass": true
+            },
+            {
+              "name": "no match shows \"No products found.\" and \"0 products\"",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "firefox": {
+          "checks": [
+            {
+              "name": "loads and lists the products sorted by name",
+              "pass": true
+            },
+            {
+              "name": "shows the loading and error states",
+              "pass": true
+            },
+            {
+              "name": "search filters while typing, ignoring case, focus kept",
+              "pass": true
+            },
+            {
+              "name": "category and \"In stock only\" combine; the count is singular for one",
+              "pass": true
+            },
+            {
+              "name": "sorts by price both ways",
+              "pass": true
+            },
+            {
+              "name": "out-of-stock products are marked; prices are USD",
+              "pass": true
+            },
+            {
+              "name": "no match shows \"No products found.\" and \"0 products\"",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "webkit": {
+          "checks": [
+            {
+              "name": "loads and lists the products sorted by name",
+              "pass": true
+            },
+            {
+              "name": "shows the loading and error states",
+              "pass": true
+            },
+            {
+              "name": "search filters while typing, ignoring case, focus kept",
+              "pass": true
+            },
+            {
+              "name": "category and \"In stock only\" combine; the count is singular for one",
+              "pass": true
+            },
+            {
+              "name": "sorts by price both ways",
+              "pass": true
+            },
+            {
+              "name": "out-of-stock products are marked; prices are USD",
+              "pass": true
+            },
+            {
+              "name": "no match shows \"No products found.\" and \"0 products\"",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        }
+      },
+      "results": [
+        {
+          "name": "loads and lists the products sorted by name",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "shows the loading and error states",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "search filters while typing, ignoring case, focus kept",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "category and \"In stock only\" combine; the count is singular for one",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "sorts by price both ways",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "out-of-stock products are marked; prices are USD",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "no match shows \"No products found.\" and \"0 products\"",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "no console errors or warnings",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "clean DOM (aria values, unique ids, no \"undefined\")",
+          "pass": true,
+          "failed": []
+        }
+      ],
+      "checks": {
+        "passed": 9,
+        "total": 9
+      },
+      "staticErrors": 0,
+      "pass": true
+    },
+    {
+      "id": "08-chartjs",
+      "title": "Chart.js inside a component",
+      "answer": "answers/08.md",
+      "files": [
+        "app.js",
+        "style.css"
+      ],
+      "notes": [],
+      "static": [],
+      "engines": {
+        "chromium": {
+          "checks": [
+            {
+              "name": "draws revenue for the first 6 months with the --vf-chart-1 color",
+              "pass": true
+            },
+            {
+              "name": "switching the series updates the same canvas and chart instance",
+              "pass": true
+            },
+            {
+              "name": "\"Add month\" grows the chart up to 12 months, then is disabled",
+              "pass": true
+            },
+            {
+              "name": "hiding destroys the component and the chart; showing starts again",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "firefox": {
+          "checks": [
+            {
+              "name": "draws revenue for the first 6 months with the --vf-chart-1 color",
+              "pass": true
+            },
+            {
+              "name": "switching the series updates the same canvas and chart instance",
+              "pass": true
+            },
+            {
+              "name": "\"Add month\" grows the chart up to 12 months, then is disabled",
+              "pass": true
+            },
+            {
+              "name": "hiding destroys the component and the chart; showing starts again",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "webkit": {
+          "checks": [
+            {
+              "name": "draws revenue for the first 6 months with the --vf-chart-1 color",
+              "pass": true
+            },
+            {
+              "name": "switching the series updates the same canvas and chart instance",
+              "pass": true
+            },
+            {
+              "name": "\"Add month\" grows the chart up to 12 months, then is disabled",
+              "pass": true
+            },
+            {
+              "name": "hiding destroys the component and the chart; showing starts again",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        }
+      },
+      "results": [
+        {
+          "name": "draws revenue for the first 6 months with the --vf-chart-1 color",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "switching the series updates the same canvas and chart instance",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "\"Add month\" grows the chart up to 12 months, then is disabled",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "hiding destroys the component and the chart; showing starts again",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "no console errors or warnings",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "clean DOM (aria values, unique ids, no \"undefined\")",
+          "pass": true,
+          "failed": []
+        }
+      ],
+      "checks": {
+        "passed": 6,
+        "total": 6
+      },
+      "staticErrors": 0,
+      "pass": true
+    },
+    {
+      "id": "09-design-apply",
+      "title": "Apply a DESIGN.md without touching JS",
+      "answer": "answers/09.md",
+      "files": [
+        "styles/tokens.css",
+        "styles/app.css",
+        "design/STATUS.md"
+      ],
+      "notes": [],
+      "static": [],
+      "engines": {
+        "chromium": {
+          "checks": [
+            {
+              "name": "the app still works (toggle, save, cancel)",
+              "pass": true
+            },
+            {
+              "name": "light theme: colors and font of the design",
+              "pass": true
+            },
+            {
+              "name": "component rules: pill buttons and toggle, raised card, card padding",
+              "pass": true
+            },
+            {
+              "name": "states use tokens: pressed toggle, hover, success notice",
+              "pass": true
+            },
+            {
+              "name": "OS dark theme uses the dark tokens",
+              "pass": true
+            },
+            {
+              "name": "data-theme=\"dark\" uses the same dark tokens; data-theme=\"light\" wins over the OS",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "firefox": {
+          "checks": [
+            {
+              "name": "the app still works (toggle, save, cancel)",
+              "pass": true
+            },
+            {
+              "name": "light theme: colors and font of the design",
+              "pass": true
+            },
+            {
+              "name": "component rules: pill buttons and toggle, raised card, card padding",
+              "pass": true
+            },
+            {
+              "name": "states use tokens: pressed toggle, hover, success notice",
+              "pass": true
+            },
+            {
+              "name": "OS dark theme uses the dark tokens",
+              "pass": true
+            },
+            {
+              "name": "data-theme=\"dark\" uses the same dark tokens; data-theme=\"light\" wins over the OS",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "webkit": {
+          "checks": [
+            {
+              "name": "the app still works (toggle, save, cancel)",
+              "pass": true
+            },
+            {
+              "name": "light theme: colors and font of the design",
+              "pass": true
+            },
+            {
+              "name": "component rules: pill buttons and toggle, raised card, card padding",
+              "pass": true
+            },
+            {
+              "name": "states use tokens: pressed toggle, hover, success notice",
+              "pass": true
+            },
+            {
+              "name": "OS dark theme uses the dark tokens",
+              "pass": true
+            },
+            {
+              "name": "data-theme=\"dark\" uses the same dark tokens; data-theme=\"light\" wins over the OS",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        }
+      },
+      "results": [
+        {
+          "name": "the app still works (toggle, save, cancel)",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "light theme: colors and font of the design",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "component rules: pill buttons and toggle, raised card, card padding",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "states use tokens: pressed toggle, hover, success notice",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "OS dark theme uses the dark tokens",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "data-theme=\"dark\" uses the same dark tokens; data-theme=\"light\" wins over the OS",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "no console errors or warnings",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "clean DOM (aria values, unique ids, no \"undefined\")",
+          "pass": true,
+          "failed": []
+        }
+      ],
+      "checks": {
+        "passed": 8,
+        "total": 8
+      },
+      "staticErrors": 0,
+      "pass": true
+    },
+    {
+      "id": "10-bug-fix",
+      "title": "Fix seven bugs",
+      "answer": "answers/10.md",
+      "files": [
+        "app.js",
+        "store.js"
+      ],
+      "notes": [],
+      "static": [],
+      "engines": {
+        "chromium": {
+          "checks": [
+            {
+              "name": "bug 1: attach + render fills #notice instead of nesting a second one",
+              "pass": true
+            },
+            {
+              "name": "bug 2: the Details button says aria-expanded \"false\" / \"true\"",
+              "pass": true
+            },
+            {
+              "name": "bug 3: switching the language keeps the theme (store.set is a shallow merge)",
+              "pass": true
+            },
+            {
+              "name": "bug 4: closing the clock stops its timer",
+              "pass": true
+            },
+            {
+              "name": "bug 5: Remove works (delegation on data-action, not a class)",
+              "pass": true
+            },
+            {
+              "name": "bug 6: comments are text, never markup",
+              "pass": true
+            },
+            {
+              "name": "bug 7: Space on a task checkbox keeps the focus on that task, which moves down",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "firefox": {
+          "checks": [
+            {
+              "name": "bug 1: attach + render fills #notice instead of nesting a second one",
+              "pass": true
+            },
+            {
+              "name": "bug 2: the Details button says aria-expanded \"false\" / \"true\"",
+              "pass": true
+            },
+            {
+              "name": "bug 3: switching the language keeps the theme (store.set is a shallow merge)",
+              "pass": true
+            },
+            {
+              "name": "bug 4: closing the clock stops its timer",
+              "pass": true
+            },
+            {
+              "name": "bug 5: Remove works (delegation on data-action, not a class)",
+              "pass": true
+            },
+            {
+              "name": "bug 6: comments are text, never markup",
+              "pass": true
+            },
+            {
+              "name": "bug 7: Space on a task checkbox keeps the focus on that task, which moves down",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        },
+        "webkit": {
+          "checks": [
+            {
+              "name": "bug 1: attach + render fills #notice instead of nesting a second one",
+              "pass": true
+            },
+            {
+              "name": "bug 2: the Details button says aria-expanded \"false\" / \"true\"",
+              "pass": true
+            },
+            {
+              "name": "bug 3: switching the language keeps the theme (store.set is a shallow merge)",
+              "pass": true
+            },
+            {
+              "name": "bug 4: closing the clock stops its timer",
+              "pass": true
+            },
+            {
+              "name": "bug 5: Remove works (delegation on data-action, not a class)",
+              "pass": true
+            },
+            {
+              "name": "bug 6: comments are text, never markup",
+              "pass": true
+            },
+            {
+              "name": "bug 7: Space on a task checkbox keeps the focus on that task, which moves down",
+              "pass": true
+            }
+          ],
+          "console": [],
+          "dom": []
+        }
+      },
+      "results": [
+        {
+          "name": "bug 1: attach + render fills #notice instead of nesting a second one",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "bug 2: the Details button says aria-expanded \"false\" / \"true\"",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "bug 3: switching the language keeps the theme (store.set is a shallow merge)",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "bug 4: closing the clock stops its timer",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "bug 5: Remove works (delegation on data-action, not a class)",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "bug 6: comments are text, never markup",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "bug 7: Space on a task checkbox keeps the focus on that task, which moves down",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "no console errors or warnings",
+          "pass": true,
+          "failed": []
+        },
+        {
+          "name": "clean DOM (aria values, unique ids, no \"undefined\")",
+          "pass": true,
+          "failed": []
+        }
+      ],
+      "checks": {
+        "passed": 9,
+        "total": 9
+      },
+      "staticErrors": 0,
+      "pass": true
+    }
+  ],
+  "summary": {
+    "tasks": 10,
+    "tasksPassed": 6,
+    "checks": 83,
+    "checksPassed": 71
+  },
+  "run": {
+    "model": "Claude Sonnet 5",
+    "modelVersion": "claude-sonnet-5",
+    "service": "Claude Code subagent (reads the bundle, writes the answer; no other tools)",
+    "date": "2026-09-25",
+    "lang": "en",
+    "kit": "1.0.0-rc.6",
+    "settings": "Second run, after the engine and kit changes of 1.0.0-rc.6. Same conditions as the first run: one new session per task, no follow-up messages, unedited answers. Task 10's bug 7 was reworked before this run (open tasks listed first). Manual scores are not filled in yet.",
+    "tasks": {
+      "10": {
+        "followUps": 0,
+        "notes": "All seven bugs fixed with no rule broken."
+      },
+      "01": {
+        "followUps": 0,
+        "notes": "Works in every engine; style.css again uses raw colors instead of tokens."
+      },
+      "02": {
+        "followUps": 0,
+        "notes": "All checks pass (setState with a function now works)."
+      },
+      "03": {
+        "followUps": 0,
+        "notes": "The user menu and the tabs are adopted with vf.attach (no render) and keep their state in the component; the DOM is updated in onUpdate, which never runs for a component without render, so the menu and tabs do not change."
+      },
+      "04": {
+        "followUps": 0,
+        "notes": "Reads vf.$('[data-ref=\"done\"]')[0], treating vf.$ as returning an array (it returns the first element), so the welcome text is never shown."
+      },
+      "05": {
+        "followUps": 0,
+        "notes": "All checks pass."
+      },
+      "06": {
+        "followUps": 0,
+        "notes": "Calls forEach on vf.$(…), treating it as an array; the page error stops the app before the first page renders."
+      },
+      "07": {
+        "followUps": 0,
+        "notes": "All checks pass."
+      },
+      "08": {
+        "followUps": 0,
+        "notes": "All checks pass (setState with a function now works)."
+      },
+      "09": {
+        "followUps": 0,
+        "notes": "All checks pass."
+      }
+    }
+  }
+}

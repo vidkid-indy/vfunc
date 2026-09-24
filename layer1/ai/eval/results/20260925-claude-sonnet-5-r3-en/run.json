@@ -1,0 +1,21 @@
+{
+  "model": "Claude Sonnet 5",
+  "modelVersion": "claude-sonnet-5",
+  "service": "Claude Code subagent (reads the bundle, writes the answer; no other tools)",
+  "date": "2026-09-25",
+  "lang": "en",
+  "kit": "1.0.0-rc.6",
+  "settings": "Third run, after onUpdate for components without render (D-025 5) and the kit clarifications for vf.$ and hook arguments. Same conditions: one new session per task, no follow-up messages, unedited answers. In task 06 the model's first file write was cut off; it read its own answer file and appended the rest (two extra tool calls, no other files). Manual scores are not filled in yet.",
+  "tasks": {
+    "01": { "followUps": 0, "notes": "Works in every engine; style.css uses raw colors instead of tokens (as in every run)." },
+    "02": { "followUps": 0 },
+    "03": { "followUps": 0, "notes": "The summary panel is attached with render and draws its whole inside again, so the published #summary element is rebuilt (the task asks to keep the published structure)." },
+    "04": { "followUps": 0 },
+    "05": { "followUps": 0 },
+    "06": { "followUps": 0, "notes": "The answer file was completed with two extra tool calls after a cut-off write (see settings)." },
+    "07": { "followUps": 0 },
+    "08": { "followUps": 0 },
+    "09": { "followUps": 0 },
+    "10": { "followUps": 0, "notes": "All seven bugs fixed. The comment list is written with innerHTML = String(vf.html`…`): safe, but not the idiom (warning)." }
+  }
+}

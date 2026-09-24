@@ -41,6 +41,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - The README described the planned API of the first draft; it now shows the release candidate, installation with SRI, the files in the package and supported browsers.
 - Delegated events and router link interception did nothing in browsers without `Element.closest` (IE11). The engine now falls back to `msMatchesSelector` without patching `Element.prototype`.
 
+### Changed (since 1.0.0-rc.5)
+Found by the first run of the evaluation set (`layer1/ai/eval`), where each of these made a model's otherwise reasonable code fail.
+- `setState` also takes a function `(state) => patch`, like `vf.store`'s `set` (it was ignored without a warning). Any other value that is not an object warns in the development build.
+- `destroy()` of a `vf.attach` component keeps the target element in the page: listeners are released and only what `render` / `innerHTML` drew is removed, so the element can be attached again. With `replaceRoot: true` the component's own root is removed as before.
+- After a refresh, focus and caret also return to an element without `id`, `data-ref` or `name`: the same `data-action` at the same position.
+- A component without `render` (for example published markup adopted with `vf.attach`) now gets `onUpdate` after each state change, once per tick; nothing is drawn again. Before, a state change on such a component did nothing.
+- `vf.t('nav.home')` finds a whole dotted key (`{ "nav.home": "…" }`) as well as the nested path (`{ "nav": { "home": "…" } }`); the whole key wins.
+
 ### Changed (since 1.0.0-rc.4)
 - `vf.attach` with `render` (or `innerHTML`) keeps the target element as the root and renders only its inside, parsed as content of the element's own tag. Its attributes, listeners and `aria-live` role stay across refreshes. `replaceRoot` now defaults to `false` for `vf.attach` as for `vf.vfunc`; pass `replaceRoot: true` for the previous behaviour. The development build warns when `render` returns the target element itself.
 - In quoted `aria-*` and `data-*` attributes, `vf.html` and `vf.tpl` write booleans as `"true"` / `"false"` (`aria-selected="${on}"`). Other attributes still drop `false`.

@@ -66,7 +66,7 @@ const results = vf.attach('#results', { state: { items: [] }, render: (s) => vf.
 | 훅 | 시점 | 할 일 |
 |---|---|---|
 | `onMount` | `mount()`·`vf.attach()`로 페이지에 들어간 직후 | 차트·에디터 만들기, 데이터 불러오기, 구독 |
-| `onUpdate` | 다시 그릴 때마다 | 위젯에 새 상태 반영 |
+| `onUpdate` | 다시 그릴 때마다(`render`가 없으면 상태가 바뀔 때마다) | 위젯이나 채택한 마크업에 새 상태 반영 |
 | `onDestroy` | `destroy()` 시작 시 | 위젯·타이머·구독 정리 |
 
 다시 그려도 사라지면 안 되는 요소(차트 캔버스 등)는 `data-vf-keep="chart"`로 표시합니다. 새로 만들지 않고 그 요소를 옮깁니다. 자세한 예는 [예제 15](examples.md)입니다.

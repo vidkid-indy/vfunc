@@ -188,6 +188,7 @@ test('static checks: each rule fires on its mistake and not on correct code', ()
   assert.deepEqual(rules(js('e.target.closest(\'[data-id] .row\')')), ['class-selector']);
   assert.equal(selectsByClass('[data-x=".y"]'), false);
   assert.deepEqual(rules(js('list.innerHTML = items.map((i) => i.name).join("")')), ['html-string']);
+  assert.deepEqual(staticCheck(js('list.innerHTML =\n  String(vf.html`<li>${x}</li>`);')).map((f) => f.rule + ':' + f.severity), ['html-string:warn'], 'escaped by vf.html');
   assert.deepEqual(rules(js('const row = `<li>${name}</li>`;')), ['html-string']);
   assert.deepEqual(rules(js('const row = \'<li>\' + name + \'</li>\';')), ['html-string']);
   assert.deepEqual(rules(js('el.insertAdjacentHTML("beforeend", x)')), ['html-string']);
@@ -199,8 +200,7 @@ test('static checks: each rule fires on its mistake and not on correct code', ()
   assert.deepEqual(rules(js('chart.color = "#2563eb"; el.style.color = c;')), ['design-in-js']);
   assert.deepEqual(rules(js('onMount: (inst) => { inst._timer = setInterval(f, 100); }')), ['instance-property']);
   assert.deepEqual(staticCheck(js('cache._last = 1;')).map((f) => f.rule + ':' + f.severity), ['instance-property:warn']);
-  assert.deepEqual(rules(js('inst.setState(function (s) { return { n: s.n + 1 }; }); e.sender.setState((s) => ({ a: 1 }));')), ['setstate-argument']);
-  assert.deepEqual(rules(js('inst.setState({ n: 1 }); store.set((s) => ({ n: s.n + 1 }));')), []);
+  assert.deepEqual(rules(js('const orders = [{ id: "#1042" }, { id: "#104" }];')), ['design-in-js'], '"#104" looks like a color, "#1042" does not');
   assert.deepEqual(rules([{ path: 'locales/en.json', content: '{ "nav.home": "Home" }' }]), ['locale-file']);
   assert.deepEqual(rules([{ path: 'locales/en.json', content: '{ "nav": { "home": "Home" } }' }]), []);
   assert.deepEqual(rules([{ path: 'data/items.json', content: '{ "a.b": 1 }' }]), [], 'only locale files');

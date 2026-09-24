@@ -80,15 +80,18 @@ export default [
     }
   },
   {
-    name: 'bug 7: Space on a task checkbox keeps the focus there',
+    name: 'bug 7: Space on a task checkbox keeps the focus on that task, which moves down',
     async run(page) {
-      const box = TASK('t2') + ' [data-action="toggle"]';
+      // t1 is first; once done it moves below the open t2, so position alone would point at t2.
+      const box = TASK('t1') + ' [data-action="toggle"]';
       await page.focus(box);
       await page.keyboard.press('Space');
-      await waitAttr(page, TASK('t2'), 'data-state', 'done');
+      await waitAttr(page, TASK('t1'), 'data-state', 'done');
+      const order = await page.$$eval('#tasks [data-id]', (els) => els.map((el) => el.getAttribute('data-id')));
+      assert.deepEqual(order, ['t2', 't1', 't3'], 'open tasks first');
       await expectFocus(page, box, 'after the toggle');
       await page.keyboard.press('Space');
-      await waitAttr(page, TASK('t2'), 'data-state', 'open');
+      await waitAttr(page, TASK('t1'), 'data-state', 'open');
       await expectFocus(page, box, 'after the second toggle');
     }
   }

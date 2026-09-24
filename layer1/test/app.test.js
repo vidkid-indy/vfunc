@@ -145,6 +145,17 @@ test('i18n: setup, t with params and plurals, fallback and missing keys', async 
   assert.equal(vf.t('cart.items', { count: 1 }), '1 item');
 });
 
+test('i18n finds a whole dotted key as well as a nested path', async () => {
+  await vf.i18n.setup({
+    locale: 'en',
+    locales: ['en'],
+    messages: { en: { 'nav.home': 'Home', nav: { servers: 'Servers', home: 'nested loses' }, 'cart.items': { one: '{count} item', other: '{count} items' } } }
+  });
+  assert.equal(vf.t('nav.home'), 'Home', 'the whole key wins');
+  assert.equal(vf.t('nav.servers'), 'Servers', 'nested path');
+  assert.equal(vf.t('cart.items', { count: 2 }), '2 items', 'plurals under a whole key');
+});
+
 test('i18n refuses locales outside the allow-list and path-like values', async () => {
   await vf.i18n.setup({ locale: 'en', locales: ['en', 'ko'], messages: { en: {}, ko: {} } });
   let result;

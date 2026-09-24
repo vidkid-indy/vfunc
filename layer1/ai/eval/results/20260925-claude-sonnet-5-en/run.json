@@ -1,0 +1,21 @@
+{
+  "model": "Claude Sonnet 5",
+  "modelVersion": "claude-sonnet-5",
+  "service": "Claude Code subagent (reads the bundle, writes the answer; no other tools)",
+  "date": "2026-09-25",
+  "lang": "en",
+  "kit": "1.0.0-rc.6",
+  "settings": "Second run, after the engine and kit changes of 1.0.0-rc.6. Same conditions as the first run: one new session per task, no follow-up messages, unedited answers. Task 10's bug 7 was reworked before this run (open tasks listed first). Manual scores are not filled in yet.",
+  "tasks": {
+    "01": { "followUps": 0, "notes": "Works in every engine; style.css again uses raw colors instead of tokens." },
+    "02": { "followUps": 0, "notes": "All checks pass (setState with a function now works)." },
+    "03": { "followUps": 0, "notes": "The user menu and the tabs are adopted with vf.attach (no render) and keep their state in the component; the DOM is updated in onUpdate, which never runs for a component without render, so the menu and tabs do not change." },
+    "04": { "followUps": 0, "notes": "Reads vf.$('[data-ref=\"done\"]')[0], treating vf.$ as returning an array (it returns the first element), so the welcome text is never shown." },
+    "05": { "followUps": 0, "notes": "All checks pass." },
+    "06": { "followUps": 0, "notes": "Calls forEach on vf.$(…), treating it as an array; the page error stops the app before the first page renders." },
+    "07": { "followUps": 0, "notes": "All checks pass." },
+    "08": { "followUps": 0, "notes": "All checks pass (setState with a function now works)." },
+    "09": { "followUps": 0, "notes": "All checks pass." },
+    "10": { "followUps": 0, "notes": "All seven bugs fixed with no rule broken." }
+  }
+}

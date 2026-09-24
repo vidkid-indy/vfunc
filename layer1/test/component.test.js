@@ -2,7 +2,7 @@
 // Phase 2 component features: lifecycle hooks, refs, data-vf-keep, focus restore, vf.attach.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { flush, click, captureWarnings } from './setup-dom.js';
+import { window, flush, click, captureWarnings } from './setup-dom.js';
 import vf from '../src/vfunc.js';
 
 const { html } = vf;
@@ -104,6 +104,104 @@ test('focus and caret position inside the component survive a refresh', async ()
   assert.equal(document.activeElement, c.ids.name, 'focus moved to the new input');
   assert.equal(c.ids.name.selectionStart, 2);
   host.remove();
+});
+
+test('without id, data-ref or name, focus returns to the same data-action at the same position', async () => {
+  const host = document.createElement('div');
+  document.body.appendChild(host);
+  const c = vf.vfunc({
+    state: { q: '' },
+    render: (s) => html`<input data-action="search" value="${s.q}"><button type="button" data-action="go">1</button><button type="button" data-action="go">2</button><p>${s.q}</p>`,
+    delegates: [{ selector: '[data-action="search"]', eventType: 'input', onEvent: (e) => e.sender.setState({ q: e.target.value }) }]
+  });
+  await c.mount(host);
+  const input = c.$node.querySelector('[data-action="search"]');
+  input.focus();
+  input.value = 'mo';
+  input.setSelectionRange(2, 2);
+  input.dispatchEvent(new window.Event('input', { bubbles: true }));
+  await flush();
+  const fresh = c.$node.querySelector('[data-action="search"]');
+  assert.notEqual(fresh, input, 'the input was re-rendered');
+  assert.equal(document.activeElement, fresh, 'focus on the new search input');
+  assert.equal(fresh.selectionStart, 2);
+  const second = c.$node.querySelectorAll('[data-action="go"]')[1];
+  second.focus();
+  c.q = 'x';
+  await flush();
+  assert.equal(document.activeElement, c.$node.querySelectorAll('[data-action="go"]')[1], 'the second of the same action');
+  host.remove();
+});
+
+test('setState takes a function of the state, like vf.store set', async () => {
+  const c = vf.vfunc({ state: { n: 1, keep: 'k' }, render: (s) => html`<b>${s.n}</b>` });
+  let self = null;
+  c.setState(function (s) { self = this; return { n: s.n + 1 }; });
+  c.setState((s) => ({ n: s.n + 1 }));
+  assert.equal(c.state.n, 3);
+  assert.equal(c.state.keep, 'k', 'shallow merge');
+  assert.equal(self, c, 'this is the instance');
+  await flush();
+  assert.equal(c.$node.textContent, '3');
+  const warnings = captureWarnings(() => c.setState(42));
+  assert.equal(warnings.length, 1, 'a value that is not an object warns');
+});
+
+test('destroy() keeps a vf.attach element in the page, so it can be attached again', () => {
+  document.body.innerHTML = '<section id="panel" class="panel" aria-live="polite"></section><div id="adopted"><button id="b" type="button">B</button></div>';
+  const panel = document.getElementById('panel');
+  const destroyed = [];
+  const first = vf.attach('#panel', { state: { n: 1 }, render: (s) => html`<p>${s.n}</p>`, onDestroy: () => destroyed.push(true) });
+  assert.equal(panel.textContent, '1');
+  first.destroy();
+  assert.equal(document.getElementById('panel'), panel, 'the element stays');
+  assert.equal(panel.innerHTML, '', 'what render drew is gone');
+  assert.equal(panel.getAttribute('aria-live'), 'polite');
+  assert.deepEqual(destroyed, [true]);
+  const again = vf.attach('#panel', { render: () => html`<p>again</p>` });
+  assert.ok(again, 'attached again');
+  assert.equal(panel.textContent, 'again');
+
+  let clicks = 0;
+  const adopted = vf.attach('#adopted', { events: [{ id: 'b', eventType: 'click', onEvent: () => clicks++ }] });
+  adopted.destroy();
+  click(document.getElementById('b'));
+  assert.equal(clicks, 0, 'listeners released');
+  assert.equal(document.getElementById('adopted').innerHTML, '<button id="b" type="button">B</button>', 'adopted markup stays');
+
+  document.body.innerHTML = '<div id="slot"></div>';
+  const replaced = vf.attach('#slot', { replaceRoot: true, render: () => html`<output id="out">x</output>` });
+  replaced.destroy();
+  assert.equal(document.getElementById('out'), null, 'replaceRoot: the component root is removed');
+});
+
+test('a component without render still gets onUpdate after a state change, once per tick', async () => {
+  document.body.innerHTML = '<div id="menu"><button id="toggle" type="button" aria-expanded="false">Menu</button><ul id="list" hidden></ul></div>';
+  const button = document.getElementById('toggle');
+  let updates = 0;
+  const c = vf.attach('#menu', {
+    state: { open: false },
+    events: [{ id: 'toggle', eventType: 'click', onEvent: (e) => { e.sender.open = !e.sender.open; } }],
+    onUpdate: (inst) => {
+      updates++;
+      inst.ids.toggle.setAttribute('aria-expanded', inst.open ? 'true' : 'false');
+      inst.ids.list.hidden = !inst.open;
+    }
+  });
+  click(button);
+  await flush();
+  assert.equal(updates, 1);
+  assert.equal(button.getAttribute('aria-expanded'), 'true');
+  assert.equal(document.getElementById('list').hidden, false);
+  assert.equal(document.getElementById('toggle'), button, 'nothing was drawn again');
+  c.setState({ open: false });
+  c.setState({ open: false });
+  await flush();
+  assert.equal(updates, 2, 'one onUpdate per tick');
+  c.destroy();
+  c.setState({ open: true });
+  await flush();
+  assert.equal(updates, 2, 'no onUpdate after destroy');
 });
 
 test('vf.attach adopts published markup without re-rendering it', () => {

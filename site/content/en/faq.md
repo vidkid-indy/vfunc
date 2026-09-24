@@ -7,7 +7,7 @@ For most business screens, behaviour on published pages, intranet systems and sm
 ## What are the limits?
 
 - **Large lists**: a render replaces the inside of a component (no keyed diff). Very long lists that change often are slower. Split lists into smaller components and keep unchanged areas with `data-vf-keep`. Virtual scrolling comes with the grid in stage 2.
-- **Focus and caret**: after a render, focus and caret move back to the element with the same `id`, `data-ref` or `name`. Scroll positions are not restored. Do not render on every keystroke.
+- **Focus and caret**: after a render, focus and caret move back to the element with the same `id`, `data-ref` or `name`, else to the same `data-action` at the same position. Scroll positions are not restored. Do not render on every keystroke.
 - **Table rows**: a component that renders `<tr>` needs `tag: 'table'`.
 - **Ecosystem**: few component libraries and tools so far. Third-party libraries can be attached directly with `onMount` + `data-vf-keep`.
 

@@ -4,7 +4,7 @@
 
 [English](README.md) · [웹사이트](https://vidkid-indy.github.io/vfunc/ko/) · [토론 게시판](https://github.com/vidkid-indy/vfunc/discussions)
 
-> **상태: 1.0 릴리스 후보(`1.0.0-rc.5`).** 1.0 API는 완성되었고, 1.0.0 전의 변경은 릴리스 후보 피드백에서만 나옵니다.
+> **상태: 1.0 릴리스 후보(`1.0.0-rc.6`).** 1.0 API는 완성되었고, 1.0.0 전의 변경은 릴리스 후보 피드백에서만 나옵니다.
 
 vfunc.js는 인터랙티브한 페이지와 SPA를 만드는 작은 바닐라 자바스크립트 라이브러리입니다.
 핵심 개념은 **"HTML은 그대로 쓰고, 제어가 필요한 곳만 vfunc 컴포넌트로 만든다"**입니다.
@@ -22,8 +22,8 @@ vfunc.js는 인터랙티브한 페이지와 SPA를 만드는 작은 바닐라 �
 
 ```html
 <div id="counter"></div>
-<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.5/dist/vfunc.min.js"
-        integrity="sha384-XVwq6bBMZad0alIKEG7vuAoxb0oNsyXYdIX6MxQGyF/NYfvVQjhzD8gJIStaZ2a/"
+<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.6/dist/vfunc.min.js"
+        integrity="sha384-GwVQoCmhF6sXRB5A1yeptmNyn17sMVNzWH5DgQIA+mvG54Y4TMKMvctz4Kus4Jtd"
         crossorigin="anonymous"></script>
 <script src="app.js"></script>
 ```
