@@ -2,7 +2,7 @@
 
 **UI as plain functions. No build, no virtual DOM — one script file.**
 
-[한국어](README.ko.md)
+[한국어](README.ko.md) · [Website](https://vidkid-indy.github.io/vfunc/en/) · [Discussions](https://github.com/vidkid-indy/vfunc/discussions)
 
 > **Status: 1.0 release candidate (`1.0.0-rc.3`).** The 1.0 API is complete; changes before 1.0.0 come only from release-candidate feedback.
 
@@ -60,7 +60,8 @@ import vf from 'vfunc';
 
 ## Learn
 
-- [Examples](layer1/examples/) — 21 runnable samples, no build (serve the repository root with any static server).
+- [Website](https://vidkid-indy.github.io/vfunc/en/) — getting started, guides, API reference, AI prompts.
+- [Examples](https://vidkid-indy.github.io/vfunc/layer1/examples/) — 21 runnable samples, no build ([source](layer1/examples/)).
 - [Starter](layer1/starter/) — a project skeleton with router, store, i18n, theme and version-folder deployment.
 - [AI kit](layer1/ai/) — give `llms.txt` and `AGENTS.template.md` to your AI assistant.
 - [Extending](EXTENDING.md) — plugins through `vf.use`, without modifying vfunc.

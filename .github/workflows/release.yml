@@ -1,0 +1,50 @@
+# SPDX-License-Identifier: Apache-2.0
+# Publishes the npm package from build/out/npm with npm trusted publishing (OIDC) and provenance.
+# No npm token is stored. Run by hand from main; the "npm" environment asks the maintainer to approve.
+# npmjs.com → vfunc → Settings → Trusted publishing: GitHub Actions, vidkid-indy/vfunc, release.yml, environment npm.
+# Actions are pinned to commit SHAs; the comment shows the tag.
+name: Release to npm
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: npm dist-tag (a prerelease must use next)
+        type: choice
+        options: [next, latest]
+        default: next
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - run: npm ci --ignore-scripts
+      - run: npm test
+      - run: npm run build:check
+      - run: npm run build
+      - name: Check version and tag
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          version=$(node -p "require('./build/out/npm/package.json').version")
+          echo "Publishing vfunc@$version with tag $TAG"
+          case "$version" in *-*) [ "$TAG" = "next" ] || { echo "A prerelease must use the next tag"; exit 1; } ;; esac
+          if npm view "vfunc@$version" version >/dev/null 2>&1; then echo "vfunc@$version is already published"; exit 1; fi
+      - name: Publish
+        run: npm publish ./build/out/npm --provenance --access public --tag "${{ inputs.tag }}"

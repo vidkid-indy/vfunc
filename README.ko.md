@@ -2,7 +2,7 @@
 
 **UI를 평범한 함수로. 빌드도, 가상 DOM도 없이 — 스크립트 파일 하나로.**
 
-[English](README.md)
+[English](README.md) · [웹사이트](https://vidkid-indy.github.io/vfunc/ko/) · [토론 게시판](https://github.com/vidkid-indy/vfunc/discussions)
 
 > **상태: 1.0 릴리스 후보(`1.0.0-rc.3`).** 1.0 API는 완성되었고, 1.0.0 전의 변경은 릴리스 후보 피드백에서만 나옵니다.
 
@@ -60,7 +60,8 @@ import vf from 'vfunc';
 
 ## 배우기
 
-- [예제](layer1/examples/) — 빌드 없이 실행하는 샘플 21종(저장소 루트를 아무 정적 서버로 띄우면 됩니다).
+- [웹사이트](https://vidkid-indy.github.io/vfunc/ko/) — 시작하기, 가이드, API 레퍼런스, AI 프롬프트.
+- [예제](https://vidkid-indy.github.io/vfunc/layer1/examples/) — 빌드 없이 실행하는 샘플 21종([소스](layer1/examples/)).
 - [스타터](layer1/starter/) — 라우터, 스토어, 다국어, 테마, 버전 폴더 배포가 들어 있는 프로젝트 뼈대.
 - [AI 킷](layer1/ai/) — `llms.txt`와 `AGENTS.template.md`를 AI 어시스턴트에게 주세요.
 - [확장](EXTENDING.md) — vfunc를 고치지 않고 `vf.use`로 플러그인을 붙이는 방법.

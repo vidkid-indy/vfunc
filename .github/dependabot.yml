@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: Apache-2.0
+# Weekly update pull requests for the pinned GitHub Actions (SHAs) and the build/test tools.
+# The published package has no runtime dependencies. CI must pass before a merge (branch protection).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      dev-tools:
+        patterns: ["*"]
