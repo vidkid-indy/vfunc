@@ -13,6 +13,39 @@
       "bundled": false
     },
     {
+      "name": "@babel/core",
+      "version": "8.0.6",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2014-present Sebastian McKenzie and other contributors",
+      "url": "https://github.com/babel/babel",
+      "usedIn": [
+        "legacy build (development tool)"
+      ],
+      "bundled": false
+    },
+    {
+      "name": "@babel/preset-env",
+      "version": "8.0.6",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2014-present Sebastian McKenzie and other contributors",
+      "url": "https://github.com/babel/babel",
+      "usedIn": [
+        "legacy build (development tool)"
+      ],
+      "bundled": false
+    },
+    {
+      "name": "es-check",
+      "version": "9.8.1",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2020 Jeff Wainwright",
+      "url": "https://github.com/yowainwright/es-check",
+      "usedIn": [
+        "legacy build check (development tool)"
+      ],
+      "bundled": false
+    },
+    {
       "name": "happy-dom",
       "version": "20.14.5",
       "license": "MIT",

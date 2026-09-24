@@ -23,6 +23,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - `llms.txt` (English) and `llms.ko.txt` (Korean) drafts for AI code generation.
 - Minified files do not contain development warnings. Security checks work the same in every build; the minified files report a blocked value with one short message.
 - `vf.config({ strictRender })` warns only in the development builds.
+- `dist/vfunc.legacy.min.js` for IE11 and Edge IE mode: the same engine transpiled to ES5, with a small Promise polyfill written for this project (installed only when `window.Promise` is missing).
+- `layer1/test/browser.html`: a browser test page for the built files, including manual runs in Edge IE mode.
+
+### Fixed
+- Delegated events and router link interception did nothing in browsers without `Element.closest` (IE11). The engine now falls back to `msMatchesSelector` without patching `Element.prototype`.
 
 ### Changed (compared with the pilot engine)
 - State, methods and element ids are exposed through property accessors instead of a `Proxy`, so the engine can run on IE11 after transpiling.

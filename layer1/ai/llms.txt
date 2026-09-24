@@ -6,9 +6,9 @@ Draft for 1.0.0-rc.1 (Phase 3). The full reference is ai-docs/vfunc_manual.md; t
 
 ## Load
 
-- Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.1/dist/vfunc.min.js" integrity="sha384-H78Y1ikWGI/wFoyBRhzd9DpOIYQz2rx7pAYHUxpl3KbtPDLVz7sNNXGYHE3p1yAa" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production; the integrity value differs per version and file (this one is 1.0.0-rc.1 vfunc.min.js). `dist/vfunc.js` is the development build with warnings.
+- Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.2/dist/vfunc.min.js" integrity="sha384-UeQW7ievyV8iCu5aVhO1m9GaBzCEqNGRhgaXopQv6bK0gGVbtZpU1DnMIBd94h9e" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production; the integrity value differs per version and file (this one is 1.0.0-rc.2 vfunc.min.js). `dist/vfunc.js` is the development build with warnings.
 - ES module: `import vf from 'vfunc'` or `import { vfunc, html, router } from 'vfunc'`. The ES modules never touch `window.vf`.
-- IE11 / Edge IE mode: `vfunc.legacy.min.js` (coming in 1.0), and the app code must be ES5: use `vf.tpl`, not template literals.
+- IE11 / Edge IE mode: `dist/vfunc.legacy.min.js` (same API; includes only a Promise polyfill). The app code must be ES5: no arrow functions, const/let, template literals or classes; use `vf.tpl('<b>{name}</b>', data)` instead of vf.html template literals. Polyfill anything else the app needs (Object.assign, fetch, …) yourself. Load pattern: `<script type="module" src="app.js">` + `<script nomodule src="vfunc.legacy.min.js">` + `<script nomodule src="app.es5.js">`.
 
 ## Rules for generated code
 

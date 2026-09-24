@@ -1,10 +1,10 @@
-/*! vfunc.js v1.0.0-rc.1 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
+/*! vfunc.js v1.0.0-rc.2 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
 (() => {
   var __defProp = Object.defineProperty;
   var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
   // layer1/src/vfunc.js
-  var VERSION = false ? "0.0.0-dev" : "1.0.0-rc.1";
+  var VERSION = false ? "0.0.0-dev" : "1.0.0-rc.2";
   var DEV = false ? true : true;
   var hasOwn = Object.prototype.hasOwnProperty;
   function ownValue(obj, key) {
@@ -402,6 +402,15 @@
     }
   }
   __name(assignProps, "assignProps");
+  function closest(element, selector) {
+    if (element.closest) return element.closest(selector);
+    const match = element.matches || element.msMatchesSelector || element.webkitMatchesSelector;
+    for (let current = element; current && current.nodeType === 1; current = current.parentNode) {
+      if (match.call(current, selector)) return current;
+    }
+    return null;
+  }
+  __name(closest, "closest");
   function resolveElement(target) {
     return typeof target === "string" ? document.querySelector(target) : target;
   }
@@ -635,7 +644,7 @@
       const element = list[i];
       const key = element.getAttribute("data-vf-keep");
       if (!key || isDangerousKey(key)) continue;
-      const outer = element.parentNode && element.parentNode.closest ? element.parentNode.closest("[data-vf-keep]") : null;
+      const outer = element.parentNode && element.parentNode.nodeType === 1 ? closest(element.parentNode, "[data-vf-keep]") : null;
       if (outer && root2.contains(outer) && outer !== root2) continue;
       if (hasOwn.call(kept, key)) {
         if (DEV) warn('data-vf-keep="' + key + '" is used more than once; only the first element is kept.');
@@ -874,8 +883,8 @@
         self2._listen(self2.$node, spec.eventType, function(event) {
           let origin = event.target;
           if (origin && origin.nodeType !== 1) origin = origin.parentNode;
-          if (!origin || !origin.closest) return;
-          const matched = origin.closest(spec.selector);
+          if (!origin || origin.nodeType !== 1) return;
+          const matched = closest(origin, spec.selector);
           if (!matched || !self2.$node.contains(matched)) return;
           self2._dispatch(spec.onEvent, {
             sender: self2,
@@ -1092,7 +1101,7 @@
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       let origin = event.target;
       if (origin && origin.nodeType !== 1) origin = origin.parentNode;
-      const link = origin && origin.closest ? origin.closest(linkSelector) : null;
+      const link = origin && origin.nodeType === 1 ? closest(origin, linkSelector) : null;
       if (!link) return;
       const targetAttr = link.getAttribute("target");
       if (targetAttr && targetAttr !== "_self" || link.hasAttribute("download")) return;

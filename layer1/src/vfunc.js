@@ -490,6 +490,19 @@ function assignProps(element, props, where) {
 // DOM helpers
 // ---------------------------------------------------------------------------------------------
 
+/**
+ * `element.closest(selector)`, with a fallback for IE11 that has only (ms)matchesSelector.
+ * Element.prototype is never patched (CLAUDE.md rule 20).
+ */
+function closest(element, selector) {
+  if (element.closest) return element.closest(selector);
+  const match = element.matches || element.msMatchesSelector || element.webkitMatchesSelector;
+  for (let current = element; current && current.nodeType === 1; current = current.parentNode) {
+    if (match.call(current, selector)) return current;
+  }
+  return null;
+}
+
 function resolveElement(target) {
   return typeof target === 'string' ? document.querySelector(target) : target;
 }
@@ -836,8 +849,8 @@ function collectKept(root) {
     const element = list[i];
     const key = element.getAttribute('data-vf-keep');
     if (!key || isDangerousKey(key)) continue;
-    const outer = element.parentNode && element.parentNode.closest
-      ? element.parentNode.closest('[data-vf-keep]') : null;
+    const outer = element.parentNode && element.parentNode.nodeType === 1
+      ? closest(element.parentNode, '[data-vf-keep]') : null;
     if (outer && root.contains(outer) && outer !== root) continue; // moves with its kept ancestor
     if (hasOwn.call(kept, key)) {
       if (DEV) warn('data-vf-keep="' + key + '" is used more than once; only the first element is kept.');
@@ -1087,8 +1100,8 @@ proto._bindDelegates = function (isRefresh, rootReplaced) {
       self._listen(self.$node, spec.eventType, function (event) {
         let origin = event.target;
         if (origin && origin.nodeType !== 1) origin = origin.parentNode;
-        if (!origin || !origin.closest) return;
-        const matched = origin.closest(spec.selector);
+        if (!origin || origin.nodeType !== 1) return;
+        const matched = closest(origin, spec.selector);
         if (!matched || !self.$node.contains(matched)) return;
         self._dispatch(spec.onEvent, {
           sender: self, event: event, eventType: event.type,
@@ -1367,7 +1380,7 @@ function router(options) {
         event.shiftKey || event.altKey) return;
     let origin = event.target;
     if (origin && origin.nodeType !== 1) origin = origin.parentNode;
-    const link = origin && origin.closest ? origin.closest(linkSelector) : null;
+    const link = origin && origin.nodeType === 1 ? closest(origin, linkSelector) : null;
     if (!link) return;
     const targetAttr = link.getAttribute('target');
     if ((targetAttr && targetAttr !== '_self') || link.hasAttribute('download')) return;

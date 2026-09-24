@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>vfunc.js browser tests</title>
+  <link rel="stylesheet" href="browser.css">
+</head>
+<body>
+  <!--
+    Browser tests of the built files (layer1/dist). Run from the repository root:
+      python -m http.server 8080
+    then open http://localhost:8080/layer1/test/browser.html
+      ?file=vfunc.legacy.min.js (default) | vfunc.min.js | vfunc.js
+    For IE11 / Edge IE mode see layer1/test/BROWSER-TESTS.md.
+    브라우저 테스트 페이지입니다. 실행 방법은 layer1/test/BROWSER-TESTS.md를 보세요.
+  -->
+  <header>
+    <h1>vfunc.js browser tests</h1>
+    <p id="env">Loading…</p>
+    <p id="summary" role="status" aria-live="polite">Running…</p>
+  </header>
+  <ol id="results"></ol>
+  <div id="sandbox" aria-hidden="true"></div>
+  <script src="browser-tests.js"></script>
+</body>
+</html>

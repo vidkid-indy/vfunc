@@ -1,0 +1,12 @@
+/* SPDX-License-Identifier: Apache-2.0 — styles of the browser test page only. */
+body { font-family: Segoe UI, Arial, sans-serif; margin: 16px; color: #1f2328; background: #ffffff; }
+h1 { font-size: 20px; margin: 0 0 8px; }
+#env { font-size: 12px; color: #57606a; word-break: break-all; }
+#summary { font-weight: bold; font-size: 16px; }
+#summary[data-state="pass"] { color: #1a7f37; }
+#summary[data-state="fail"] { color: #cf222e; }
+#results li { margin: 2px 0; font-family: Consolas, monospace; font-size: 13px; }
+#results li[data-state="pass"] { color: #1a7f37; }
+#results li[data-state="fail"] { color: #cf222e; }
+#results .detail { display: block; color: #57606a; margin-left: 16px; }
+#sandbox { position: absolute; left: -10000px; top: 0; }
