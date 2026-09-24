@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Publishes the npm package from build/out/npm with npm trusted publishing (OIDC) and provenance.
 # No npm token is stored. Run by hand from main; the "npm" environment asks the maintainer to approve.
-# npmjs.com → vfunc → Settings → Trusted publishing: GitHub Actions, vidkid-indy/vfunc, release.yml, environment npm.
+# npmjs.com → vfunc → Settings → Trusted publishing: GitHub Actions, vidkid-indy/vfunc, release.yml, environment npm,
+# and under "Allowed actions" tick npm publish (a new trusted publisher allows only staged publishing).
 # Actions are pinned to commit SHAs; the comment shows the tag.
 name: Release to npm
 
@@ -33,7 +34,7 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
-          registry-url: https://registry.npmjs.org
+          # No registry-url: it writes a placeholder token to .npmrc and npm then skips the OIDC exchange.
       - run: npm ci --ignore-scripts
       - run: npm test
       - run: npm run build:check
