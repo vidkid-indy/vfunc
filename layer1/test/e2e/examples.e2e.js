@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
-// Smoke tests of every sample in layer1/examples with Playwright (Chromium), run by
+// Smoke tests of every sample in layer1/examples with Playwright (VF_BROWSER, default Chromium), run by
 // `npm run test:examples`. A sample passes when it has no console error or warning, no page
 // error, no failed request, and its own checks below pass.
 // Samples that load a CDN library need network access.
@@ -9,7 +9,7 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { chromium } from 'playwright';
+import { launchBrowser } from './browser.mjs';
 import { startServer, ROOT } from './serve.mjs';
 import { CHECKS } from './checks.mjs';
 
@@ -24,7 +24,7 @@ let server;
 
 before(async () => {
   server = await startServer();
-  browser = await chromium.launch();
+  browser = await launchBrowser();
 });
 
 after(async () => {

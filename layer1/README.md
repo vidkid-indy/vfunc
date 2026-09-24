@@ -4,7 +4,7 @@ Stage 1. The engine `vf.vfunc` and its helpers, shipped as a single file (`dist/
 
 1단계. 엔진 `vf.vfunc`와 헬퍼를 단일 파일로 제공합니다. IE11·Edge IE 모드용 legacy 빌드를 함께 제공합니다.
 
-Planned layout / 예정 구조:
+Layout / 구조:
 
 ```
 src/vfunc.js        single source (ESM)

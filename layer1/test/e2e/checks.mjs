@@ -60,7 +60,9 @@ export const CHECKS = {
       assert.equal(await page.locator('[data-ref="list"] img').count(), 0, 'user text is not markup');
       assert.equal(await text(page, '[data-id="3"] span'), '<img src=x onerror=alert(1)>', 'shown as text');
       assert.equal(await page.evaluate(() => document.activeElement.getAttribute('data-ref')), 'input', 'ready for the next item');
-      await page.check('#todo-2');
+      // Keyboard, because Safari does not focus a checkbox on click. / Safari는 클릭으로 포커스하지 않음
+      await page.focus('#todo-2');
+      await page.keyboard.press('Space');
       await page.waitForFunction(() => document.querySelector('[data-id="2"]').getAttribute('data-state') === 'done');
       assert.equal(await page.evaluate(() => document.activeElement.id), 'todo-2', 'focus stays on the checkbox');
       await page.click('[data-id="1"] [data-action="remove"]');
@@ -162,7 +164,8 @@ export const CHECKS = {
       await page.click('[data-action="crash"]');
       await page.waitForFunction(() => !document.querySelector('[data-ref="recovered"]').hidden);
       // Expected: the engine reports the render error it was asked to throw. / 일부러 낸 렌더 오류
-      const expected = env.problems.filter((p) => /render crashed on purpose/.test(p));
+      // Firefox prints the Error object without its message, so match the engine's prefix.
+      const expected = env.problems.filter((p) => /^console\.error: \[vfunc\] error/.test(p));
       assert.equal(expected.length, 1, 'the engine reports the render error once');
       env.problems.splice(0, env.problems.length, ...env.problems.filter((p) => expected.indexOf(p) < 0));
     }
@@ -425,7 +428,8 @@ export const CHECKS = {
   '20-merge-published': {
     async run(page, env) {
       async function scenario(p) {
-        await p.click('#inc-kb');
+        await p.focus('#inc-kb'); // keyboard: Safari does not focus buttons on click
+        await p.keyboard.press('Enter');
         await p.waitForFunction(() => document.querySelector('[data-ref="qty-kb"]').textContent === '2');
         assert.equal(await p.evaluate(() => document.activeElement.id), 'inc-kb', 'focus stays on the button');
         await p.click('#dec-ms');

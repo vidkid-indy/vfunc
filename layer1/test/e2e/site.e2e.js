@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
-// The website in Chromium (npm run test:examples): every page of both languages opens with no
+// The website in the VF_BROWSER engine (npm run test:examples): every page of both languages opens with no
 // console problem and a CSP, every internal link and anchor resolves, and the islands work.
 
 import { test, before, after } from 'node:test';
@@ -9,7 +9,7 @@ import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium } from 'playwright';
+import { launchBrowser } from './browser.mjs';
 import { startServer } from './serve.mjs';
 import { buildSite } from '../../../build/site.mjs';
 
@@ -23,7 +23,7 @@ before(async () => {
   dir = mkdtempSync(join(tmpdir(), 'vf-site-'));
   buildSite(dir);
   server = await startServer(dir);
-  browser = await chromium.launch();
+  browser = await launchBrowser();
 });
 
 after(async () => {
@@ -32,8 +32,9 @@ after(async () => {
   if (dir) rmSync(dir, { recursive: true, force: true });
 });
 
-async function open(path, contextOptions) {
+async function open(path, contextOptions, initScript) {
   const context = await browser.newContext(contextOptions);
+  if (initScript) await context.addInitScript(initScript);
   const page = await context.newPage();
   const problems = [];
   page.on('console', (msg) => { if (msg.type() === 'error' || msg.type() === 'warning') problems.push('console.' + msg.type() + ': ' + msg.text()); });
@@ -80,7 +81,10 @@ test('every page opens cleanly, has a CSP, and every internal link and anchor re
 });
 
 test('islands: theme, copy, search, navigation and the home demo', async () => {
-  const { page, context, problems } = await open('/en/index.html', { permissions: ['clipboard-read', 'clipboard-write'] });
+  // Clipboard permissions exist only in Chromium, so every engine records writeText instead.
+  const { page, context, problems } = await open('/en/index.html', undefined, () => {
+    if (navigator.clipboard) navigator.clipboard.writeText = (s) => { window.__copied = s; return Promise.resolve(); };
+  });
   try {
     // theme: system → light → dark
     await page.click('#theme-toggle');
@@ -102,7 +106,7 @@ test('islands: theme, copy, search, navigation and the home demo', async () => {
     const copy = page.locator('[data-copy-root]', { hasText: 'integrity=' }).first().locator('[data-action="copy"]');
     await copy.click();
     await page.waitForFunction(() => document.querySelector('[data-action="copy"][data-state="copied"]'));
-    assert.match(await page.evaluate(() => navigator.clipboard.readText()), /integrity="sha384-/);
+    assert.match(await page.evaluate(() => window.__copied), /integrity="sha384-/);
 
     // search
     await page.fill('[data-ref="query"]', 'router');

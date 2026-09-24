@@ -28,6 +28,15 @@ vfunc는 이미 있는 HTML을 그대로 쓰는 것을 전제로 합니다. 서�
 
 타입 선언(`types/vfunc.d.ts`)이 패키지에 들어 있습니다. 빌드 없이 쓰는 스크립트에서도 `// @ts-check`와 `types/global.d.ts` 참조로 에디터 타입 검사를 받을 수 있습니다.
 
+## 어떤 브라우저를 지원하나요?
+
+| 빌드 | 브라우저 |
+|---|---|
+| `vfunc.min.js`, ESM | Chrome, Edge, Firefox, Safari 최신 버전(데스크톱·모바일) |
+| `vfunc.legacy.min.js` | Internet Explorer 11, Edge IE 모드 |
+
+예제, 스타터, 이 사이트는 변경할 때마다 Chromium, Firefox, WebKit에서 자동으로 테스트합니다.
+
 ## IE11을 지원하나요?
 
 `vfunc.legacy.min.js`가 IE11과 Edge IE 모드에서 동작합니다. 앱 코드도 ES5로 써야 합니다. [확장, 플러그인, IE](extend.md#ie11edge-ie-모드)를 보세요.

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
-// The starter template in Chromium (npm run test:examples): the app itself, the design preview,
+// The starter template in the VF_BROWSER engine (npm run test:examples): the app itself, the design preview,
 // and the release flow of plan O-3 — deploy v1, deploy v2 into a new version folder, and see the
 // open page switch to v2 (including a changed sub-module) on the next screen change.
 
@@ -10,7 +10,7 @@ import { cpSync, mkdtempSync, readFileSync, writeFileSync, rmSync } from 'node:f
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium } from 'playwright';
+import { launchBrowser } from './browser.mjs';
 import { startServer } from './serve.mjs';
 import { release } from '../../starter/tools/release.mjs';
 
@@ -21,7 +21,7 @@ let server;
 
 before(async () => {
   server = await startServer();
-  browser = await chromium.launch();
+  browser = await launchBrowser();
 });
 
 after(async () => {
@@ -57,7 +57,8 @@ test('starter: pages, store, i18n and theme work with no console problems', asyn
     await page.press('#view [data-ref="name"]', 'Enter');
     await page.waitForFunction(() => document.querySelectorAll('#view [data-id]').length === 4);
     assert.equal(await page.locator('#view [data-ref="list"] b').count(), 0, 'escaped');
-    await page.click('#fav-i2');
+    await page.focus('#fav-i2'); // keyboard: Safari does not focus buttons on click
+    await page.keyboard.press('Enter');
     await page.waitForFunction(() => /1 favorite/.test(document.querySelector('[data-ref="favorites"]').textContent));
     assert.equal(await page.getAttribute('#fav-i2', 'aria-pressed'), 'true');
     assert.equal(await page.evaluate(() => document.activeElement.id), 'fav-i2', 'focus kept');

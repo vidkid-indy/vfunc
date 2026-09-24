@@ -28,6 +28,15 @@ If you find a security issue, follow `SECURITY.md` in the repository instead of 
 
 Type declarations (`types/vfunc.d.ts`) ship with the package. Plain scripts without a build get editor type checking with `// @ts-check` and a reference to `types/global.d.ts`.
 
+## Which browsers are supported?
+
+| Build | Browsers |
+|---|---|
+| `vfunc.min.js`, ESM | Current Chrome, Edge, Firefox and Safari (desktop and mobile) |
+| `vfunc.legacy.min.js` | Internet Explorer 11, Edge IE mode |
+
+The examples, the starter and this site are tested automatically in Chromium, Firefox and WebKit on every change.
+
 ## Is IE11 supported?
 
 `vfunc.legacy.min.js` runs in IE11 and Edge IE mode; your app code must be ES5 as well. See [Extensions, plugins, IE](extend.md#ie11-edge-ie-mode).
