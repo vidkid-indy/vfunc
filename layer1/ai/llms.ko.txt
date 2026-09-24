@@ -79,11 +79,15 @@ refresh: 루트 안쪽을 교체하고, `childs`는 다시 옮겨 붙이며(상�
 - `childs`의 자식에는 onMount가 호출되지 않습니다. onMount가 필요하면 직접 mount하세요.
 - `data-vf-keep` 요소는 예전 속성도 그대로입니다. 바뀌는 속성은 onUpdate에서 갱신하세요.
 - 항목별 버튼·체크박스에 `id`를 주면 refresh 뒤에도 포커스가 복원됩니다.
-- CSP가 있으면 인라인 `style="…"`과 인라인 `<script>`를 쓸 수 없습니다. 파일로 두세요.
+- CSP가 있으면 인라인 `style="…"`과 인라인 `<script>`를 쓸 수 없습니다. 파일로 두세요(보이기/숨기기는 `hidden` 속성).
+- 표의 행은 table 안에서 파싱해야 합니다. `<tbody>`/`<tr>`을 렌더하는 컴포넌트는 `tag: 'table'`. `vf.node`/`vf.frag`는 `<div>`에서 파싱하므로 행에는 쓰지 않습니다.
+- 데이터·로케일 주소는 모듈 기준(`new URL('./data/x.json', import.meta.url)`)으로 만들어야 버전 폴더 안에서도 맞습니다.
 
-## 예제
+## 예제, 스타터, 프롬프트 킷
 
-layer1/examples/에 샘플 20개(01~13, 15~21)가 있습니다. 10 spa-app이 SPA 표준 구조(app.js + store.js + api.js + pages/*.js)입니다.
+layer1/examples/에 샘플 21개(01~21)가 있습니다. 10 spa-app이 SPA 표준 구조(app.js + store.js + api.js + pages/*.js), 14는 퍼블리싱 대시보드를 prompt-html-to-vfunc.md로 변환한 전후입니다.
+
+layer1/starter/: 복사해서 쓰는 앱(라우터, store, 다국어, 토큰, update 플러그인, design/DESIGN.md, AGENTS.md, 버전 폴더 배포용 tools/release.mjs, deploy/ 캐시 설정). layer1/ai/{en,ko}/: AGENTS.template.md, 프롬프트(html-to-vfunc, spa-scaffold, migrate-from-react-vue, add-feature, debug, deploy-setup), anti-patterns.md, design/(DESIGN.template.md와 디자인 프롬프트 4종).
 
 ## 확장
 

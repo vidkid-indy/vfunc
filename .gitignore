@@ -10,6 +10,9 @@ coverage/
 # npm package staging (assembled by build/build.mjs; publish from there)
 build/out/
 
+# Release output of the starter template (tools/release.mjs)
+layer1/starter/dist/
+
 # Environment and secrets — never commit (CLAUDE.md rule 25)
 .env
 .env.*

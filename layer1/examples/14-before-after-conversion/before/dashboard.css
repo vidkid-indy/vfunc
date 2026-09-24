@@ -1,0 +1,40 @@
+/* The publisher's CSS, delivered as is (raw values on purpose: see CONVERSION.md, token suggestions).
+ * 퍼블리셔가 전달한 CSS 그대로입니다(원시 값은 일부러 유지, CONVERSION.md의 토큰 제안 참고). */
+body { margin: 0; font-family: "Segoe UI", "Malgun Gothic", Arial, sans-serif; font-size: 14px; color: #1e293b; background: #f4f6fb; }
+.topbar { display: flex; align-items: center; gap: 16px; padding: 12px 24px; background: #1e3a8a; color: #ffffff; }
+.topbar__logo { color: #ffffff; font-weight: 700; text-decoration: none; }
+.topbar__search { flex: 1; max-width: 360px; padding: 8px 12px; border: 0; border-radius: 6px; font: inherit; }
+.topbar__user { position: relative; margin-left: auto; }
+.topbar__user-btn { background: transparent; border: 1px solid #93c5fd; color: #ffffff; border-radius: 6px; padding: 6px 12px; font: inherit; cursor: pointer; }
+.topbar__menu { position: absolute; right: 0; top: 110%; list-style: none; margin: 0; padding: 6px 0; min-width: 160px; background: #ffffff; border-radius: 8px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); }
+.topbar__menu a { display: block; padding: 8px 16px; color: #1e293b; text-decoration: none; }
+.topbar__menu a:hover { background: #f1f5f9; }
+.layout { display: grid; grid-template-columns: 200px 1fr; min-height: calc(100vh - 110px); }
+.sidebar { display: flex; flex-direction: column; padding: 16px; gap: 4px; background: #ffffff; border-right: 1px solid #e2e8f0; }
+.sidebar__link { padding: 8px 12px; border-radius: 6px; color: #475569; text-decoration: none; }
+.sidebar__link--active { background: #eff6ff; color: #1d4ed8; font-weight: 600; }
+.content { padding: 24px; }
+.content__title { margin: 0 0 16px; font-size: 24px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; margin-bottom: 16px; }
+.kpi { background: #ffffff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06); }
+.kpi__label { margin: 0; color: #64748b; font-size: 13px; }
+.kpi__value { margin: 4px 0; font-size: 22px; font-weight: 700; }
+.kpi__delta { margin: 0; font-size: 13px; }
+.kpi__delta--up { color: #047857; }
+.kpi__delta--down { color: #b91c1c; }
+.panel { background: #ffffff; border-radius: 10px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06); }
+.panel__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+.panel__title { margin: 0; font-size: 16px; }
+.panel__filter { padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font: inherit; }
+.tabs { display: flex; gap: 4px; }
+.tabs__tab { padding: 6px 12px; border: 1px solid #cbd5e1; background: #ffffff; border-radius: 6px; font: inherit; cursor: pointer; }
+.tabs__tab--active { background: #1d4ed8; border-color: #1d4ed8; color: #ffffff; }
+.orders { width: 100%; border-collapse: collapse; }
+.orders th, .orders td { padding: 10px 8px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+.orders th { color: #64748b; font-weight: 600; font-size: 13px; }
+.orders__num { text-align: right; }
+.badge { padding: 2px 8px; border-radius: 999px; font-size: 12px; }
+.badge--paid { background: #ecfdf5; color: #047857; }
+.badge--shipped { background: #eff6ff; color: #1d4ed8; }
+.badge--refunded { background: #fef2f2; color: #b91c1c; }
+.footer { padding: 16px 24px; color: #64748b; font-size: 12px; text-align: center; }

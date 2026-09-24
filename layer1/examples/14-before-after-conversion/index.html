@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'">
+  <title>14 before-after-conversion — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../_shared/example.css">
+</head>
+<body>
+  <main class="example">
+    <header class="example__header">
+      <a class="example__back" href="../">← examples</a>
+      <h1 class="example__title">14 before-after-conversion</h1>
+      <p class="example__lead">A publisher's dashboard, converted with the AI prompt <code>prompt-html-to-vfunc.md</code>.
+        The HTML and CSS stay; only six areas get behaviour. / 퍼블리싱 대시보드를 AI 프롬프트로 변환한 결과.
+        HTML과 CSS는 그대로이고 여섯 영역에만 동작을 붙였습니다.</p>
+    </header>
+    <section class="card">
+      <ul class="list">
+        <li class="list__item"><a href="./before/" data-ref="before">Before / 변환 전</a><span class="muted">as delivered: inline script, <code>onclick</code>, <code>javascript:</code>, hard-coded numbers</span></li>
+        <li class="list__item"><a href="./after/" data-ref="after">After / 변환 후</a><span class="muted">same markup + hooks, <code>app.js</code>, CSP, data from JSON</span></li>
+        <li class="list__item"><a href="./CONVERSION.md">CONVERSION.md</a><span class="muted">the prompt's output: area table, HTML diff, removed items, token suggestions, checklist</span></li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

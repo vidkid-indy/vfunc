@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'">
+  <title>Design preview</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./styles/tokens.css">
+  <link rel="stylesheet" href="./styles/base.css">
+  <link rel="stylesheet" href="./styles/design-preview.css">
+  <script src="./theme-early.js"></script>
+</head>
+<body>
+  <!--
+    Every token and base element on one page. Open it after applying a DESIGN.md and compare
+    light and dark (switch the theme in the app's Settings, or the OS theme). No app logic here.
+    모든 토큰과 기본 요소를 한 페이지에서 확인합니다. DESIGN.md를 적용한 뒤 라이트·다크를 비교하세요
+    (앱의 설정 화면이나 OS에서 테마 전환).
+  -->
+  <div class="shell">
+    <section class="panel preview">
+      <h1 class="panel__title">Design preview / 스타일 가이드</h1>
+      <p class="muted">styles/tokens.css + styles/base.css · <a href="./">← app</a></p>
+
+      <h2 class="preview__title">Colors / 색</h2>
+      <ul class="preview__swatches">
+        <li class="swatch swatch--primary">primary / on-primary</li>
+        <li class="swatch swatch--primary-soft">primary-soft</li>
+        <li class="swatch swatch--success">success-soft / success-text</li>
+        <li class="swatch swatch--warning">warning-soft / warning-text</li>
+        <li class="swatch swatch--danger">danger-soft / danger-text</li>
+        <li class="swatch swatch--info">info-soft / info-text</li>
+        <li class="swatch swatch--bg">bg / text</li>
+        <li class="swatch swatch--surface">surface / text-muted</li>
+        <li class="swatch swatch--muted">surface-muted</li>
+      </ul>
+
+      <h2 class="preview__title">Charts / 차트</h2>
+      <ul class="preview__chips">
+        <li class="chip chip--1">1</li><li class="chip chip--2">2</li><li class="chip chip--3">3</li><li class="chip chip--4">4</li>
+        <li class="chip chip--5">5</li><li class="chip chip--6">6</li><li class="chip chip--7">7</li><li class="chip chip--8">8</li>
+      </ul>
+
+      <h2 class="preview__title">Type / 글꼴</h2>
+      <p class="type type--2xl">2xl — The quick brown fox · 다람쥐 헌 쳇바퀴에 타고파</p>
+      <p class="type type--xl">xl — The quick brown fox · 다람쥐 헌 쳇바퀴에 타고파</p>
+      <p class="type type--lg">lg — The quick brown fox · 다람쥐 헌 쳇바퀴에 타고파</p>
+      <p class="type type--md">md — The quick brown fox · 다람쥐 헌 쳇바퀴에 타고파</p>
+      <p class="type type--sm">sm — The quick brown fox · 다람쥐 헌 쳇바퀴에 타고파</p>
+      <p class="type type--mono"><code>mono — const vf = window.vf;</code></p>
+
+      <h2 class="preview__title">Parts / 부품</h2>
+      <div class="preview__row">
+        <button class="button" type="button" data-variant="primary">Primary</button>
+        <button class="button" type="button">Default</button>
+        <button class="button" type="button" aria-pressed="true">Pressed</button>
+        <button class="button" type="button" disabled>Disabled</button>
+      </div>
+      <div class="preview__row">
+        <input class="input" placeholder="Input">
+        <input class="input" aria-invalid="true" value="Invalid">
+      </div>
+      <div class="notice" data-state="info">Info notice / 안내</div>
+      <div class="notice" data-state="success">Success notice / 성공</div>
+      <div class="notice" data-state="error">Error notice / 오류</div>
+
+      <h2 class="preview__title">Space, corners, shadows / 간격·모서리·그림자</h2>
+      <div class="preview__row">
+        <span class="box box--r-sm">radius-sm</span><span class="box box--r-md">radius-md</span>
+        <span class="box box--r-lg">radius-lg</span><span class="box box--r-full">radius-full</span>
+      </div>
+      <div class="preview__row">
+        <span class="box box--s1">shadow-1</span><span class="box box--s2">shadow-2</span><span class="box box--s3">shadow-3</span>
+      </div>
+      <div class="preview__spaces">
+        <span class="space space--1">1</span><span class="space space--2">2</span><span class="space space--3">3</span>
+        <span class="space space--4">4</span><span class="space space--5">5</span><span class="space space--6">6</span><span class="space space--7">7</span>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

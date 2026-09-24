@@ -1,0 +1,27 @@
+{
+  "app": { "name": "나의 vfunc 앱" },
+  "nav": { "label": "주 메뉴", "home": "홈", "items": "항목", "settings": "설정", "favorites": { "zero": "즐겨찾기 없음", "other": "즐겨찾기 {count}개" } },
+  "common": { "loading": "불러오는 중…", "error": "불러오지 못했습니다. 잠시 후 다시 시도하세요." },
+  "home": {
+    "title": "환영합니다",
+    "lead": "이 스타터는 동작하는 vfunc.js 앱입니다. 라우터, store, 다국어, 토큰, update 플러그인이 들어 있습니다. 페이지를 여러분의 것으로 바꾸세요.",
+    "version": "버전 {version}",
+    "start": "항목 보기"
+  },
+  "items": {
+    "title": "항목",
+    "placeholder": "새 항목 이름",
+    "add": "추가",
+    "favorite": "즐겨찾기",
+    "empty": "아직 항목이 없습니다.",
+    "count": { "zero": "항목 없음", "other": "항목 {count}개" }
+  },
+  "settings": {
+    "title": "설정",
+    "language": "언어",
+    "locale": { "en": "English", "ko": "한국어" },
+    "theme": "테마",
+    "themes": { "system": "시스템", "light": "밝게", "dark": "어둡게" }
+  },
+  "notFound": { "title": "없는 페이지" }
+}

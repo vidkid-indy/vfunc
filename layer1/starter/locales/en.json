@@ -1,0 +1,27 @@
+{
+  "app": { "name": "My vfunc app" },
+  "nav": { "label": "Main", "home": "Home", "items": "Items", "settings": "Settings", "favorites": { "zero": "No favorites", "one": "1 favorite", "other": "{count} favorites" } },
+  "common": { "loading": "Loading…", "error": "Could not load. Try again later." },
+  "home": {
+    "title": "Welcome",
+    "lead": "This starter is a working vfunc.js app: router, store, i18n, tokens and the update plugin. Replace the pages with yours.",
+    "version": "Version {version}",
+    "start": "Open the items"
+  },
+  "items": {
+    "title": "Items",
+    "placeholder": "New item name",
+    "add": "Add",
+    "favorite": "Favorite",
+    "empty": "No items yet.",
+    "count": { "zero": "No items", "one": "1 item", "other": "{count} items" }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "locale": { "en": "English", "ko": "한국어" },
+    "theme": "Theme",
+    "themes": { "system": "System", "light": "Light", "dark": "Dark" }
+  },
+  "notFound": { "title": "Page not found" }
+}

@@ -27,7 +27,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - `layer1/test/browser.html`: a browser test page for the built files, including manual runs in Edge IE mode.
 - `css/vfunc.tokens.css`: optional design tokens (`--vf-*`) with light and dark themes; the token names are public API. The default skin meets WCAG AA contrast for its main pairs.
 - Official plugin `vf.ext.update` (`dist/plugins/update.min.js` → global `vfUpdate`, `vfunc/plugins/update` for ES modules): reads `version.json` and replaces the page on the next navigation, on the user's confirmation, or at once. Works in IE11.
-- 20 runnable examples in `layer1/examples/` (hello to cache-update), each checked in Chromium by `npm run test:examples`.
+- 21 runnable examples in `layer1/examples/` (hello to cache-update), each checked in Chromium by `npm run test:examples`. Sample 14 is a published dashboard converted with the AI prompt, with its conversion record.
+- Starter template `layer1/starter/`: router, store, i18n, tokens, update plugin, `design/`, `AGENTS.md`, `tools/release.mjs` (version-folder releases, copy only) and `deploy/` cache header examples for Apache, Nginx, IIS, Tomcat, Netlify and GitHub Pages.
+- AI prompt kit in English and Korean (`layer1/ai/en`, `layer1/ai/ko`, and `ai/` in the npm package): `AGENTS.template.md`, prompts for converting published HTML, scaffolding, migrating from React/Vue, adding features, debugging and deployment, anti-patterns, a `DESIGN.md` template and four design prompts. `llms-full.txt` is generated from the manual and the type declarations.
 
 ### Fixed
 - Delegated events and router link interception did nothing in browsers without `Element.closest` (IE11). The engine now falls back to `msMatchesSelector` without patching `Element.prototype`.

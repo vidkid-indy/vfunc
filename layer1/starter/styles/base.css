@@ -1,0 +1,67 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * Base elements and shared parts. Tokens only (raw values live in tokens.css).
+ * 기본 요소와 공용 부품. 토큰만 참조합니다(원시 값은 tokens.css에만).
+ */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--vf-color-bg);
+  color: var(--vf-color-text);
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-md);
+  line-height: var(--vf-line-height);
+}
+a { color: var(--vf-color-primary); }
+:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); }
+code { font-family: var(--vf-font-mono); font-size: var(--vf-font-size-sm); }
+.muted { color: var(--vf-color-text-muted); }
+
+.shell { max-width: 960px; margin: 0 auto; padding: var(--vf-space-4); }
+.shell__main:focus { box-shadow: none; }
+
+.panel {
+  background: var(--vf-color-surface);
+  border: 1px solid var(--vf-color-border);
+  border-radius: var(--vf-radius-lg);
+  box-shadow: var(--vf-shadow-1);
+  padding: var(--vf-space-5);
+}
+.panel__title { margin: 0 0 var(--vf-space-3); font-size: var(--vf-font-size-2xl); }
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vf-space-1);
+  padding: var(--vf-space-2) var(--vf-space-4);
+  border: 1px solid var(--vf-color-border-strong);
+  border-radius: var(--vf-radius-md);
+  background: var(--vf-color-surface);
+  color: var(--vf-color-text);
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--vf-duration-fast) var(--vf-easing);
+}
+.button:hover { background: var(--vf-color-surface-muted); }
+.button[data-variant="primary"] { background: var(--vf-color-primary); border-color: var(--vf-color-primary); color: var(--vf-color-on-primary); }
+.button[data-variant="primary"]:hover { background: var(--vf-color-primary-hover); }
+.button[aria-pressed="true"] { background: var(--vf-color-warning-soft); border-color: var(--vf-color-warning); color: var(--vf-color-warning-text); }
+
+.input {
+  padding: var(--vf-space-2) var(--vf-space-3);
+  border: 1px solid var(--vf-color-border-strong);
+  border-radius: var(--vf-radius-md);
+  background: var(--vf-color-surface);
+  color: var(--vf-color-text);
+  font: inherit;
+}
+.input[aria-invalid="true"] { border-color: var(--vf-color-danger); }
+
+.notice { padding: var(--vf-space-3); border-radius: var(--vf-radius-md); }
+.notice[data-state="info"] { background: var(--vf-color-info-soft); color: var(--vf-color-info-text); }
+.notice[data-state="success"] { background: var(--vf-color-success-soft); color: var(--vf-color-success-text); }
+.notice[data-state="error"] { background: var(--vf-color-danger-soft); color: var(--vf-color-danger-text); }
+
+.choices { border: 0; margin: 0 0 var(--vf-space-4); padding: 0; display: flex; flex-wrap: wrap; gap: var(--vf-space-3); }
+.choices__label { font-weight: var(--vf-font-weight-strong); margin-bottom: var(--vf-space-2); width: 100%; }
+.choices__option { display: inline-flex; align-items: center; gap: var(--vf-space-1); }

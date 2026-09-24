@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: Apache-2.0
+# Apache 2.4 (needs mod_headers). Put this file in the folder you upload (dist/).
+# Apache 2.4용(mod_headers 필요). 업로드하는 폴더(dist/)에 둡니다.
+
+<IfModule mod_headers.c>
+  # Default: revalidate every time. / 기본: 매번 재확인
+  Header set Cache-Control "no-cache"
+
+  # Version folders written by tools/release.mjs (1.0.3/, 1.1.0-rc.1/ …): cache forever.
+  # 버전 폴더는 영구 캐시. VERIFY: <If> expressions need Apache 2.4 or later.
+  <If "%{REQUEST_URI} =~ m#/[0-9]+\.[0-9]+\.[0-9]+[^/]*/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# JSON files (version.json, data, locales) / JSON MIME
+AddType application/json .json

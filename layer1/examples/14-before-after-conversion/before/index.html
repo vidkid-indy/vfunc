@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ACME Admin — Dashboard</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./dashboard.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="topbar__logo" href="../">ACME Admin</a>
+    <input class="topbar__search" type="search" placeholder="Search orders…">
+    <div class="topbar__user">
+      <button class="topbar__user-btn" type="button" onclick="toggleMenu()">Jiwoo Lee ▾</button>
+      <ul class="topbar__menu" id="userMenu" style="display:none">
+        <li><a href="#">Profile</a></li>
+        <li><a href="#">Settings</a></li>
+        <li><a href="javascript:void(0)" onclick="alert('Signed out')">Sign out</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar">
+      <a class="sidebar__link sidebar__link--active" href="#">Dashboard</a>
+      <a class="sidebar__link" href="#">Orders</a>
+      <a class="sidebar__link" href="#">Customers</a>
+      <a class="sidebar__link" href="#">Reports</a>
+    </nav>
+
+    <main class="content">
+      <h1 class="content__title">Dashboard</h1>
+
+      <section class="kpis">
+        <div class="kpi"><p class="kpi__label">Revenue</p><p class="kpi__value">₩12,480,000</p><p class="kpi__delta kpi__delta--up">+8.2%</p></div>
+        <div class="kpi"><p class="kpi__label">Orders</p><p class="kpi__value">342</p><p class="kpi__delta kpi__delta--up">+3.1%</p></div>
+        <div class="kpi"><p class="kpi__label">Refunds</p><p class="kpi__value">7</p><p class="kpi__delta kpi__delta--down">-1.4%</p></div>
+        <div class="kpi"><p class="kpi__label">New customers</p><p class="kpi__value">58</p><p class="kpi__delta kpi__delta--up">+12.0%</p></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel__head">
+          <h2 class="panel__title">Summary</h2>
+          <div class="tabs">
+            <button class="tabs__tab tabs__tab--active" type="button" onclick="showTab('week')">This week</button>
+            <button class="tabs__tab" type="button" onclick="showTab('month')">This month</button>
+          </div>
+        </div>
+        <div class="panel__body" id="summary">
+          <p>Orders are up this week. Most sales came from the keyboard line.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel__head">
+          <h2 class="panel__title">Recent orders</h2>
+          <select class="panel__filter">
+            <option value="">All statuses</option>
+            <option value="paid">Paid</option>
+            <option value="shipped">Shipped</option>
+            <option value="refunded">Refunded</option>
+          </select>
+        </div>
+        <table class="orders">
+          <thead>
+            <tr><th>Order</th><th>Customer</th><th>Status</th><th class="orders__num">Total</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>#1042</td><td>Minsu Kim</td><td><span class="badge badge--paid">Paid</span></td><td class="orders__num">₩59,000</td></tr>
+            <tr><td>#1041</td><td>Seoyeon Park</td><td><span class="badge badge--shipped">Shipped</span></td><td class="orders__num">₩329,000</td></tr>
+            <tr><td>#1040</td><td>Jiho Choi</td><td><span class="badge badge--refunded">Refunded</span></td><td class="orders__num">₩29,000</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">© ACME — a fictional company for this sample</footer>
+
+  <script>
+    // Delivered by the publisher for the design review. / 퍼블리셔가 시안 확인용으로 넣은 스크립트
+    function toggleMenu() {
+      var m = document.getElementById('userMenu');
+      m.style.display = m.style.display === 'none' ? 'block' : 'none';
+    }
+    function showTab(name) {
+      document.getElementById('summary').innerHTML = name === 'week'
+        ? '<p>Orders are up this week. Most sales came from the keyboard line.</p>'
+        : '<p>This month: 1,204 orders, 3.4% refunds.</p>';
+    }
+  </script>
+</body>
+</html>

@@ -313,6 +313,50 @@ export const CHECKS = {
     }
   },
 
+  '14-before-after-conversion': {
+    async run(page, env) {
+      assert.equal(await page.locator('[data-ref="before"]').count(), 1);
+      const before = await env.openPage('/layer1/examples/14-before-after-conversion/before/');
+      const after = await env.openPage('/layer1/examples/14-before-after-conversion/after/');
+      try {
+        const p = after.page;
+        await p.waitForFunction(() => document.querySelectorAll('#kpis .kpi').length === 4);
+        assert.match(await p.locator('#kpis').innerText(), /₩12,480,000/);
+        assert.equal(await p.getAttribute('#kpis [data-state="down"]', 'class'), 'kpi__delta kpi__delta--down', 'publisher state class kept for looks');
+        await p.waitForFunction(() => document.querySelectorAll('#orders-body [data-id]').length === 5);
+        assert.equal(await p.locator('#orders-body img').count(), 0, 'customer names are escaped');
+        await p.click('[data-action="tab"][data-tab="month"]');
+        assert.match(await p.locator('[data-ref="summary-text"]').innerText(), /1,204 orders/);
+        assert.equal(await p.getAttribute('[data-tab="month"]', 'aria-selected'), 'true');
+        assert.match(await p.getAttribute('[data-tab="month"]', 'class'), /tabs__tab--active/);
+        await p.selectOption('#order-status', 'refunded');
+        await p.waitForFunction(() => document.querySelectorAll('#orders-body [data-id]').length === 1);
+        await p.selectOption('#order-status', '');
+        await p.fill('#order-search', 'hana');
+        await p.waitForFunction(() => document.querySelectorAll('#orders-body [data-id]').length === 1);
+        await p.fill('#order-search', 'zzz');
+        await p.waitForSelector('#orders-body [data-ref="empty"]');
+        assert.equal(await p.inputValue('#order-search'), 'zzz', 'the adopted search box keeps its value');
+        await p.click('[data-action="menu"]');
+        assert.equal(await p.isVisible('#userMenu'), true);
+        assert.equal(await p.getAttribute('[data-action="menu"]', 'aria-expanded'), 'true');
+        await p.keyboard.press('Escape');
+        assert.equal(await p.isVisible('#userMenu'), false, 'Escape closes the menu');
+        await p.click('[data-action="menu"]');
+        await p.click('.content__title');
+        assert.equal(await p.isVisible('#userMenu'), false, 'an outside click closes the menu');
+        await p.click('[data-action="menu"]');
+        await p.click('[data-action="sign-out"]');
+        assert.equal(await p.locator('[data-ref="menu-button"]').innerText(), 'Signed out');
+        assert.deepEqual(after.problems, []);
+        assert.deepEqual(before.problems, [], 'the delivered page itself runs cleanly');
+      } finally {
+        await before.context.close();
+        await after.context.close();
+      }
+    }
+  },
+
   '15-with-chartjs': {
     async run(page) {
       await page.waitForFunction(() => window.Chart && window.Chart.getChart(document.querySelector('[data-ref="canvas"]')));

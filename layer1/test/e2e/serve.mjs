@@ -10,6 +10,7 @@ import { extname, join, normalize, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const ROOT = fileURLToPath(new URL('../../../', import.meta.url));
+const REPO = ROOT;
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -23,7 +24,9 @@ const TYPES = {
   '.md': 'text/markdown; charset=utf-8'
 };
 
-export function startServer() {
+/** Starts a server for `root` (default: the repository). Resolves with { origin, overrides, close }. */
+export function startServer(root) {
+  const ROOT = root ? root.replace(/[\\/]?$/, sep) : REPO;
   const overrides = {};
   const server = createServer(async (request, response) => {
     const url = new URL(request.url, 'http://localhost');

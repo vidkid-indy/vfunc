@@ -1,0 +1,7 @@
+/* SPDX-License-Identifier: Apache-2.0 — pages/items.js · tokens only */
+.items__form { display: flex; gap: var(--vf-space-2); margin-bottom: var(--vf-space-4); }
+.items__form .input { flex: 1; }
+.items__list { list-style: none; margin: 0; padding: 0; }
+.items__row { display: flex; align-items: center; gap: var(--vf-space-3); padding: var(--vf-space-2) 0; border-bottom: 1px solid var(--vf-color-border); }
+.items__row[data-state="favorite"] .items__name { font-weight: var(--vf-font-weight-strong); }
+.items__name { flex: 1; }

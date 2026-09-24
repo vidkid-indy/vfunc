@@ -1,0 +1,19 @@
+{
+  "kpis": [
+    { "label": "Revenue", "value": 12480000, "kind": "currency", "delta": 8.2 },
+    { "label": "Orders", "value": 342, "kind": "number", "delta": 3.1 },
+    { "label": "Refunds", "value": 7, "kind": "number", "delta": -1.4 },
+    { "label": "New customers", "value": 58, "kind": "number", "delta": 12.0 }
+  ],
+  "summary": {
+    "week": "Orders are up this week. Most sales came from the keyboard line.",
+    "month": "This month: 1,204 orders, 3.4% refunds."
+  },
+  "orders": [
+    { "id": 1042, "customer": "Minsu Kim", "status": "paid", "total": 59000 },
+    { "id": 1041, "customer": "Seoyeon Park", "status": "shipped", "total": 329000 },
+    { "id": 1040, "customer": "Jiho Choi", "status": "refunded", "total": 29000 },
+    { "id": 1039, "customer": "<img src=x onerror=alert(1)>", "status": "paid", "total": 129000 },
+    { "id": 1038, "customer": "Hana Jung", "status": "shipped", "total": 189000 }
+  ]
+}

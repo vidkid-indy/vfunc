@@ -21,11 +21,12 @@
 import * as esbuild from 'esbuild';
 import { transformAsync } from '@babel/core';
 import presetEnv from '@babel/preset-env';
-import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync, copyFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync, copyFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { gzipSync } from 'node:zlib';
 import { ROOT, readThirdParty, checkBundledInputs, writeLicenses, OUTPUTS } from './licenses.mjs';
+import { writeLlms, generateLlmsFull, LLMS_FULL } from './llms.mjs';
 
 const SOURCE = 'layer1/src/vfunc.js';
 const IIFE_ENTRY = 'build/iife-entry.js';
@@ -39,6 +40,22 @@ const TMP = 'build/out/tmp';
  * Anything else found by es-check --checkFeatures fails the build.
  */
 const LEGACY_POLYFILLED = ['Promise', 'PromiseResolve'];
+
+/** [source, path inside layer1/starter]. Sources under layer1/dist come from this build. */
+const STARTER_COPIES = [
+  ['layer1/dist/vfunc.esm.js', 'lib/vfunc.esm.js'],
+  ['layer1/dist/vfunc.esm.js.map', 'lib/vfunc.esm.js.map'],
+  ['layer1/dist/vfunc.esm.min.js', 'lib/vfunc.esm.min.js'],
+  ['layer1/dist/vfunc.esm.min.js.map', 'lib/vfunc.esm.min.js.map'],
+  ['layer1/dist/plugins/update.esm.js', 'lib/plugins/update.esm.js'],
+  ['layer1/dist/plugins/update.esm.js.map', 'lib/plugins/update.esm.js.map'],
+  ['layer1/css/vfunc.tokens.css', 'styles/tokens.css'],
+  ['layer1/ai/en/AGENTS.template.md', 'AGENTS.md'],
+  ['layer1/ai/ko/AGENTS.template.md', 'AGENTS.ko.md'],
+  ['layer1/ai/en/design/DESIGN.template.md', 'design/DESIGN.md'],
+  ['layer1/ai/llms.txt', 'docs/llms.txt'],
+  ['layer1/ai/llms-full.txt', 'docs/llms-full.txt']
+];
 
 const check = process.argv.indexOf('--check') >= 0;
 const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
@@ -235,6 +252,12 @@ async function main() {
     }
   }
 
+  // The starter template carries copies of vfunc and of the AI kit (D-019): generated here, never edited.
+  for (const [from, to] of STARTER_COPIES) {
+    outputs['layer1/starter/' + to] = outputs[from] !== undefined ? outputs[from]
+      : from === LLMS_FULL ? generateLlmsFull() : readFileSync(join(ROOT, from), 'utf8');
+  }
+
   // Compare with or write the committed files.
   const stale = [];
   for (const path of Object.keys(outputs)) {
@@ -248,6 +271,7 @@ async function main() {
     }
   }
   const staleLicenses = writeLicenses({ check: check });
+  if (writeLlms({ check: check })) staleLicenses.push(LLMS_FULL);
   if (check && (stale.length || staleLicenses.length)) {
     failures.push('out of date (run npm run build): ' + stale.concat(staleLicenses).join(', '));
   }
@@ -282,6 +306,14 @@ function assembleNpmPackage() {
   for (const file of ['vfunc.d.ts', 'global.d.ts', 'plugins/update.d.ts']) copy(join(ROOT, 'layer1/types', file), join(out, 'types', file));
   // Optional design tokens (D-011). Not generated: the file in layer1/css is the source.
   copy(join(ROOT, 'layer1/css/vfunc.tokens.css'), join(out, 'css', 'vfunc.tokens.css'));
+  // The AI kit (D-019): llms*.txt, AGENTS templates, prompts and design kit in en/ and ko/.
+  (function copyDir(from, to) {
+    for (const name of readdirSync(from)) {
+      const source = join(from, name);
+      if (statSync(source).isDirectory()) copyDir(source, join(to, name));
+      else copy(source, join(to, name));
+    }
+  })(join(ROOT, 'layer1/ai'), join(out, 'ai'));
   for (const file of ['README.md', 'README.ko.md', 'LICENSE', 'NOTICE', 'CHANGELOG.md', OUTPUTS.text]) {
     copyFileSync(join(ROOT, file), join(out, file));
   }
@@ -313,13 +345,14 @@ function assembleNpmPackage() {
         default: './dist/plugins/update.esm.js'
       },
       './css/*': './css/*',
+      './ai/*': './ai/*',
       './dist/*': './dist/*',
       './types/*': './types/*',
       './package.json': './package.json'
     },
     // The <script> builds write window.vf / window.vfUpdate; the ES modules have no side effects.
     sideEffects: ['./dist/vfunc.js', './dist/vfunc.min.js', './dist/vfunc.legacy.min.js', './dist/plugins/update.min.js', './css/*.css'],
-    files: ['dist/', 'types/', 'css/', 'README.md', 'README.ko.md', 'LICENSE', 'NOTICE', 'CHANGELOG.md', OUTPUTS.text]
+    files: ['dist/', 'types/', 'css/', 'ai/', 'README.md', 'README.ko.md', 'LICENSE', 'NOTICE', 'CHANGELOG.md', OUTPUTS.text]
   };
   writeFileSync(join(out, 'package.json'), JSON.stringify(manifest, null, 2) + '\n');
   console.log('  npm package: ' + NPM_OUT + '/ (publish only after the maintainer confirms)');

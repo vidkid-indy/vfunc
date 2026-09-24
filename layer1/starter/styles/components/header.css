@@ -1,0 +1,17 @@
+/* SPDX-License-Identifier: Apache-2.0 — components/header.js · tokens only */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--vf-space-4);
+  flex-wrap: wrap;
+  padding: var(--vf-space-3) var(--vf-space-4);
+  margin-bottom: var(--vf-space-4);
+  background: var(--vf-color-surface);
+  border: 1px solid var(--vf-color-border);
+  border-radius: var(--vf-radius-lg);
+}
+.header__brand { font-weight: var(--vf-font-weight-strong); color: var(--vf-color-text); text-decoration: none; }
+.header__nav { display: flex; gap: var(--vf-space-3); flex: 1; }
+.header__link { color: var(--vf-color-text-muted); text-decoration: none; }
+.header__link[aria-current="page"] { color: var(--vf-color-primary); font-weight: var(--vf-font-weight-strong); }
+.header__meta { color: var(--vf-color-text-muted); font-size: var(--vf-font-size-sm); }
