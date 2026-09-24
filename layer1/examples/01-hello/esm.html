@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>01 hello (ES module) — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../_shared/example.css">
+</head>
+<body>
+  <main class="example">
+    <header class="example__header">
+      <a class="example__back" href="../">← examples</a>
+      <h1 class="example__title">01 hello — ES module</h1>
+      <p class="example__lead">The same component with <code>import</code>. No global is created. /
+        같은 컴포넌트를 import로. 전역 변수를 만들지 않습니다. · <a href="./">script version</a></p>
+    </header>
+    <section class="card" id="app"></section>
+  </main>
+  <script type="module" src="./app.esm.js"></script>
+</body>
+</html>

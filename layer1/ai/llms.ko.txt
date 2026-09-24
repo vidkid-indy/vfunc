@@ -65,6 +65,26 @@ refresh: 루트 안쪽을 교체하고, `childs`는 다시 옮겨 붙이며(상�
 
 `vf.i18n.setup({ locales, fallback, messages, load, persist })`, `vf.t(key, params)`(평문, 복수형 `{ zero?, one, other }`와 `params.count`), `vf.i18n.set(locale)`, `subscribe(fn)`, `apply(root?)`(`data-i18n`, `data-i18n-attr`), `vf.fmt.number/currency/date/relative`.
 
+## 디자인 토큰 (선택: css/vfunc.tokens.css)
+
+토큰 이름은 공개 API입니다. 목록은 영어판 llms.txt와 같습니다(`--vf-color-primary`, `--vf-color-text-muted`, `--vf-space-3`, `--vf-chart-1..8` 등). 다크 테마는 OS를 따르고 `<html data-theme="light|dark">`로 강제합니다. 덮어쓸 때는 vfunc.tokens.css **다음에** 자기 CSS에서 선언합니다. 상태는 `aria-*`/`data-state`로 쓰고 CSS가 꾸밉니다. 라이브러리에 색이 필요할 때만 JS에서 getComputedStyle로 토큰을 읽습니다.
+
+## update 플러그인 (dist/plugins/update.min.js → 전역 vfUpdate, ESM은 `import vfUpdate from 'vfunc/plugins/update'`)
+
+`vf.use(vfUpdate, { url: './version.json', current: APP_VERSION, policy: 'next-navigation' | 'prompt' | 'immediate', interval: 10, onAvailable })` → `vf.ext.update`(`check`, `status`, `navigated`, `apply`, `stop`). version.json은 `{ "version": "1.0.3" }`이고 index.html과 함께 no-cache로 서빙합니다. 플러그인은 UI를 그리지 않고, 안내는 앱이 그립니다.
+
+## 흔한 실수
+
+- 컴포넌트는 만드는 순간 렌더합니다. vf.t를 쓰는 컴포넌트는 `vf.i18n.setup()` 이후에 만드세요.
+- `childs`의 자식에는 onMount가 호출되지 않습니다. onMount가 필요하면 직접 mount하세요.
+- `data-vf-keep` 요소는 예전 속성도 그대로입니다. 바뀌는 속성은 onUpdate에서 갱신하세요.
+- 항목별 버튼·체크박스에 `id`를 주면 refresh 뒤에도 포커스가 복원됩니다.
+- CSP가 있으면 인라인 `style="…"`과 인라인 `<script>`를 쓸 수 없습니다. 파일로 두세요.
+
+## 예제
+
+layer1/examples/에 샘플 20개(01~13, 15~21)가 있습니다. 10 spa-app이 SPA 표준 구조(app.js + store.js + api.js + pages/*.js)입니다.
+
 ## 확장
 
 `vf.use({ name: 'company', requires: '^1.0.0', install(vf, options) { return api; } }, options)` → `vf.ext.company`. `vf` 루트에 멤버를 추가하지 않습니다.

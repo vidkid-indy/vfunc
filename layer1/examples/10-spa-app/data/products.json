@@ -1,0 +1,5 @@
+[
+  { "id": "kb-01", "name": "Wireless keyboard", "price": 59000, "text": "Quiet keys, three devices." },
+  { "id": "ms-02", "name": "Wireless mouse", "price": 29000, "text": "Light, with a silent click." },
+  { "id": "mn-27", "name": "27\" monitor", "price": 329000, "text": "QHD, USB-C power delivery." }
+]

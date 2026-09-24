@@ -1,0 +1,16 @@
+{
+  "page": {
+    "title": "17 다국어",
+    "lead": "vf.i18n으로 한국어/영어 전환, data-i18n으로 퍼블리싱 HTML 번역, vf.fmt로 날짜·숫자 포맷.",
+    "search": "상품 검색"
+  },
+  "cart": {
+    "title": "장바구니",
+    "items": { "zero": "장바구니가 비어 있습니다.", "other": "장바구니에 {count}개" },
+    "add": "하나 담기",
+    "clear": "비우기",
+    "total": "합계: {amount}",
+    "updated": "{when} 갱신"
+  },
+  "lang": { "label": "언어" }
+}

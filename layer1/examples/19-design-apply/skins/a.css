@@ -1,0 +1,45 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * Skin A "Warm" — derived from design/DESIGN-a.md (tokens only).
+ * 스킨 A — design/DESIGN-a.md에서 만든 토큰 파일입니다(토큰만).
+ */
+:root, :root[data-theme="dark"] {
+  color-scheme: light;
+  --vf-color-primary: #c2410c;
+  --vf-color-primary-hover: #9a3412;
+  --vf-color-primary-active: #7c2d12;
+  --vf-color-primary-soft: #ffedd5;
+  --vf-color-on-primary: #ffffff;
+  --vf-color-bg: #fffaf3;
+  --vf-color-surface: #ffffff;
+  --vf-color-surface-muted: #fdf2e4;
+  --vf-color-text: #292524;
+  --vf-color-text-muted: #57534e;
+  --vf-color-border: #f1e3d0;
+  --vf-color-border-strong: #e7cfb0;
+  --vf-color-focus: #ea580c;
+  --vf-focus-ring: 0 0 0 3px rgba(234, 88, 12, 0.3);
+  --vf-radius-md: 12px;
+  --vf-radius-lg: 20px;
+  --vf-shadow-2: 0 8px 24px -8px rgba(124, 45, 18, 0.18);
+  --vf-font-body: Georgia, "Noto Serif KR", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: light;
+    --vf-color-primary: #c2410c;
+    --vf-color-primary-hover: #9a3412;
+    --vf-color-primary-active: #7c2d12;
+    --vf-color-primary-soft: #ffedd5;
+    --vf-color-on-primary: #ffffff;
+    --vf-color-bg: #fffaf3;
+    --vf-color-surface: #ffffff;
+    --vf-color-surface-muted: #fdf2e4;
+    --vf-color-text: #292524;
+    --vf-color-text-muted: #57534e;
+    --vf-color-border: #f1e3d0;
+    --vf-color-border-strong: #e7cfb0;
+    --vf-color-success-soft: #ecfdf5;
+    --vf-color-success-text: #047857;
+    --vf-color-info-text: #1d4ed8;
+  }
+}

@@ -1,10 +1,10 @@
-/*! vfunc.js v1.0.0-rc.2 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
+/*! vfunc.js v1.0.0-rc.3 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
 (() => {
   var __defProp = Object.defineProperty;
   var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
   // layer1/src/vfunc.js
-  var VERSION = false ? "0.0.0-dev" : "1.0.0-rc.2";
+  var VERSION = false ? "0.0.0-dev" : "1.0.0-rc.3";
   var DEV = false ? true : true;
   var hasOwn = Object.prototype.hasOwnProperty;
   function ownValue(obj, key) {

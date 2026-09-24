@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>16 legacy-ie — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <!-- IE11 has no CSS variables: this sample uses plain CSS values. / IE11은 CSS 변수가 없어 고정값 CSS를 씁니다. -->
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="page">
+    <p><a href="../">← examples</a></p>
+    <h1>16 legacy-ie</h1>
+    <p class="lead">ES5 app code + <code>vf.tpl</code> + hash router, on <code>vfunc.legacy.min.js</code>.
+      Open it in Edge IE mode too. / ES5 앱 코드, vf.tpl, 해시 라우터. Edge IE 모드에서도 열어 보세요.</p>
+    <p class="env" id="env"></p>
+    <nav class="nav" id="nav">
+      <a data-link href="#/">Tasks</a>
+      <a data-link href="#/about">About</a>
+    </nav>
+    <main class="box" id="view"></main>
+  </div>
+  <!--
+    One legacy file for every browser (simple for IE-only intranets).
+    For public sites, serve modern and legacy files side by side (see README):
+      <script type="module" src="app.js"></script>
+      <script nomodule src="vfunc.legacy.min.js"></script>
+      <script nomodule src="app.es5.js"></script>
+    legacy 파일 하나로 모든 브라우저에서 동작합니다(IE 전용 사내 시스템에 간단). 공개 사이트는 README의 nomodule 패턴을 쓰세요.
+  -->
+  <script src="../../dist/vfunc.legacy.min.js"></script>
+  <script src="./app.es5.js"></script>
+</body>
+</html>

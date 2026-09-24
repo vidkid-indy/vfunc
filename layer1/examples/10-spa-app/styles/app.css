@@ -1,0 +1,19 @@
+/* SPDX-License-Identifier: Apache-2.0 — tokens only / 토큰만 참조 */
+.shell { max-width: 900px; margin: 0 auto; padding: var(--vf-space-4); }
+.topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--vf-space-3);
+  padding: var(--vf-space-3) var(--vf-space-4); margin-bottom: var(--vf-space-4);
+  background: var(--vf-color-surface); border: 1px solid var(--vf-color-border); border-radius: var(--vf-radius-lg);
+}
+.topbar__brand { font-weight: var(--vf-font-weight-strong); color: var(--vf-color-text); text-decoration: none; }
+.topbar__nav { display: flex; gap: var(--vf-space-3); }
+.topbar__link { color: var(--vf-color-text-muted); text-decoration: none; }
+.topbar__link[aria-current="page"] { color: var(--vf-color-primary); font-weight: var(--vf-font-weight-strong); }
+.badge {
+  display: inline-block; min-width: 1.6em; padding: 0 var(--vf-space-1); border-radius: var(--vf-radius-full);
+  background: var(--vf-color-primary); color: var(--vf-color-on-primary); text-align: center; font-size: var(--vf-font-size-xs);
+}
+.products { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--vf-space-3); list-style: none; margin: 0; padding: 0; }
+.product-card { display: flex; flex-direction: column; gap: var(--vf-space-2); }
+.product-card__price { color: var(--vf-color-text-muted); }
+.view:focus { outline: none; }

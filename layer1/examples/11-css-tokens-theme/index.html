@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>11 css-tokens-theme — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../_shared/example.css">
+  <link rel="stylesheet" href="./style.css">
+  <!-- Applies the saved theme before the first paint (no flash). / 첫 화면 전에 저장된 테마 적용 -->
+  <script src="./theme-early.js"></script>
+</head>
+<body>
+  <main class="example">
+    <header class="example__header">
+      <a class="example__back" href="../">← examples</a>
+      <h1 class="example__title">11 css-tokens-theme</h1>
+      <p class="example__lead">Every color, size and shadow comes from <code>var(--vf-*)</code> tokens. Switching the theme changes one
+        attribute; JS holds no colors. / 모든 디자인 값은 토큰에서 옵니다. 테마 전환은 속성 하나만 바꾸고 JS에는 색이 없습니다.</p>
+    </header>
+
+    <section class="card" id="theme-picker"></section>
+
+    <section class="card">
+      <h2 class="card__title">Colors / 색</h2>
+      <ul class="swatches">
+        <li class="swatch swatch--primary">primary</li>
+        <li class="swatch swatch--success">success</li>
+        <li class="swatch swatch--warning">warning</li>
+        <li class="swatch swatch--danger">danger</li>
+        <li class="swatch swatch--info">info</li>
+        <li class="swatch swatch--surface">surface</li>
+        <li class="swatch swatch--muted">surface-muted</li>
+      </ul>
+      <h2 class="card__title">Charts / 차트 계열</h2>
+      <ul class="swatches swatches--chart">
+        <li class="chip chip--1">1</li><li class="chip chip--2">2</li><li class="chip chip--3">3</li><li class="chip chip--4">4</li>
+        <li class="chip chip--5">5</li><li class="chip chip--6">6</li><li class="chip chip--7">7</li><li class="chip chip--8">8</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2 class="card__title">Components / 요소</h2>
+      <div class="notice" data-state="info">Info notice / 안내</div>
+      <div class="notice" data-state="success">Saved. / 저장되었습니다.</div>
+      <div class="notice" data-state="warning">Check your input. / 입력을 확인하세요.</div>
+      <div class="notice" data-state="error">Something failed. / 실패했습니다.</div>
+      <div class="row">
+        <button class="btn" type="button" data-variant="primary">Primary</button>
+        <button class="btn" type="button">Default</button>
+        <button class="btn" type="button" data-variant="danger">Danger</button>
+        <button class="btn" type="button" disabled>Disabled</button>
+      </div>
+      <p class="shadows"><span class="shadow shadow--1">shadow-1</span><span class="shadow shadow--2">shadow-2</span><span class="shadow shadow--3">shadow-3</span></p>
+    </section>
+  </main>
+  <script src="../../dist/vfunc.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

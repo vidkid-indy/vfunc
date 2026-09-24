@@ -202,13 +202,15 @@ test('the manual test page passes with the legacy file in an IE-like page', asyn
   assert.equal(result.count, (pageTests.match(/^ {2}test\('/gm) || []).length, 'every test of the page ran');
 });
 
-test('the test page script is ES5, so IE11 can parse it', () => {
-  const cli = fileURLToPath(new URL('../../node_modules/es-check/lib/cli/index.js', import.meta.url));
-  const target = fileURLToPath(new URL('./browser-tests.js', import.meta.url)).split('\\').join('/');
-  const run = spawnSync(process.execPath, [cli, 'es5', target, '--checkFeatures', '--allowList', 'Promise,PromiseResolve'],
-    { encoding: 'utf8' });
-  assert.equal(run.status, 0, run.stderr || run.stdout);
-});
+for (const [label, relative] of [['the test page script', './browser-tests.js'], ['sample 16 app code', '../examples/16-legacy-ie/app.es5.js']]) {
+  test(label + ' is ES5, so IE11 can parse it', () => {
+    const cli = fileURLToPath(new URL('../../node_modules/es-check/lib/cli/index.js', import.meta.url));
+    const target = fileURLToPath(new URL(relative, import.meta.url)).split('\\').join('/');
+    const run = spawnSync(process.execPath, [cli, 'es5', target, '--checkFeatures', '--allowList', 'Promise,PromiseResolve'],
+      { encoding: 'utf8' });
+    assert.equal(run.status, 0, run.stderr || run.stdout);
+  });
+}
 
 test('the manual test page passes with the modern files', async () => {
   for (const file of ['vfunc.min.js', 'vfunc.js']) {

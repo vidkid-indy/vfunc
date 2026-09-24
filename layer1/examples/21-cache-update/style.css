@@ -1,0 +1,11 @@
+/* SPDX-License-Identifier: Apache-2.0 — tokens only / 토큰만 참조 */
+.update-toast { position: fixed; left: 50%; bottom: var(--vf-space-5); transform: translateX(-50%); z-index: var(--vf-z-toast); }
+.update-toast__box {
+  display: flex; gap: var(--vf-space-3); align-items: center;
+  padding: var(--vf-space-3) var(--vf-space-4); border-radius: var(--vf-radius-lg);
+  background: var(--vf-color-text); color: var(--vf-color-text-inverse); box-shadow: var(--vf-shadow-3);
+}
+.status__grid { display: grid; grid-template-columns: max-content 1fr; gap: var(--vf-space-1) var(--vf-space-4); margin: 0; }
+.status__grid dt { color: var(--vf-color-text-muted); }
+.status__grid dd { margin: 0; font-family: var(--vf-font-mono); }
+.status__grid dd[data-state="pending"] { color: var(--vf-color-warning-text); font-weight: var(--vf-font-weight-strong); }

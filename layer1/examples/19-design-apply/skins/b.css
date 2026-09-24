@@ -1,0 +1,30 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * Skin B "Studio" — derived from design/DESIGN-b.md (tokens only). Always dark.
+ * 스킨 B — design/DESIGN-b.md에서 만든 토큰 파일입니다(토큰만). 항상 어두운 테마.
+ */
+:root, :root[data-theme="light"], :root[data-theme="dark"] {
+  color-scheme: dark;
+  --vf-color-primary: #22d3ee;
+  --vf-color-primary-hover: #67e8f9;
+  --vf-color-primary-active: #a5f3fc;
+  --vf-color-primary-soft: #083344;
+  --vf-color-on-primary: #082f49;
+  --vf-color-success: #4ade80;
+  --vf-color-success-soft: #052e16;
+  --vf-color-success-text: #86efac;
+  --vf-color-info-text: #7dd3fc;
+  --vf-color-bg: #0b0f19;
+  --vf-color-surface: #111827;
+  --vf-color-surface-muted: #1f2937;
+  --vf-color-text: #f9fafb;
+  --vf-color-text-muted: #9ca3af;
+  --vf-color-border: #1f2937;
+  --vf-color-border-strong: #374151;
+  --vf-color-focus: #22d3ee;
+  --vf-focus-ring: 0 0 0 2px #22d3ee;
+  --vf-radius-md: 2px;
+  --vf-radius-lg: 4px;
+  --vf-radius-full: 4px;
+  --vf-shadow-2: none;
+  --vf-font-body: ui-monospace, "Cascadia Code", Consolas, "D2Coding", monospace;
+}

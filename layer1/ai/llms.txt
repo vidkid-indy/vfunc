@@ -86,6 +86,26 @@ vf.i18n.set('ko'); vf.i18n.subscribe(() => app.refresh()); vf.i18n.apply(); // d
 vf.fmt.number(n); vf.fmt.currency(n, 'KRW'); vf.fmt.date(d); vf.fmt.relative(-3, 'day');
 ```
 
+## Design tokens (optional css/vfunc.tokens.css)
+
+Token names are public API: `--vf-color-primary|-hover|-active|-soft`, `--vf-color-on-primary`, `--vf-color-{success,warning,danger,info}` (+ `-soft`, `-text`), `--vf-color-bg|surface|surface-muted|overlay`, `--vf-color-text|text-muted|text-disabled|text-inverse`, `--vf-color-border|border-strong|focus`, `--vf-focus-ring`, `--vf-chart-1..8`, `--vf-shadow-1..3`, `--vf-radius-sm|md|lg|full`, `--vf-space-1..7`, `--vf-font-body|mono`, `--vf-font-size-xs|sm|md|lg|xl|2xl`, `--vf-font-weight-normal|strong`, `--vf-line-height`, `--vf-duration-fast|base`, `--vf-easing`, `--vf-z-dropdown|popover|drawer|modal|toast`. Dark theme follows the OS; `<html data-theme="light|dark">` forces one. Override tokens in your CSS after vfunc.tokens.css. Put state in `aria-*` / `data-state` and let CSS style it; read a token in JS with getComputedStyle only when a library needs a color.
+
+## Update plugin (dist/plugins/update.min.js → global vfUpdate; ESM `import vfUpdate from 'vfunc/plugins/update'`)
+
+`const update = vf.use(vfUpdate, { url: './version.json', current: APP_VERSION, policy: 'next-navigation' | 'prompt' | 'immediate', interval: 10, onAvailable: (info, apply) => {} })` → `vf.ext.update` with `check(force)`, `status()`, `navigated()`, `apply()`, `stop()`. version.json is `{ "version": "1.0.3" }`; serve it and index.html with `Cache-Control: no-cache`. The plugin draws no UI; the app shows the prompt.
+
+## Common mistakes
+
+- A component renders when created: create components that use vf.t after `vf.i18n.setup()` resolves.
+- `onMount` is not called for `childs`; mount a child directly when it needs onMount.
+- A `data-vf-keep` element keeps its old attributes; update changing attributes in `onUpdate`.
+- Give per-item buttons and checkboxes an `id` so focus survives a refresh.
+- With a CSP, no inline `style="…"` or inline `<script>`: use files.
+
+## Examples
+
+layer1/examples/: 01 hello, 02 counter, 03 todo, 04 methods-refs, 05 composition, 06 attach-published-html, 07 form, 08 fetch-list, 09 spa-hash-router, 10 spa-app (standard SPA structure: app.js + store.js + api.js + pages/*.js), 11 css-tokens-theme, 12 with-bootstrap, 13 with-tailwind, 15 with-chartjs, 16 legacy-ie, 17 i18n, 18 extend-plugin, 19 design-apply, 20 merge-published, 21 cache-update.
+
 ## Extensions
 
 `vf.use({ name: 'company', requires: '^1.0.0', install(vf, options) { return api; } }, options)` → `vf.ext.company`. Never add members to the `vf` root.

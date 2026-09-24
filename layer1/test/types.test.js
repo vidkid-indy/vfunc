@@ -9,13 +9,14 @@ import vf, * as named from '../src/vfunc.js';
 
 const dts = readFileSync(new URL('../types/vfunc.d.ts', import.meta.url), 'utf8');
 const globalDts = readFileSync(new URL('../types/global.d.ts', import.meta.url), 'utf8');
+const updateDts = readFileSync(new URL('../types/plugins/update.d.ts', import.meta.url), 'utf8');
 
 function sorted(list) {
   return Array.from(new Set(list)).sort();
 }
 
 test('the declaration files parse as TypeScript', () => {
-  for (const [name, text] of [['vfunc.d.ts', dts], ['global.d.ts', globalDts]]) {
+  for (const [name, text] of [['vfunc.d.ts', dts], ['global.d.ts', globalDts], ['plugins/update.d.ts', updateDts]]) {
     assert.doesNotThrow(() => transformSync(text, { loader: 'ts', sourcefile: name }), name);
   }
 });

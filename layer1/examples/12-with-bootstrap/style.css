@@ -1,0 +1,4 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * No inline style attributes: the page CSP has no 'unsafe-inline'. / CSP 때문에 인라인 style 대신 파일로.
+ */
+.page { max-width: 760px; }

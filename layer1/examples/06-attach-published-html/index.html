@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>06 attach-published-html — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../css/vfunc.tokens.css">
+  <link rel="stylesheet" href="./published.css">
+</head>
+<body>
+  <!--
+    This page is the publisher's static HTML, untouched. Only the search area (#product-search)
+    and the result list (#product-results) are controlled by vfunc (app.js).
+    이 페이지는 퍼블리셔가 만든 정적 HTML 그대로입니다. 검색 영역과 결과 목록만 vfunc가 제어합니다.
+  -->
+  <header class="site-header">
+    <a class="site-header__logo" href="../">← examples · ACME Store</a>
+    <nav class="site-header__nav" aria-label="주 메뉴">
+      <a href="#">신상품</a><a href="#">베스트</a><a href="#">고객센터</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <h1 class="hero__title">06 attach-published-html</h1>
+      <p class="hero__text">퍼블리싱된 페이지에서 검색 영역만 vfunc로 제어합니다. 나머지 HTML은 그대로입니다. /
+        Only the search area of a published page is controlled by vfunc; the rest stays as it is.</p>
+    </section>
+
+    <form class="search" id="product-search" role="search" data-action="search">
+      <label class="search__label" for="q">상품 검색 / Search</label>
+      <div class="search__row">
+        <input class="search__input" id="q" name="q" type="search" placeholder="예: 키보드, mouse">
+        <select class="search__select" id="category" name="category">
+          <option value="">전체 / All</option>
+          <option value="input">입력장치 / Input</option>
+          <option value="display">디스플레이 / Display</option>
+        </select>
+        <button class="search__button" type="submit">검색</button>
+      </div>
+      <p class="search__hint" data-ref="summary">검색어를 입력하세요. / Type a keyword.</p>
+    </form>
+
+    <section class="results" id="product-results" aria-live="polite">
+      <!-- vfunc renders the list here. / vfunc가 여기에 목록을 그립니다. -->
+    </section>
+
+    <aside class="banner">
+      <strong>무료 배송</strong> 3만 원 이상 구매 시 / Free shipping over ₩30,000
+    </aside>
+  </main>
+
+  <footer class="site-footer">© ACME Store — a fictional shop for this sample / 예제용 가상 상점</footer>
+
+  <script src="../../dist/vfunc.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+/* SPDX-License-Identifier: Apache-2.0 — tokens only / 토큰만 참조 */
+.layout { display: grid; grid-template-columns: 180px 1fr; gap: var(--vf-space-4); }
+.layout[data-state="collapsed"] { grid-template-columns: 1fr; }
+.layout[data-state="collapsed"] .layout__side { display: none; }
+.layout__top { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; }
+.layout__side, .layout__main { min-width: 0; }
+@media (max-width: 600px) { .layout { grid-template-columns: 1fr; } }

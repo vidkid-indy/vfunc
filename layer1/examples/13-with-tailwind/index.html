@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Tailwind's browser build injects a <style> element at run time, so style-src needs 'unsafe-inline'.
+       script-src stays strict (no 'unsafe-inline'). Production: build a CSS file with the Tailwind CLI.
+       Tailwind 브라우저 빌드는 실행 중 <style>을 넣으므로 style-src에만 'unsafe-inline'이 필요합니다. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>13 with-tailwind — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../css/vfunc.tokens.css">
+  <!-- Tailwind v4 theme mapped onto vfunc tokens (plan K-4, Tailwind track). / Tailwind 테마를 vfunc 토큰에 연결 -->
+  <style type="text/tailwindcss">
+    @theme {
+      --color-primary: var(--vf-color-primary);
+      --color-on-primary: var(--vf-color-on-primary);
+      --color-surface: var(--vf-color-surface);
+      --color-page: var(--vf-color-bg);
+      --color-ink: var(--vf-color-text);
+      --color-muted: var(--vf-color-text-muted);
+      --color-line: var(--vf-color-border);
+      --radius-card: var(--vf-radius-lg);
+      --font-sans: var(--vf-font-body);
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3/dist/index.global.js"
+          integrity="sha384-2ql948lIdLcGEE0/qxNiudyTjgauA3RDJERu5xW75kFCvSl5a9odyQYCb6tEjnmB" crossorigin="anonymous"></script>
+</head>
+<body class="bg-page text-ink font-sans">
+  <main class="mx-auto max-w-2xl p-6">
+    <a class="text-sm text-primary" href="../">← examples</a>
+    <h1 class="mt-2 text-2xl font-semibold">13 with-tailwind</h1>
+    <p class="mb-6 text-muted">Utility classes for looks, <code>data-action</code> for behaviour, and state as attributes that
+      Tailwind variants read (<code>aria-pressed:</code>, <code>data-[state=done]:</code>). /
+      모양은 유틸리티 클래스, 동작은 data-action, 상태는 Tailwind 변형이 읽는 속성으로.</p>
+    <section class="rounded-card border border-line bg-surface p-4 shadow-sm" id="app"></section>
+  </main>
+  <script src="../../dist/vfunc.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

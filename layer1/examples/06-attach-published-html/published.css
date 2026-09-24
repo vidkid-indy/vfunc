@@ -1,0 +1,28 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * The publisher's stylesheet (mapped onto vfunc tokens). vfunc does not care about these classes:
+ * behaviour is bound to id and data-action only.
+ * 퍼블리셔의 스타일시트입니다(토큰에 연결). vfunc는 이 클래스를 쓰지 않고 id와 data-action에만 동작을 겁니다.
+ */
+body { margin: 0; background: var(--vf-color-bg); color: var(--vf-color-text); font-family: var(--vf-font-body); line-height: var(--vf-line-height); }
+.site-header { display: flex; justify-content: space-between; align-items: center; padding: var(--vf-space-3) var(--vf-space-5); background: var(--vf-color-surface); border-bottom: 1px solid var(--vf-color-border); }
+.site-header__logo { font-weight: var(--vf-font-weight-strong); color: var(--vf-color-text); text-decoration: none; }
+.site-header__nav { display: flex; gap: var(--vf-space-4); }
+.site-header__nav a { color: var(--vf-color-text-muted); text-decoration: none; }
+.page { max-width: 820px; margin: 0 auto; padding: var(--vf-space-5) var(--vf-space-4); }
+.hero__title { margin: 0 0 var(--vf-space-2); font-size: var(--vf-font-size-2xl); }
+.hero__text { margin: 0 0 var(--vf-space-5); color: var(--vf-color-text-muted); }
+.search { background: var(--vf-color-surface); border: 1px solid var(--vf-color-border); border-radius: var(--vf-radius-lg); padding: var(--vf-space-4); }
+.search__label { display: block; font-weight: var(--vf-font-weight-strong); margin-bottom: var(--vf-space-2); }
+.search__row { display: flex; gap: var(--vf-space-2); flex-wrap: wrap; }
+.search__input, .search__select { padding: var(--vf-space-2) var(--vf-space-3); border: 1px solid var(--vf-color-border-strong); border-radius: var(--vf-radius-md); font: inherit; background: var(--vf-color-surface); color: var(--vf-color-text); }
+.search__input { flex: 1; min-width: 180px; }
+.search__button { padding: var(--vf-space-2) var(--vf-space-4); border: 0; border-radius: var(--vf-radius-md); background: var(--vf-color-primary); color: var(--vf-color-on-primary); font: inherit; cursor: pointer; }
+.search__hint { margin: var(--vf-space-2) 0 0; color: var(--vf-color-text-muted); font-size: var(--vf-font-size-sm); }
+.results { margin: var(--vf-space-4) 0; }
+.results__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--vf-space-3); list-style: none; padding: 0; margin: 0; }
+.product { background: var(--vf-color-surface); border: 1px solid var(--vf-color-border); border-radius: var(--vf-radius-md); padding: var(--vf-space-3); }
+.product__name { font-weight: var(--vf-font-weight-strong); }
+.product__price { color: var(--vf-color-text-muted); }
+.results__empty { color: var(--vf-color-text-muted); }
+.banner { padding: var(--vf-space-3); border-radius: var(--vf-radius-md); background: var(--vf-color-info-soft); color: var(--vf-color-info-text); }
+.site-footer { padding: var(--vf-space-5); text-align: center; color: var(--vf-color-text-muted); font-size: var(--vf-font-size-sm); }

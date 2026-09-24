@@ -1,0 +1,103 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * Shared look of the samples. Uses only var(--vf-*) tokens from css/vfunc.tokens.css (rule 21).
+ * Classes are <block>__<element>; states are aria-* or data-state. JS never sets styles.
+ * 샘플 공통 스타일입니다. 토큰만 참조하고, 상태는 aria-* 또는 data-state로 표현합니다.
+ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--vf-color-bg);
+  color: var(--vf-color-text);
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-md);
+  line-height: var(--vf-line-height);
+}
+
+.example { max-width: 760px; margin: 0 auto; padding: var(--vf-space-5) var(--vf-space-4); }
+.example__header { margin-bottom: var(--vf-space-5); }
+.example__title { margin: 0 0 var(--vf-space-1); font-size: var(--vf-font-size-2xl); }
+.example__lead { margin: 0; color: var(--vf-color-text-muted); }
+.example__back { font-size: var(--vf-font-size-sm); }
+
+a { color: var(--vf-color-primary); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: none;
+  box-shadow: var(--vf-focus-ring);
+}
+
+.card {
+  background: var(--vf-color-surface);
+  border: 1px solid var(--vf-color-border);
+  border-radius: var(--vf-radius-lg);
+  box-shadow: var(--vf-shadow-1);
+  padding: var(--vf-space-4);
+  margin-bottom: var(--vf-space-4);
+}
+.card__title { margin: 0 0 var(--vf-space-3); font-size: var(--vf-font-size-lg); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vf-space-1);
+  padding: var(--vf-space-2) var(--vf-space-3);
+  border: 1px solid var(--vf-color-border-strong);
+  border-radius: var(--vf-radius-md);
+  background: var(--vf-color-surface);
+  color: var(--vf-color-text);
+  font: inherit;
+  cursor: pointer;
+  transition: background var(--vf-duration-fast) var(--vf-easing);
+}
+.btn:hover { background: var(--vf-color-surface-muted); }
+.btn[data-variant="primary"] {
+  background: var(--vf-color-primary);
+  border-color: var(--vf-color-primary);
+  color: var(--vf-color-on-primary);
+}
+.btn[data-variant="primary"]:hover { background: var(--vf-color-primary-hover); }
+.btn[data-variant="danger"] { color: var(--vf-color-danger-text); border-color: var(--vf-color-danger); }
+.btn:disabled { color: var(--vf-color-text-disabled); cursor: not-allowed; }
+
+.field { display: flex; flex-direction: column; gap: var(--vf-space-1); margin-bottom: var(--vf-space-3); }
+.field__label { font-weight: var(--vf-font-weight-strong); font-size: var(--vf-font-size-sm); }
+.field__input {
+  padding: var(--vf-space-2) var(--vf-space-3);
+  border: 1px solid var(--vf-color-border-strong);
+  border-radius: var(--vf-radius-md);
+  background: var(--vf-color-surface);
+  color: var(--vf-color-text);
+  font: inherit;
+}
+.field__input[aria-invalid="true"] { border-color: var(--vf-color-danger); }
+.field__error { color: var(--vf-color-danger-text); font-size: var(--vf-font-size-sm); }
+
+.row { display: flex; flex-wrap: wrap; gap: var(--vf-space-2); align-items: center; }
+.muted { color: var(--vf-color-text-muted); }
+
+.notice { padding: var(--vf-space-3); border-radius: var(--vf-radius-md); margin-bottom: var(--vf-space-3); }
+.notice[data-state="info"] { background: var(--vf-color-info-soft); color: var(--vf-color-info-text); }
+.notice[data-state="success"] { background: var(--vf-color-success-soft); color: var(--vf-color-success-text); }
+.notice[data-state="warning"] { background: var(--vf-color-warning-soft); color: var(--vf-color-warning-text); }
+.notice[data-state="error"] { background: var(--vf-color-danger-soft); color: var(--vf-color-danger-text); }
+
+.list { list-style: none; margin: 0; padding: 0; }
+.list__item {
+  display: flex;
+  align-items: center;
+  gap: var(--vf-space-2);
+  padding: var(--vf-space-2) 0;
+  border-bottom: 1px solid var(--vf-color-border);
+}
+.list__item:last-child { border-bottom: none; }
+.list__text { flex: 1; }
+.list__item[data-state="done"] .list__text { color: var(--vf-color-text-muted); text-decoration: line-through; }
+
+code, pre { font-family: var(--vf-font-mono); font-size: var(--vf-font-size-sm); }
+pre {
+  background: var(--vf-color-surface-muted);
+  border-radius: var(--vf-radius-md);
+  padding: var(--vf-space-3);
+  overflow-x: auto;
+}

@@ -1,0 +1,44 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * C2 — styles: the company brand overrides tokens after vfunc.tokens.css. Nothing in JS changes.
+ * The plugin's toast is styled here too, from tokens only.
+ * 회사 브랜드가 토큰을 덮어씁니다. JS는 바뀌지 않습니다. 플러그인의 토스트도 토큰으로만 꾸밉니다.
+ */
+:root {
+  --vf-color-primary: #7c3aed;
+  --vf-color-primary-hover: #6d28d9;
+  --vf-color-primary-active: #5b21b6;
+  --vf-color-primary-soft: #f5f3ff;
+  --vf-radius-md: 999px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --vf-color-primary: #a78bfa;
+    --vf-color-primary-hover: #c4b5fd;
+    --vf-color-primary-active: #ddd6fe;
+    --vf-color-primary-soft: #2e1065;
+  }
+}
+
+.toast-stack {
+  position: fixed;
+  right: var(--vf-space-4);
+  bottom: var(--vf-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--vf-space-2);
+  z-index: var(--vf-z-toast);
+}
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--vf-space-3);
+  padding: var(--vf-space-3) var(--vf-space-4);
+  border-radius: var(--vf-radius-lg);
+  box-shadow: var(--vf-shadow-3);
+  background: var(--vf-color-surface);
+  color: var(--vf-color-text);
+  border: 1px solid var(--vf-color-border);
+}
+.toast[data-state="success"] { background: var(--vf-color-success-soft); color: var(--vf-color-success-text); }
+.toast[data-state="error"] { background: var(--vf-color-danger-soft); color: var(--vf-color-danger-text); }
+.toast__close { border: 0; background: transparent; color: inherit; font-size: var(--vf-font-size-lg); cursor: pointer; }

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>18 extend-plugin — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../_shared/example.css">
+  <!-- C2: the brand overrides tokens after vfunc.tokens.css. / 브랜드가 토큰을 덮어씀 -->
+  <link rel="stylesheet" href="./brand.css">
+</head>
+<body>
+  <main class="example">
+    <header class="example__header">
+      <a class="example__back" href="../">← examples</a>
+      <h1 class="example__title">18 extend-plugin</h1>
+      <p class="example__lead">Extend vfunc without touching its source: settings, token overrides and a plugin under
+        <code>vf.ext</code>. / 소스를 고치지 않고 확장하기: 설정, 토큰 덮어쓰기, vf.ext 플러그인.</p>
+    </header>
+    <section class="card" id="app"></section>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

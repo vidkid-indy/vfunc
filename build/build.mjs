@@ -46,6 +46,10 @@ const version = pkg.version;
 
 const banner = '/*! vfunc.js v' + version + ' | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */';
 
+function pluginBanner(name) {
+  return '/*! vfunc.js ' + name + ' plugin (vfunc v' + version + ') | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */';
+}
+
 /** The source keeps its own header for readers; the build replaces it with the stamped banner. */
 const stripSourceHeader = {
   name: 'vfunc-source-header',
@@ -63,7 +67,11 @@ const TARGETS = [
   { file: 'vfunc.min.js', entry: IIFE_ENTRY, format: 'iife', minify: true, budget: 10 * 1024 }, // D-003
   { file: 'vfunc.esm.js', entry: SOURCE, format: 'esm', minify: false },
   { file: 'vfunc.esm.min.js', entry: SOURCE, format: 'esm', minify: true },
-  { file: 'vfunc.legacy.min.js', entry: LEGACY_ENTRY, format: 'iife', minify: true, legacy: true, budget: 14 * 1024 }
+  { file: 'vfunc.legacy.min.js', entry: LEGACY_ENTRY, format: 'iife', minify: true, legacy: true, budget: 14 * 1024 },
+  // Official plugins (D-013): outside the engine budget. The <script> file goes through the
+  // legacy pipeline so it runs in IE11 and keeps names (esbuild refuses keep_names for es5).
+  { file: 'plugins/update.esm.js', entry: 'layer1/plugins/update.js', format: 'esm', minify: false, plugin: 'update' },
+  { file: 'plugins/update.min.js', entry: 'build/plugin-update-entry.js', format: 'iife', minify: true, plugin: 'update', legacy: true }
 ];
 
 /** Returns { files: [{ path, text }], inputs: [path] } without writing anything. */
@@ -83,7 +91,7 @@ async function buildTarget(target) {
     charset: 'utf8',
     sourcemap: 'linked',
     sourcesContent: true,
-    banner: { js: banner },
+    banner: { js: target.plugin ? pluginBanner(target.plugin) : banner },
     define: {
       __VFUNC_VERSION__: JSON.stringify(version),
       __VFUNC_DEV__: target.minify ? 'false' : 'true'
@@ -139,7 +147,7 @@ async function buildLegacy(target) {
     Buffer.from(JSON.stringify(es5.map)).toString('base64');
   const minified = await esbuild.build({
     absWorkingDir: ROOT,
-    stdin: { contents: withMap, sourcefile: join(DIST, 'vfunc.legacy.js'), resolveDir: join(ROOT, DIST), loader: 'js' },
+    stdin: { contents: withMap, sourcefile: join(DIST, target.file.replace(/\.min\.js$/, '.js')), resolveDir: join(ROOT, DIST), loader: 'js' },
     outfile: outfile,
     bundle: false,
     minify: true,
@@ -148,7 +156,7 @@ async function buildLegacy(target) {
     charset: 'utf8',
     sourcemap: 'linked',
     sourcesContent: true,
-    banner: { js: banner },
+    banner: { js: target.plugin ? pluginBanner(target.plugin) : banner },
     write: false,
     logLevel: 'warning'
   });
@@ -215,12 +223,13 @@ async function main() {
     }
   }
 
-  // The legacy file must be ES5 and use no post-ES5 built-in except the polyfilled ones.
+  // The legacy file and the ES5 plugin files must be ES5 and use no post-ES5 built-in except the
+  // polyfilled ones, and keep everything inside one IIFE.
   for (const target of TARGETS.filter((t) => t.legacy)) {
     const text = outputs[DIST + '/' + target.file];
     failures.push(...esCheck(target.file, text));
     // Everything must stay inside one IIFE: transpiler helpers must not become globals.
-    const body = text.slice(banner.length).replace(/^\s+/, '');
+    const body = text.slice(text.indexOf('*/') + 2).replace(/^\s+/, '');
     if (!/^(\(function\s*\(|!function\s*\()/.test(body)) {
       failures.push(target.file + ' has code outside its IIFE (a global helper?): ' + body.slice(0, 60));
     }
@@ -263,12 +272,16 @@ async function main() {
 function assembleNpmPackage() {
   const out = join(ROOT, NPM_OUT);
   rmSync(out, { recursive: true, force: true });
-  mkdirSync(join(out, 'dist'), { recursive: true });
-  mkdirSync(join(out, 'types'), { recursive: true });
+  const copy = (from, to) => {
+    mkdirSync(dirname(to), { recursive: true });
+    copyFileSync(from, to);
+  };
   for (const target of TARGETS) {
-    for (const file of [target.file, target.file + '.map']) copyFileSync(join(ROOT, DIST, file), join(out, 'dist', file));
+    for (const file of [target.file, target.file + '.map']) copy(join(ROOT, DIST, file), join(out, 'dist', file));
   }
-  for (const file of ['vfunc.d.ts', 'global.d.ts']) copyFileSync(join(ROOT, 'layer1/types', file), join(out, 'types', file));
+  for (const file of ['vfunc.d.ts', 'global.d.ts', 'plugins/update.d.ts']) copy(join(ROOT, 'layer1/types', file), join(out, 'types', file));
+  // Optional design tokens (D-011). Not generated: the file in layer1/css is the source.
+  copy(join(ROOT, 'layer1/css/vfunc.tokens.css'), join(out, 'css', 'vfunc.tokens.css'));
   for (const file of ['README.md', 'README.ko.md', 'LICENSE', 'NOTICE', 'CHANGELOG.md', OUTPUTS.text]) {
     copyFileSync(join(ROOT, file), join(out, file));
   }
@@ -295,13 +308,18 @@ function assembleNpmPackage() {
         production: './dist/vfunc.esm.min.js',
         default: './dist/vfunc.esm.js'
       },
+      './plugins/update': {
+        types: './types/plugins/update.d.ts',
+        default: './dist/plugins/update.esm.js'
+      },
+      './css/*': './css/*',
       './dist/*': './dist/*',
       './types/*': './types/*',
       './package.json': './package.json'
     },
-    // The <script> builds write window.vf; the ES modules have no side effects.
-    sideEffects: ['./dist/vfunc.js', './dist/vfunc.min.js', './dist/vfunc.legacy.min.js'],
-    files: ['dist/', 'types/', 'README.md', 'README.ko.md', 'LICENSE', 'NOTICE', 'CHANGELOG.md', OUTPUTS.text]
+    // The <script> builds write window.vf / window.vfUpdate; the ES modules have no side effects.
+    sideEffects: ['./dist/vfunc.js', './dist/vfunc.min.js', './dist/vfunc.legacy.min.js', './dist/plugins/update.min.js', './css/*.css'],
+    files: ['dist/', 'types/', 'css/', 'README.md', 'README.ko.md', 'LICENSE', 'NOTICE', 'CHANGELOG.md', OUTPUTS.text]
   };
   writeFileSync(join(out, 'package.json'), JSON.stringify(manifest, null, 2) + '\n');
   console.log('  npm package: ' + NPM_OUT + '/ (publish only after the maintainer confirms)');

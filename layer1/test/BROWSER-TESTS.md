@@ -10,7 +10,7 @@
 # repository root / 저장소 루트에서
 python -m http.server 8080
 # or from any folder / 어느 폴더에서든
-python -m http.server 8080 --directory D:\ai-project-git\vfunc.product.function
+python -m http.server 8080 --directory path/to/vfunc
 ```
 
 If the page shows `404 File not found`, the server was started in another folder (for example `build/out/npm` after publishing). Stop it and start it from the repository root.

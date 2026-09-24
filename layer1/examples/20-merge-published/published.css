@@ -1,0 +1,26 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * The publisher's CSS. Raw values were replaced with vfunc tokens during the merge (plan K-4 ⑤).
+ * 퍼블리셔의 CSS입니다. 병합하면서 원시 값을 vfunc 토큰으로 바꿨습니다.
+ */
+body { margin: 0; background: var(--vf-color-bg); color: var(--vf-color-text); font-family: var(--vf-font-body); line-height: var(--vf-line-height); }
+.order { max-width: 420px; margin: var(--vf-space-5) auto; background: var(--vf-color-surface); border-radius: var(--vf-radius-lg); box-shadow: var(--vf-shadow-3); padding: var(--vf-space-5); }
+.order__head { display: flex; justify-content: space-between; align-items: baseline; }
+.order__title { margin: 0; font-size: var(--vf-font-size-xl); }
+.order__count { color: var(--vf-color-text-muted); font-size: var(--vf-font-size-sm); }
+.line { display: grid; grid-template-columns: 1fr auto auto; gap: var(--vf-space-3); align-items: center; padding: var(--vf-space-3) 0; border-bottom: 1px solid var(--vf-color-border); }
+.line__name, .line__unit, .line__price { margin: 0; }
+.line__unit { color: var(--vf-color-text-muted); font-size: var(--vf-font-size-sm); }
+.line__price { font-weight: var(--vf-font-weight-strong); }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--vf-color-border-strong); border-radius: var(--vf-radius-full); }
+.stepper__btn { width: 32px; height: 32px; border: 0; background: transparent; color: var(--vf-color-text); cursor: pointer; font-size: var(--vf-font-size-lg); }
+.stepper__value { min-width: 2ch; text-align: center; }
+.coupon { display: flex; gap: var(--vf-space-2); margin-top: var(--vf-space-4); }
+.coupon__input { flex: 1; padding: var(--vf-space-2) var(--vf-space-3); border: 1px solid var(--vf-color-border-strong); border-radius: var(--vf-radius-md); font: inherit; background: var(--vf-color-surface); color: var(--vf-color-text); }
+.coupon__btn { padding: var(--vf-space-2) var(--vf-space-4); border: 0; border-radius: var(--vf-radius-md); background: var(--vf-color-text); color: var(--vf-color-text-inverse); font: inherit; cursor: pointer; }
+.coupon__msg { min-height: 1.5em; margin: var(--vf-space-2) 0; font-size: var(--vf-font-size-sm); }
+.coupon__msg[data-state="ok"] { color: var(--vf-color-success-text); }
+.coupon__msg[data-state="invalid"] { color: var(--vf-color-danger-text); }
+.totals { margin: 0; }
+.totals__row { display: flex; justify-content: space-between; padding: var(--vf-space-1) 0; }
+.totals__row dt, .totals__row dd { margin: 0; }
+.totals__row--grand { border-top: 1px solid var(--vf-color-border); margin-top: var(--vf-space-2); padding-top: var(--vf-space-3); font-weight: var(--vf-font-weight-strong); font-size: var(--vf-font-size-lg); }

@@ -1,0 +1,15 @@
+/* SPDX-License-Identifier: Apache-2.0 — tokens only / 토큰만 참조 */
+.tabs { display: flex; flex-wrap: wrap; gap: var(--vf-space-2); margin-top: var(--vf-space-3); }
+.tabs__link {
+  padding: var(--vf-space-1) var(--vf-space-3);
+  border-radius: var(--vf-radius-full);
+  color: var(--vf-color-text-muted);
+  text-decoration: none;
+  border: 1px solid var(--vf-color-border);
+}
+.tabs__link[aria-current="page"] {
+  background: var(--vf-color-primary-soft);
+  color: var(--vf-color-primary-active);
+  border-color: var(--vf-color-primary);
+}
+#view:focus { outline: none; }

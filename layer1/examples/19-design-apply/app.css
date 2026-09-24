@@ -1,0 +1,31 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * The app's component CSS. It reads only var(--vf-*) tokens, so a skin is a token file.
+ * 앱의 컴포넌트 CSS입니다. 토큰만 읽으므로 스킨은 토큰 파일 하나입니다.
+ */
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--vf-color-bg); color: var(--vf-color-text); font-family: var(--vf-font-body); font-size: var(--vf-font-size-md); line-height: var(--vf-line-height); }
+a { color: var(--vf-color-primary); }
+.page { max-width: 760px; margin: 0 auto; padding: var(--vf-space-5) var(--vf-space-4); }
+.page__title { margin: var(--vf-space-2) 0 var(--vf-space-1); font-size: var(--vf-font-size-2xl); }
+.page__lead { margin: 0 0 var(--vf-space-3); color: var(--vf-color-text-muted); }
+.skins { display: flex; gap: var(--vf-space-2); flex-wrap: wrap; margin-bottom: var(--vf-space-5); }
+.skins__link { padding: var(--vf-space-1) var(--vf-space-3); border: 1px solid var(--vf-color-border); border-radius: var(--vf-radius-full); text-decoration: none; color: var(--vf-color-text-muted); }
+.skins__link[aria-current="page"] { background: var(--vf-color-primary); border-color: var(--vf-color-primary); color: var(--vf-color-on-primary); }
+
+.profile { background: var(--vf-color-surface); border: 1px solid var(--vf-color-border); border-radius: var(--vf-radius-lg); box-shadow: var(--vf-shadow-2); padding: var(--vf-space-5); }
+.profile__top { display: flex; gap: var(--vf-space-4); align-items: center; }
+.profile__avatar { width: 56px; height: 56px; border-radius: var(--vf-radius-full); background: var(--vf-color-primary-soft); color: var(--vf-color-primary-active); display: grid; place-items: center; font-weight: var(--vf-font-weight-strong); font-size: var(--vf-font-size-xl); }
+.profile__name { margin: 0; font-size: var(--vf-font-size-xl); }
+.profile__role { margin: 0; color: var(--vf-color-text-muted); }
+.profile__stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--vf-space-3); margin: var(--vf-space-4) 0; }
+.stat { background: var(--vf-color-surface-muted); border-radius: var(--vf-radius-md); padding: var(--vf-space-3); text-align: center; }
+.stat__value { display: block; font-size: var(--vf-font-size-xl); font-weight: var(--vf-font-weight-strong); }
+.stat__label { color: var(--vf-color-text-muted); font-size: var(--vf-font-size-sm); }
+.profile__actions { display: flex; gap: var(--vf-space-2); }
+.button { padding: var(--vf-space-2) var(--vf-space-4); border-radius: var(--vf-radius-md); border: 1px solid var(--vf-color-border-strong); background: var(--vf-color-surface); color: var(--vf-color-text); font: inherit; cursor: pointer; }
+.button[data-variant="primary"] { background: var(--vf-color-primary); border-color: var(--vf-color-primary); color: var(--vf-color-on-primary); }
+.button[aria-pressed="true"] { background: var(--vf-color-success-soft); border-color: var(--vf-color-success); color: var(--vf-color-success-text); }
+.button:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); }
+.feed { list-style: none; margin: var(--vf-space-4) 0 0; padding: 0; }
+.feed__item { padding: var(--vf-space-2) 0; border-top: 1px solid var(--vf-color-border); }
+.feed__item[data-state="new"] { color: var(--vf-color-info-text); }

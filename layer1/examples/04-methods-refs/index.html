@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>04 methods-refs — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../_shared/example.css">
+</head>
+<body>
+  <main class="example">
+    <header class="example__header">
+      <a class="example__back" href="../">← examples</a>
+      <h1 class="example__title">04 methods-refs</h1>
+      <p class="example__lead">Plain page buttons call a component's methods; the component reaches its own
+        elements through <code>refs</code>. / 페이지의 버튼이 컴포넌트 메서드를 부르고, 컴포넌트는 refs로 자기 요소를 찾습니다.</p>
+    </header>
+
+    <!-- Ordinary HTML outside the component. / 컴포넌트 밖의 평범한 HTML -->
+    <section class="card">
+      <h2 class="card__title">Page toolbar / 페이지 도구 모음</h2>
+      <div class="row" id="toolbar">
+        <button class="btn" type="button" data-action="add-sample">Add sample note / 예시 추가</button>
+        <button class="btn" type="button" data-action="focus">Focus input / 입력칸 포커스</button>
+        <button class="btn" type="button" data-action="clear" data-variant="danger">Clear / 모두 지우기</button>
+      </div>
+    </section>
+
+    <section class="card" id="notes"></section>
+  </main>
+  <script src="../../dist/vfunc.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

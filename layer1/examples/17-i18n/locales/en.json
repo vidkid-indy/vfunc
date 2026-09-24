@@ -1,0 +1,16 @@
+{
+  "page": {
+    "title": "17 i18n",
+    "lead": "Korean / English with vf.i18n, published HTML translated with data-i18n, and vf.fmt.",
+    "search": "Search products"
+  },
+  "cart": {
+    "title": "Cart",
+    "items": { "zero": "Your cart is empty.", "one": "{count} item in your cart", "other": "{count} items in your cart" },
+    "add": "Add one",
+    "clear": "Empty the cart",
+    "total": "Total: {amount}",
+    "updated": "Updated {when}"
+  },
+  "lang": { "label": "Language" }
+}

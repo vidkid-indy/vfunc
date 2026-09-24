@@ -25,6 +25,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - `vf.config({ strictRender })` warns only in the development builds.
 - `dist/vfunc.legacy.min.js` for IE11 and Edge IE mode: the same engine transpiled to ES5, with a small Promise polyfill written for this project (installed only when `window.Promise` is missing).
 - `layer1/test/browser.html`: a browser test page for the built files, including manual runs in Edge IE mode.
+- `css/vfunc.tokens.css`: optional design tokens (`--vf-*`) with light and dark themes; the token names are public API. The default skin meets WCAG AA contrast for its main pairs.
+- Official plugin `vf.ext.update` (`dist/plugins/update.min.js` → global `vfUpdate`, `vfunc/plugins/update` for ES modules): reads `version.json` and replaces the page on the next navigation, on the user's confirmation, or at once. Works in IE11.
+- 20 runnable examples in `layer1/examples/` (hello to cache-update), each checked in Chromium by `npm run test:examples`.
 
 ### Fixed
 - Delegated events and router link interception did nothing in browsers without `Element.closest` (IE11). The engine now falls back to `msMatchesSelector` without patching `Element.prototype`.

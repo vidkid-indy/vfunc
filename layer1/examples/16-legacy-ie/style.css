@@ -1,0 +1,17 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * Plain values for IE11 (no var()). They mirror the light values of css/vfunc.tokens.css.
+ * IE11용 고정값입니다(var() 없음). vfunc.tokens.css의 라이트 값을 그대로 옮겼습니다.
+ */
+body { margin: 0; background: #f8fafc; color: #0f172a; font-family: "Segoe UI", "Malgun Gothic", Arial, sans-serif; font-size: 14px; line-height: 1.5; }
+.page { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+h1 { margin: 0 0 4px; font-size: 24px; }
+.lead, .env { color: #475569; }
+.env { font-size: 12px; }
+.nav a { display: inline-block; margin-right: 8px; padding: 4px 12px; border: 1px solid #e2e8f0; border-radius: 9999px; color: #475569; text-decoration: none; }
+.nav a[aria-current="page"] { background: #eff6ff; border-color: #2563eb; color: #1e40af; }
+.box { margin-top: 16px; padding: 16px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; }
+.task { padding: 8px 0; border-bottom: 1px solid #e2e8f0; }
+.task[data-state="done"] .task__text { color: #475569; text-decoration: line-through; }
+.btn { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; background: #ffffff; color: #0f172a; font: inherit; cursor: pointer; }
+.btn-primary { background: #2563eb; border-color: #2563eb; color: #ffffff; }
+.input { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font: inherit; }

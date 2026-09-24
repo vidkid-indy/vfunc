@@ -1,0 +1,6 @@
+[
+  { "id": 1, "name": "Kim Minsu", "team": "Platform", "joined": "2024-03-02" },
+  { "id": 2, "name": "Lee Jiwoo", "team": "Design", "joined": "2025-01-15" },
+  { "id": 3, "name": "Park Seoyeon", "team": "Data", "joined": "2023-11-20" },
+  { "id": 4, "name": "<script>alert('not run')</script>", "team": "Security test", "joined": "2026-09-01" }
+]

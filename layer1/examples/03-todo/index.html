@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>03 todo — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../_shared/example.css">
+</head>
+<body>
+  <main class="example">
+    <header class="example__header">
+      <a class="example__back" href="../">← examples</a>
+      <h1 class="example__title">03 todo</h1>
+      <p class="example__lead">One delegated listener for the whole list, and escaping of user text.
+        Try adding <code>&lt;img src=x onerror=alert(1)&gt;</code>. /
+        목록 전체에 위임 하나, 사용자 입력 이스케이프. 위 문자열을 추가해 보세요.</p>
+    </header>
+    <section class="card" id="app"></section>
+  </main>
+  <script src="../../dist/vfunc.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>07 form — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../_shared/example.css">
+</head>
+<body>
+  <main class="example">
+    <header class="example__header">
+      <a class="example__back" href="../">← examples</a>
+      <h1 class="example__title">07 form</h1>
+      <p class="example__lead"><code>vf.form.values</code> / <code>vf.form.reset</code> and validation without re-rendering the form. /
+        폼을 다시 그리지 않고 값 읽기·초기화·유효성 검사.</p>
+    </header>
+
+    <form class="card" id="signup" data-action="submit" novalidate>
+      <h2 class="card__title">Sign up / 가입</h2>
+      <div class="notice" data-ref="result" hidden></div>
+
+      <label class="field">
+        <span class="field__label">Name / 이름</span>
+        <input class="field__input" id="name" autocomplete="name" aria-describedby="name-error">
+        <span class="field__error" id="name-error" data-ref="error-name"></span>
+      </label>
+      <label class="field">
+        <span class="field__label">Email / 이메일</span>
+        <input class="field__input" id="email" type="email" autocomplete="email" aria-describedby="email-error">
+        <span class="field__error" id="email-error" data-ref="error-email"></span>
+      </label>
+      <label class="field">
+        <span class="field__label">Password (8+) / 비밀번호(8자 이상)</span>
+        <input class="field__input" id="password" type="password" autocomplete="new-password" aria-describedby="password-error">
+        <span class="field__error" id="password-error" data-ref="error-password"></span>
+      </label>
+      <label class="field">
+        <span class="field__label">Plan / 요금제</span>
+        <select class="field__input" id="plan" user-default="0">
+          <option value="free">Free</option>
+          <option value="pro">Pro</option>
+          <option value="team">Team</option>
+        </select>
+      </label>
+      <label class="row">
+        <input type="checkbox" id="agree" aria-describedby="agree-error">
+        <span>I agree to the terms / 약관에 동의합니다</span>
+      </label>
+      <p class="field__error" id="agree-error" data-ref="error-agree"></p>
+      <input type="hidden" id="source" value="example-07">
+
+      <div class="row">
+        <button class="btn" type="submit" data-variant="primary">Create account / 가입하기</button>
+        <button class="btn" type="button" data-action="reset">Reset / 초기화</button>
+      </div>
+    </form>
+  </main>
+  <script src="../../dist/vfunc.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

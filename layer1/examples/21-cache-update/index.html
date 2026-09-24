@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>21 cache-update — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../_shared/example.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="example">
+    <header class="example__header">
+      <a class="example__back" href="../">← examples</a>
+      <h1 class="example__title">21 cache-update</h1>
+      <p class="example__lead">Apps without a reload button still get new releases: <code>vf.ext.update</code> reads
+        <code>version.json</code> and replaces the page on the next screen change. /
+        새로고침 버튼이 없는 앱도 새 버전을 받습니다: 다음 화면 이동 때 페이지를 교체합니다.</p>
+      <nav class="row" id="nav" aria-label="Pages">
+        <a class="btn" data-link href="#/">Home</a>
+        <a class="btn" data-link href="#/settings">Settings</a>
+        <a class="btn" href="./?policy=next-navigation">policy: next-navigation</a>
+        <a class="btn" href="./?policy=prompt">policy: prompt</a>
+      </nav>
+    </header>
+    <section class="card" id="status"></section>
+    <section class="card" id="view"></section>
+  </main>
+  <div class="update-toast" id="update-toast"></div>
+  <script src="../../dist/vfunc.js"></script>
+  <script src="../../dist/plugins/update.min.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

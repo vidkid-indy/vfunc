@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'">
+  <title>Published order summary (static source)</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../../css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../published.css">
+</head>
+<body>
+  <!-- The publisher's static HTML as delivered: no data, no hooks. Kept as the merge source.
+       퍼블리셔가 전달한 정적 HTML 원본(데이터·훅 없음). 병합의 원본으로 보관합니다. -->
+  <aside class="order">
+    <header class="order__head"><h2 class="order__title">Your order</h2><span class="order__count">2 items</span></header>
+    <div class="order__lines">
+      <div class="line">
+        <div class="line__info"><p class="line__name">Product name</p><p class="line__unit">₩00,000 each</p></div>
+        <div class="stepper"><button class="stepper__btn" type="button">−</button><span class="stepper__value">1</span><button class="stepper__btn" type="button">+</button></div>
+        <p class="line__price">₩00,000</p>
+      </div>
+    </div>
+    <form class="coupon"><input class="coupon__input" placeholder="Promo code"><button class="coupon__btn" type="submit">Apply</button></form>
+    <p class="coupon__msg">Message</p>
+    <dl class="totals">
+      <div class="totals__row"><dt>Subtotal</dt><dd>₩00,000</dd></div>
+      <div class="totals__row"><dt>Discount</dt><dd>−₩0</dd></div>
+      <div class="totals__row totals__row--grand"><dt>Total</dt><dd>₩00,000</dd></div>
+    </dl>
+  </aside>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>17 i18n — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../_shared/example.css">
+</head>
+<body>
+  <main class="example">
+    <header class="example__header">
+      <a class="example__back" href="../">← examples</a>
+      <!-- Published markup: text comes from data-i18n keys. / 퍼블리싱 마크업: 텍스트는 data-i18n 키에서 -->
+      <h1 class="example__title" data-i18n="page.title">17 i18n</h1>
+      <p class="example__lead" data-i18n="page.lead"></p>
+      <div class="row" id="lang"></div>
+    </header>
+    <section class="card">
+      <label class="field">
+        <span class="field__label" data-i18n="page.search"></span>
+        <input class="field__input" id="search" data-i18n-attr="placeholder:page.search; aria-label:page.search">
+      </label>
+    </section>
+    <section class="card" id="cart"></section>
+  </main>
+  <script src="../../dist/vfunc.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

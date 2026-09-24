@@ -1,0 +1,9 @@
+/* SPDX-License-Identifier: Apache-2.0 — tokens only / 토큰만 참조 */
+.counter__value {
+  font-size: var(--vf-font-size-2xl);
+  font-weight: var(--vf-font-weight-strong);
+  min-width: 3ch;
+  text-align: center;
+}
+.counter__value[data-state="negative"] { color: var(--vf-color-danger-text); }
+.counter__renders { font-size: var(--vf-font-size-sm); }

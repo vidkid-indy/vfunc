@@ -1,0 +1,208 @@
+/*!
+ * vfunc.tokens.css | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc
+ */
+/*
+ * Optional design tokens of vfunc.js (D-011, plan section K-2): a neutral skin with light and
+ * dark themes. The engine never needs this file; your CSS and layer 2 components read these
+ * variables, so one DESIGN.md -> tokens.css change restyles the whole app.
+ *
+ * Token names are public API (semver, CLAUDE.md rule 18). Raw values live only here.
+ * Theme: follows the OS setting; force one with <html data-theme="light"> or data-theme="dark".
+ *
+ * vfunc.js의 선택형 디자인 토큰입니다. 엔진은 이 파일이 없어도 동작합니다. 앱 CSS와 layer2
+ * 컴포넌트가 이 변수를 읽으므로 토큰만 바꾸면 화면 전체의 디자인이 바뀝니다.
+ * 토큰 이름은 공개 API입니다. 원시 값(hex, px)은 이 파일에만 둡니다.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Brand / 브랜드 */
+  --vf-color-primary: #2563eb;
+  --vf-color-primary-hover: #1d4ed8;
+  --vf-color-primary-active: #1e40af;
+  --vf-color-primary-soft: #eff6ff;
+  --vf-color-on-primary: #ffffff;
+
+  /* Status / 상태: solid, soft background, text on the soft background */
+  --vf-color-success: #059669;
+  --vf-color-success-soft: #ecfdf5;
+  --vf-color-success-text: #047857;
+  --vf-color-warning: #d97706;
+  --vf-color-warning-soft: #fffbeb;
+  --vf-color-warning-text: #b45309;
+  --vf-color-danger: #dc2626;
+  --vf-color-danger-soft: #fef2f2;
+  --vf-color-danger-text: #b91c1c;
+  --vf-color-info: #2563eb;
+  --vf-color-info-soft: #eff6ff;
+  --vf-color-info-text: #1d4ed8;
+
+  /* Surfaces / 면 */
+  --vf-color-bg: #f8fafc;
+  --vf-color-surface: #ffffff;
+  --vf-color-surface-muted: #f1f5f9;
+  --vf-color-overlay: rgba(15, 23, 42, 0.5);
+
+  /* Text / 글자 */
+  --vf-color-text: #0f172a;
+  --vf-color-text-muted: #475569;
+  --vf-color-text-disabled: #94a3b8;
+  --vf-color-text-inverse: #ffffff;
+
+  /* Borders and focus / 테두리와 포커스 */
+  --vf-color-border: #e2e8f0;
+  --vf-color-border-strong: #cbd5e1;
+  --vf-color-focus: #3b82f6;
+  --vf-focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.35);
+
+  /* Charts: 8 categorical colors / 차트 계열 색 8개 */
+  --vf-chart-1: #2563eb;
+  --vf-chart-2: #d97706;
+  --vf-chart-3: #059669;
+  --vf-chart-4: #dc2626;
+  --vf-chart-5: #7c3aed;
+  --vf-chart-6: #0891b2;
+  --vf-chart-7: #db2777;
+  --vf-chart-8: #65a30d;
+
+  /* Shadows / 그림자 */
+  --vf-shadow-1: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --vf-shadow-2: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -2px rgba(15, 23, 42, 0.1);
+  --vf-shadow-3: 0 10px 15px -3px rgba(15, 23, 42, 0.12), 0 4px 6px -4px rgba(15, 23, 42, 0.1);
+
+  /* Radii / 모서리 */
+  --vf-radius-sm: 4px;
+  --vf-radius-md: 6px;
+  --vf-radius-lg: 10px;
+  --vf-radius-full: 9999px;
+
+  /* Spacing / 간격 */
+  --vf-space-1: 4px;
+  --vf-space-2: 8px;
+  --vf-space-3: 12px;
+  --vf-space-4: 16px;
+  --vf-space-5: 24px;
+  --vf-space-6: 32px;
+  --vf-space-7: 48px;
+
+  /* Typography / 글꼴 */
+  --vf-font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", "Malgun Gothic", sans-serif;
+  --vf-font-mono: ui-monospace, "Cascadia Code", Consolas, "D2Coding", monospace;
+  --vf-font-size-xs: 12px;
+  --vf-font-size-sm: 13px;
+  --vf-font-size-md: 14px;
+  --vf-font-size-lg: 16px;
+  --vf-font-size-xl: 20px;
+  --vf-font-size-2xl: 24px;
+  --vf-font-weight-normal: 400;
+  --vf-font-weight-strong: 600;
+  --vf-line-height: 1.5;
+
+  /* Motion / 움직임 */
+  --vf-duration-fast: 0.15s;
+  --vf-duration-base: 0.2s;
+  --vf-easing: ease;
+
+  /* Layers / 층위: dropdown < popover < drawer < modal < toast */
+  --vf-z-dropdown: 1000;
+  --vf-z-popover: 1100;
+  --vf-z-drawer: 1200;
+  --vf-z-modal: 1300;
+  --vf-z-toast: 1400;
+}
+
+/* Dark theme: follows the OS unless data-theme="light" is set. / 다크 테마 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --vf-color-primary: #60a5fa;
+    --vf-color-primary-hover: #93c5fd;
+    --vf-color-primary-active: #bfdbfe;
+    --vf-color-primary-soft: #172554;
+    --vf-color-on-primary: #0f172a;
+    --vf-color-success: #34d399;
+    --vf-color-success-soft: #052e16;
+    --vf-color-success-text: #6ee7b7;
+    --vf-color-warning: #fbbf24;
+    --vf-color-warning-soft: #422006;
+    --vf-color-warning-text: #fcd34d;
+    --vf-color-danger: #f87171;
+    --vf-color-danger-soft: #450a0a;
+    --vf-color-danger-text: #fca5a5;
+    --vf-color-info: #60a5fa;
+    --vf-color-info-soft: #172554;
+    --vf-color-info-text: #93c5fd;
+    --vf-color-bg: #0f172a;
+    --vf-color-surface: #1e293b;
+    --vf-color-surface-muted: #273449;
+    --vf-color-overlay: rgba(2, 6, 23, 0.7);
+    --vf-color-text: #f1f5f9;
+    --vf-color-text-muted: #94a3b8;
+    --vf-color-text-disabled: #64748b;
+    --vf-color-text-inverse: #0f172a;
+    --vf-color-border: #334155;
+    --vf-color-border-strong: #475569;
+    --vf-color-focus: #60a5fa;
+    --vf-focus-ring: 0 0 0 3px rgba(96, 165, 250, 0.45);
+    --vf-chart-1: #60a5fa;
+    --vf-chart-2: #fbbf24;
+    --vf-chart-3: #34d399;
+    --vf-chart-4: #f87171;
+    --vf-chart-5: #a78bfa;
+    --vf-chart-6: #22d3ee;
+    --vf-chart-7: #f472b6;
+    --vf-chart-8: #a3e635;
+    --vf-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --vf-shadow-2: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+    --vf-shadow-3: 0 10px 15px -3px rgba(0, 0, 0, 0.55), 0 4px 6px -4px rgba(0, 0, 0, 0.45);
+  }
+}
+
+/* The same dark values, forced with data-theme="dark". / 강제 다크 테마 */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --vf-color-primary: #60a5fa;
+  --vf-color-primary-hover: #93c5fd;
+  --vf-color-primary-active: #bfdbfe;
+  --vf-color-primary-soft: #172554;
+  --vf-color-on-primary: #0f172a;
+  --vf-color-success: #34d399;
+  --vf-color-success-soft: #052e16;
+  --vf-color-success-text: #6ee7b7;
+  --vf-color-warning: #fbbf24;
+  --vf-color-warning-soft: #422006;
+  --vf-color-warning-text: #fcd34d;
+  --vf-color-danger: #f87171;
+  --vf-color-danger-soft: #450a0a;
+  --vf-color-danger-text: #fca5a5;
+  --vf-color-info: #60a5fa;
+  --vf-color-info-soft: #172554;
+  --vf-color-info-text: #93c5fd;
+  --vf-color-bg: #0f172a;
+  --vf-color-surface: #1e293b;
+  --vf-color-surface-muted: #273449;
+  --vf-color-overlay: rgba(2, 6, 23, 0.7);
+  --vf-color-text: #f1f5f9;
+  --vf-color-text-muted: #94a3b8;
+  --vf-color-text-disabled: #64748b;
+  --vf-color-text-inverse: #0f172a;
+  --vf-color-border: #334155;
+  --vf-color-border-strong: #475569;
+  --vf-color-focus: #60a5fa;
+  --vf-focus-ring: 0 0 0 3px rgba(96, 165, 250, 0.45);
+  --vf-chart-1: #60a5fa;
+  --vf-chart-2: #fbbf24;
+  --vf-chart-3: #34d399;
+  --vf-chart-4: #f87171;
+  --vf-chart-5: #a78bfa;
+  --vf-chart-6: #22d3ee;
+  --vf-chart-7: #f472b6;
+  --vf-chart-8: #a3e635;
+  --vf-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --vf-shadow-2: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --vf-shadow-3: 0 10px 15px -3px rgba(0, 0, 0, 0.55), 0 4px 6px -4px rgba(0, 0, 0, 0.45);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>15 with-chartjs — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../_shared/example.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="example">
+    <header class="example__header">
+      <a class="example__back" href="../">← examples</a>
+      <h1 class="example__title">15 with-chartjs</h1>
+      <p class="example__lead">Any library can live inside a component: create it in <code>onMount</code>, update it in
+        <code>onUpdate</code>, release it in <code>onDestroy</code>, and keep its DOM with <code>data-vf-keep</code>. /
+        어떤 라이브러리든 붙일 수 있습니다: onMount에서 만들고, onUpdate에서 갱신하고, onDestroy에서 정리합니다.</p>
+    </header>
+    <section class="card" id="app"></section>
+  </main>
+  <!-- Chart.js 4.5.1 (MIT) from the CDN: exact version + SRI. Not bundled. / 번들하지 않고 CDN에서 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"
+          integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
+  <script src="../../dist/vfunc.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' https://cdn.jsdelivr.net; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>12 with-bootstrap — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <!-- Bootstrap 5.3.8 (MIT), exact version + SRI. / 정확한 버전 + SRI -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body class="bg-light">
+  <main class="container py-4 page">
+    <a class="small" href="../">← examples</a>
+    <h1 class="h3 mt-2">12 with-bootstrap</h1>
+    <p class="text-secondary">Bootstrap markup and classes stay as they are; vfunc only adds behaviour through
+      <code>data-action</code>. / Bootstrap 마크업과 클래스는 그대로, 동작만 vfunc로.</p>
+
+    <!-- Published Bootstrap markup, adopted by vf.attach. / 퍼블리싱된 Bootstrap 마크업 -->
+    <div class="card mb-3" id="subscribe">
+      <div class="card-body">
+        <h2 class="h5 card-title">Newsletter</h2>
+        <div class="alert alert-success d-none" role="status" data-ref="done">Subscribed! / 구독되었습니다.</div>
+        <div class="input-group">
+          <input type="email" class="form-control" id="email" placeholder="you@example.com" aria-label="Email">
+          <button class="btn btn-primary" type="button" data-action="subscribe">Subscribe</button>
+        </div>
+        <div class="invalid-feedback d-block" data-ref="error"></div>
+      </div>
+    </div>
+
+    <!-- A component rendered with Bootstrap classes. / Bootstrap 클래스로 렌더하는 컴포넌트 -->
+    <div class="card" id="tasks"></div>
+  </main>
+  <script src="../../dist/vfunc.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>19 design-apply — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../css/vfunc.tokens.css">
+  <link rel="stylesheet" href="./app.css">
+  <!-- Adds skins/<name>.css (tokens only) for ?skin=a|b. The app code never changes.
+       ?skin=a|b이면 skins/<이름>.css(토큰만)를 더합니다. 앱 코드는 바뀌지 않습니다. -->
+  <script src="./skin.js"></script>
+</head>
+<body>
+  <div class="page">
+    <header class="page__header">
+      <a href="../">← examples</a>
+      <h1 class="page__title">19 design-apply</h1>
+      <p class="page__lead">One app, three skins. Only tokens change; <code>app.js</code> is identical. /
+        같은 앱, 스킨 세 개. 토큰만 바뀌고 app.js는 같습니다.</p>
+      <nav class="skins" aria-label="Skin">
+        <a class="skins__link" href="./" data-skin="neutral">Neutral / 중립</a>
+        <a class="skins__link" href="./?skin=a" data-skin="a">DESIGN A · Warm</a>
+        <a class="skins__link" href="./?skin=b" data-skin="b">DESIGN B · Studio</a>
+      </nav>
+    </header>
+    <main id="app"></main>
+  </div>
+  <script src="../../dist/vfunc.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

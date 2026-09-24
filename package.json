@@ -1,6 +1,6 @@
 {
   "name": "vfunc",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0-rc.3",
   "description": "UI as plain functions. A no-build vanilla JavaScript library: keep your HTML, control only what you need.",
   "license": "Apache-2.0",
   "author": "vidkid (https://github.com/vidkid-indy)",
@@ -25,6 +25,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test \"layer1/test/*.test.js\" \"build/*.test.js\"",
+    "test:examples": "node --test --test-concurrency=1 \"layer1/test/e2e/*.e2e.js\"",
     "build": "node build/build.mjs",
     "build:check": "node build/build.mjs --check",
     "licenses": "node build/licenses.mjs",
@@ -35,6 +36,7 @@
     "@babel/preset-env": "8.0.6",
     "es-check": "9.8.1",
     "esbuild": "0.28.2",
-    "happy-dom": "^20.14.5"
+    "happy-dom": "^20.14.5",
+    "playwright": "1.63.0"
   }
 }
