@@ -2,7 +2,7 @@
 
 > vfunc.js는 빌드가 필요 없는 순수 Vanilla JavaScript UI 라이브러리입니다(Apache-2.0). Virtual DOM 없이 innerHTML로 렌더링하고, 이벤트는 위임으로, 요소는 `data-ref`로 찾습니다. 기본 개념: HTML은 그대로 쓰고 제어가 필요한 곳만 vfunc로 만든다. 전역은 `vf` 하나입니다.
 
-vfunc.js 1.0(릴리스 후보)용입니다. 전체 레퍼런스는 ai-docs/vfunc_manual.md이고, 이 파일에는 올바른 코드를 쓰는 데 필요한 것만 담았습니다. 코드 예시와 API 설명은 영어판 llms.txt와 같습니다.
+vfunc.js 1.0(릴리스 후보)용입니다. 전체 레퍼런스는 llms-full.txt(이 파일의 영어판 + 사이트 가이드·API 레퍼런스 + 타입 선언)이고, 이 파일에는 올바른 코드를 쓰는 데 필요한 것만 담았습니다. 코드 예시와 API 설명은 영어판 llms.txt와 같습니다.
 
 ## 불러오기
 
@@ -96,4 +96,4 @@ layer1/starter/: 복사해서 쓰는 앱(라우터, store, 다국어, 토큰, up
 ## 더 보기
 
 - 타입: `types/vfunc.d.ts`(ES 모듈), `types/global.d.ts`(스크립트 빌드의 전역 `vf`)
-- 전체 매뉴얼: ai-docs/vfunc_manual.md · 확장: EXTENDING.md · 보안: SECURITY.md
+- 전체 레퍼런스: llms-full.txt · 한국어 문서: 사이트 · 확장: EXTENDING.md · 보안: SECURITY.md

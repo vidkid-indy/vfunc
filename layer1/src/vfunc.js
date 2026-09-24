@@ -6,7 +6,7 @@
 // vfunc.js layer 1 — the engine and its core helpers, in a single source file.
 //
 // Origin: the pilot engine (vf.func.js, vf.common.js, core/utils/escapeHtml.js) merged and
-// reworked for the product. See ai-docs/architecture_decisions.md D-002 to D-014.
+// reworked for the product (maintainer decisions D-002 to D-014).
 //
 // Compatibility rule (CLAUDE.md rule 19): this file is also transpiled to ES5 for IE11 /
 // Edge IE mode. Do not use APIs that cannot be polyfilled (Proxy, WeakRef, regex lookbehind).

@@ -19,6 +19,9 @@ layer1/starter/dist/
 *.pem
 *.key
 
+# Maintainer-only documents and rules (private repository vfunc-internal, D-022)
+internal/
+
 # Local agent settings (personal permissions, paths)
 .claude/settings.local.json
 

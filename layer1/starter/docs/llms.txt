@@ -2,7 +2,7 @@
 
 > vfunc.js is a no-build vanilla JavaScript UI library (Apache-2.0). No virtual DOM: components render with innerHTML, events use delegation, and elements are reached through `data-ref`. Idea: keep your HTML as it is and use vfunc only where you need control. One global `vf`.
 
-For vfunc.js 1.0 (release candidates). The full reference is ai-docs/vfunc_manual.md; this file keeps only what is needed to write correct code. Korean: llms.ko.txt.
+For vfunc.js 1.0 (release candidates). The full reference is llms-full.txt (this file + the website guide and API reference + the type declarations); this file keeps only what is needed to write correct code. Korean: llms.ko.txt.
 
 ## Load
 
@@ -117,4 +117,4 @@ layer1/starter/: a copyable app (router, store, i18n, tokens, update plugin, des
 ## Optional
 
 - Types: `types/vfunc.d.ts` (ES modules), `types/global.d.ts` (global `vf` of the script build).
-- Full manual: ai-docs/vfunc_manual.md · Extending: EXTENDING.md · Security: SECURITY.md
+- Full reference: llms-full.txt · Extending: EXTENDING.md · Security: SECURITY.md

@@ -73,6 +73,8 @@ test('the DESIGN.md template tokens block matches vfunc.tokens.css', () => {
 test('llms-full.txt is generated from its sources and up to date', () => {
   const current = read(join(AI, 'llms-full.txt'));
   assert.equal(current, generateLlmsFull(), 'run npm run build');
-  assert.match(current, /# Part 2 — Reference manual/);
+  assert.match(current, /# Part 2 — Guide and API reference/);
+  assert.match(current, /### `vf\.vfunc/, 'the API page is included');
+  assert.doesNotMatch(current, /internal\/|ai-docs|\{\{\w+\}\}|@VERSION@/, 'no internal paths or unfilled blocks');
   assert.match(current, /export declare const vfunc/);
 });

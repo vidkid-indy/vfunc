@@ -2,7 +2,7 @@
 //
 // Type declarations of vfunc.js layer 1. This file is the boundary of the public API
 // (CLAUDE.md rules 16 and 18, D-009): anything not declared here is internal, and names starting
-// with "_" are never public. Written by hand; keep it in step with ai-docs/vfunc_manual.md.
+// with "_" are never public. Written by hand; keep it in step with the API page of the website (site/content/*/api.md).
 
 // ---------------------------------------------------------------------------------------------
 // Safe HTML (manual section 4)
