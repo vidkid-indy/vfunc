@@ -42,7 +42,7 @@ vf.attach('#search', {
                 onEvent: (e) => { e.event.preventDefault(); run(vf.form.values(e.sender.$node)); } }]
 });
 
-// With render: replace it with new markup (areas that change with data)
+// With render: the element stays, render fills its inside (areas that change with data)
 const results = vf.attach('#results', { state: { items: [] }, render: (s) => vf.html`…` });
 ```
 
@@ -53,7 +53,7 @@ const results = vf.attach('#results', { state: { items: [] }, render: (s) => vf.
 | Position | Handling |
 |---|---|
 | element content `<p>${x}</p>` | HTML-escaped; arrays joined; `vf.html` results inserted as markup |
-| quoted attribute `title="${x}"` | escaped |
+| quoted attribute `title="${x}"` | escaped; `false`/`null` empty, but `aria-*`/`data-*` keep `"true"`/`"false"` |
 | URL attribute `href`, `src`, `action` … | escaped + `vf.safeUrl` (`javascript:` refused) |
 | inside a tag `<button ${x}>` | bare attribute names such as `disabled` only |
 | `on*` attributes, `<script>`, unquoted attributes | **refused**: the value is dropped and reported (an error with `vf.config({ strict: true })`) |

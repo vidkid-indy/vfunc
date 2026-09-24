@@ -101,7 +101,7 @@ export interface VfuncOptions<S extends object = Record<string, any>, M extends 
   innerHTML?: string | SafeHtml;
   /** Returns the markup for the current state. Build it with vf.html. */
   render?: (this: VfuncInstance<S, M>, state: S) => SafeHtml | string;
-  /** Use the first element of the markup as the root instead of wrapping it. */
+  /** Use the first element of the markup as the root, instead of a `tag` wrapper (vf.vfunc) or the target element (vf.attach). */
   replaceRoot?: boolean;
   /** State. Each key is also readable and writable as `instance.key`. */
   state?: S;
@@ -167,9 +167,10 @@ export interface VfuncConstructor {
 export declare const vfunc: VfuncConstructor;
 
 /**
- * Turns an element that is already in the page into a component. Without render/innerHTML the
- * element itself becomes the root; with them the new markup replaces it (`replaceRoot` defaults to true).
- * Returns null when the target is not found.
+ * Turns an element that is already in the page into a component. The element itself is the root and
+ * keeps its attributes; render/innerHTML fill only its inside (parsed as content of its own tag).
+ * With `replaceRoot: true` the first element of the markup replaces the element. Returns null when the
+ * target is not found.
  */
 export declare function attach<S extends object = Record<string, any>, M extends object = Record<string, any>>(
   target: Element | string, options?: VfuncOptions<S, M>): VfuncInstance<S, M> | null;

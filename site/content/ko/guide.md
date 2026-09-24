@@ -42,7 +42,7 @@ vf.attach('#search', {
                 onEvent: (e) => { e.event.preventDefault(); run(vf.form.values(e.sender.$node)); } }]
 });
 
-// render가 있으면: 새 마크업으로 대체(데이터에 따라 바뀌는 영역)
+// render가 있으면: 요소는 그대로, 안쪽을 render가 채움(데이터에 따라 바뀌는 영역)
 const results = vf.attach('#results', { state: { items: [] }, render: (s) => vf.html`…` });
 ```
 
@@ -53,7 +53,7 @@ const results = vf.attach('#results', { state: { items: [] }, render: (s) => vf.
 | 위치 | 처리 |
 |---|---|
 | 요소 내용 `<p>${x}</p>` | HTML 이스케이프. 배열은 이어 붙이고, `vf.html` 결과는 마크업으로 |
-| 따옴표 속성 `title="${x}"` | 이스케이프 |
+| 따옴표 속성 `title="${x}"` | 이스케이프. `false`/`null`은 빈 값, 단 `aria-*`/`data-*`는 `"true"`/`"false"` |
 | URL 속성 `href`, `src`, `action` … | 이스케이프 + `vf.safeUrl`(`javascript:` 차단) |
 | 태그 안 `<button ${x}>` | `disabled` 같은 속성 이름만 |
 | `on*` 속성, `<script>`, 따옴표 없는 속성 | **거부**: 값을 빼고 콘솔에 알림(`vf.config({ strict: true })`면 예외) |

@@ -6,7 +6,7 @@ vfunc.js 1.0(릴리스 후보)용입니다. 전체 레퍼런스는 llms-full.txt
 
 ## 불러오기
 
-- 스크립트 태그: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.4/dist/vfunc.min.js" integrity="sha384-EOBIff5t5V2ew+DDIOtyd9q4ev5U+zj9rggBJ0UKBU3d5dNTl9PeCGAG+0py+iMZ" crossorigin="anonymous"></script>` → 전역 `vf`. 운영에서는 정확한 버전과 SRI를 붙입니다. integrity 값은 버전·파일마다 다릅니다(이 값은 1.0.0-rc.4의 vfunc.min.js). `dist/vfunc.js`는 경고가 나오는 개발용입니다.
+- 스크립트 태그: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.5/dist/vfunc.min.js" integrity="sha384-XVwq6bBMZad0alIKEG7vuAoxb0oNsyXYdIX6MxQGyF/NYfvVQjhzD8gJIStaZ2a/" crossorigin="anonymous"></script>` → 전역 `vf`. 운영에서는 정확한 버전과 SRI를 붙입니다. integrity 값은 버전·파일마다 다릅니다(이 값은 1.0.0-rc.5의 vfunc.min.js). `dist/vfunc.js`는 경고가 나오는 개발용입니다.
 - ES 모듈: `import vf from 'vfunc'` 또는 `import { vfunc, html, router } from 'vfunc'`. 복사한 파일도 같습니다(`import vf from './lib/vfunc.esm.min.js'`). ES 모듈은 `window.vf`를 건드리지 않습니다.
 - IE11·Edge IE 모드: `dist/vfunc.legacy.min.js`(API 동일, Promise 폴리필만 포함). 앱 코드도 ES5여야 합니다. 화살표 함수·const/let·템플릿 리터럴·클래스를 쓰지 말고, vf.html 템플릿 리터럴 대신 `vf.tpl('<b>{name}</b>', data)`을 씁니다. 앱에 필요한 다른 기능(Object.assign, fetch 등)은 앱이 직접 폴리필합니다. 불러오기: `<script type="module" src="app.js">` + `<script nomodule src="vfunc.legacy.min.js">` + `<script nomodule src="app.es5.js">`.
 
@@ -22,7 +22,7 @@ vfunc.js 1.0(릴리스 후보)용입니다. 전체 레퍼런스는 llms-full.txt
 
 ## vf.vfunc(options) — 컴포넌트 (`new` 있어도 없어도 됨)
 
-옵션: `tag`('div'), `opts`(루트 속성. innerHTML/outerHTML/srcdoc와 문자열 on*은 거부), `innerHTML`(신뢰하는 초기 마크업), `render(state)` → vf.html 결과(`this`는 인스턴스), `replaceRoot`(false: 마크업을 `opts`가 적용된 새 `tag` 요소로 감싼 것이 루트, true: 마크업의 첫 요소가 루트), `state`, `methods`, `events: [{ id?, eventType, onEvent? }]`(`id`는 루트 안 요소의 id. 없으면 루트 자체에 걸림), `delegates: [{ selector, eventType, onEvent? }]`, `childs: [인스턴스 | 노드 | { targetId, component }]`, `onEvent`, `onError`, `onMount`, `onUpdate`, `onDestroy`.
+옵션: `tag`('div'), `opts`(루트 속성. innerHTML/outerHTML/srcdoc와 문자열 on*은 거부), `innerHTML`(신뢰하는 초기 마크업), `render(state)` → vf.html 결과(`this`는 인스턴스), `replaceRoot`(기본 false: 루트는 `tag` 요소 — vf.attach는 대상 요소 자체 — 이고 마크업은 그 안쪽, true: 마크업의 첫 요소가 루트), `state`, `methods`, `events: [{ id?, eventType, onEvent? }]`(`id`는 루트 안 요소의 id. 없으면 루트 자체에 걸림), `delegates: [{ selector, eventType, onEvent? }]`, `childs: [인스턴스 | 노드 | { targetId, component }]`, `onEvent`, `onError`, `onMount`, `onUpdate`, `onDestroy`.
 
 이벤트 객체 `e`: `sender`(인스턴스), `event`, `eventType`, `target`(붙은 요소 또는 일치한 요소), `id`, `data`.
 
@@ -42,14 +42,14 @@ refresh: 루트 안쪽을 교체하고, `childs`는 다시 옮겨 붙이며(상�
 
 ## vf.html과 관련 함수
 
-- `vf.html\`…\``은 위치별로 처리합니다: 텍스트(이스케이프, 배열은 이어 붙임, vf.html 결과와 인스턴스는 마크업으로, null/undefined/false → ''), 따옴표 속성(이스케이프. `false`/null/undefined → '', 배열은 공백으로 이어 붙임 — 그래서 `${on}`이 아니라 `aria-selected="${on ? 'true' : 'false'}"`로 씀), URL 속성 href/src/action/formaction/poster/cite…(이스케이프 + `vf.safeUrl`), 태그 안은 속성 이름만(`<button ${disabled ? 'disabled' : ''}>`), 태그 이름은 script/style/iframe/svg… 제외.
+- `vf.html\`…\``은 위치별로 처리합니다: 텍스트(이스케이프, 배열은 이어 붙임, vf.html 결과와 인스턴스는 마크업으로, null/undefined/false → ''), 따옴표 속성(이스케이프. 배열은 공백으로 이어 붙임, null/undefined → ''. `false` → ''이지만 `aria-*`/`data-*`에서는 boolean이 `"true"`/`"false"`로 남으므로 `aria-selected="${on}"`이 맞게 동작), URL 속성 href/src/action/formaction/poster/cite…(이스케이프 + `vf.safeUrl`), 태그 안은 속성 이름만(`<button ${disabled ? 'disabled' : ''}>`), 태그 이름은 script/style/iframe/svg… 제외.
 - 거부: `on*` 속성, `srcdoc`, 따옴표 없는 값(`class=${x}`), `<script>`/`<style>` 내용, 함수. 값을 빼고 알리며, `vf.config({ strict: true })`면 예외를 던집니다(개발·테스트에서 권장).
 - `vf.tpl('<a href="{url}">{label}</a>', data)` — 템플릿 리터럴 없이 같은 보호(ES5).
 - `vf.esc(v)` → 문자열, `vf.nl2br(v)` → SafeHtml, `vf.safeUrl(u)` → http/https/mailto/tel/상대 경로 또는 '#', `vf.unsafeHtml(markup)`.
 
 ## vf.attach(target, options) — 퍼블리싱 HTML 제어
 
-옵션은 `vf.vfunc`와 같습니다. `render`/`innerHTML`이 없으면 기존 요소가 그대로 루트가 됩니다(마크업·입력값·리스너 유지). `render`가 있으면 새 마크업으로 요소를 대체합니다. 기본(`replaceRoot: true`)에서는 `render`가 요소 전체를 돌려주므로 태그·`id`·클래스를 그대로 옮겨 적습니다. `replaceRoot: false`면 `tag`와 `opts: { id, className }`을 주고 `render`는 안쪽만 돌려줍니다. 새 마크업이나 `opts`에 없는 원래 요소의 속성은 사라집니다. 대상이 없으면 null.
+옵션은 `vf.vfunc`와 같습니다. 기존 요소가 루트가 되고 속성과 리스너가 유지됩니다. `render`/`innerHTML`이 없으면 마크업과 입력값도 그대로입니다. `render`가 있으면 `render`는 요소의 **안쪽만** 돌려줍니다(요소 태그를 다시 적지 않음). 요소 자신의 태그 안으로 파싱하므로 `<tbody>`에는 `tag` 없이 행을 그릴 수 있습니다. 상태에 따라 바뀌는 루트 속성은 `onMount`/`onUpdate`에서 설정합니다(`inst.$node.setAttribute(…)`). `replaceRoot: true`면 마크업의 첫 요소가 요소 자체를 대체합니다. 대상이 없으면 null.
 
 ## 헬퍼
 
@@ -80,7 +80,7 @@ refresh: 루트 안쪽을 교체하고, `childs`는 다시 옮겨 붙이며(상�
 - `data-vf-keep` 요소는 예전 속성도 그대로입니다. 바뀌는 속성은 onUpdate에서 갱신하세요.
 - 항목별 버튼·체크박스에 `id`를 주면 refresh 뒤에도 포커스가 복원됩니다.
 - CSP가 있으면 인라인 `style="…"`과 인라인 `<script>`를 쓸 수 없습니다. 파일로 두세요(보이기/숨기기는 `hidden` 속성).
-- 표의 행은 table 안에서 파싱해야 합니다. `<tbody>`/`<tr>`을 렌더하는 컴포넌트는 `tag: 'table'`. `vf.node`/`vf.frag`는 `<div>`에서 파싱하므로 행에는 쓰지 않습니다.
+- 표의 행은 table 안에서 파싱해야 합니다. `<tbody>`/`<tr>`을 렌더하는 `vf.vfunc`는 `tag: 'table'`(또는 `'tbody'`). `<tbody>`에 붙인 `vf.attach`는 따로 줄 것이 없습니다. `vf.node`/`vf.frag`는 `<div>`에서 파싱하므로 행에는 쓰지 않습니다.
 - 데이터·로케일 주소는 모듈 기준(`new URL('./data/x.json', import.meta.url)`)으로 만들어야 버전 폴더 안에서도 맞습니다.
 
 ## 예제, 스타터, 프롬프트 킷

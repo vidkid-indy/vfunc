@@ -13,7 +13,7 @@ Creates a component (`new` optional). Options:
 | `opts` | root element properties; `innerHTML` · `outerHTML` · `srcdoc` and string `on*` refused, URLs through `safeUrl` |
 | `innerHTML` | fixed markup when there is no `render` (trusted as is) |
 | `render(state)` | markup for the current state, written with `vf.html`; `this` is the instance |
-| `replaceRoot` | `true`: the first element of the markup is the root; `false` (default): a new `tag` element with `opts` wraps the markup |
+| `replaceRoot` | `false` (default): the root is a `tag` element (for `vf.attach`, the target itself) and the markup is its inside; `true`: the first element of the markup is the root |
 | `state`, `methods` | state and methods; also reachable as `inst.key`, `inst.method()` |
 | `events` | `[{ id?, eventType, onEvent? }]` direct listeners on the element with that `id` inside the root, or on the root when `id` is omitted |
 | `delegates` | `[{ selector, eventType, onEvent? }]` delegated listeners |
@@ -24,12 +24,12 @@ Creates a component (`new` optional). Options:
 Instance: `$node`, `state`, `methods`, `ids`, `refs`, `setState(patch)`, `scheduleRefresh()`, `refresh()`, `mount(parent)` → `Promise`, `destroy()`, `toString()`. Reserved names (`state`, `refresh`, `mount` … and names starting with `_`) cannot be used as shortcut names for state keys, methods or ids. Do not add your own properties to an instance; keep listener functions and timers in a closure.
 
 ### `vf.attach(target, options)`
-Turns an element already in the page into a component. The options are those of `vf.vfunc`. Without `render` the element is adopted as it is. With `render` new markup replaces it: by default (`replaceRoot: true`) `render` returns the whole element, so keep its tag, `id` and classes; with `replaceRoot: false` give `tag` and `opts: { id, className }` and return only the inside. Attributes of the original element that are in neither are lost. Returns `null` when the target is missing.
+Turns an element already in the page into a component. The options are those of `vf.vfunc`. The element is the root and keeps its attributes and listeners. Without `render` its markup and typed values stay as they are. With `render`, return **only the inside** of the element; it is parsed as content of the element's own tag, so rows can go straight into a `<tbody>`. Set state-dependent attributes of the root in `onMount`/`onUpdate`. `replaceRoot: true` replaces the element with the first element of the markup. Returns `null` when the target is missing.
 
 ## Safe HTML
 
 ### `vf.html`
-Tagged template. Escapes each value for its position and refuses dangerous ones (`on*`, `<script>`, unquoted attributes). In a quoted attribute `false`, `null` and `undefined` become an empty value and arrays are joined with spaces, so write `aria-selected="${on ? 'true' : 'false'}"`. Returns `SafeHtml`. In ES5 it can be called as a function: `vf.html(['<b>', '</b>'], value)`.
+Tagged template. Escapes each value for its position and refuses dangerous ones (`on*`, `<script>`, unquoted attributes). In a quoted attribute `null` and `undefined` become an empty value, arrays are joined with spaces, and `false` is empty too — except in `aria-*` and `data-*`, where booleans stay `"true"`/`"false"` (`aria-selected="${on}"`). Returns `SafeHtml`. In ES5 it can be called as a function: `vf.html(['<b>', '</b>'], value)`.
 
 ### `vf.tpl(template, data)`
 Fills `{key}` and `{user.name}` from own properties of `data`, without template literals. Same protection as `vf.html`.

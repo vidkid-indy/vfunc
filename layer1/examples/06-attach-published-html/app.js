@@ -10,20 +10,18 @@ const PRODUCTS = [
   { name: '휴대용 모니터 / Portable monitor', category: 'display', price: 189000 }
 ];
 
-// 1) The result area: an empty box in the published page → replaced by a component (render).
-// 결과 영역: 퍼블리싱의 빈 상자를 render가 있는 컴포넌트로 대체합니다.
+// 1) The result area: the published box stays (class, aria-live); render fills only its inside.
+// 결과 영역: 퍼블리싱 상자(클래스, aria-live)는 그대로 두고, render가 안쪽만 그립니다.
 const results = vf.attach('#product-results', {
   state: { items: [], searched: false },
   render: (s) => vf.html`
-    <section class="results" id="product-results" aria-live="polite">
       ${!s.searched ? '' : s.items.length === 0
         ? vf.html`<p class="results__empty" data-ref="empty">결과가 없습니다. / No results.</p>`
         : vf.html`<ul class="results__grid" data-ref="grid">${s.items.map((p) => vf.html`
             <li class="product">
               <div class="product__name">${p.name}</div>
               <div class="product__price">${vf.fmt.currency(p.price, 'KRW')}</div>
-            </li>`)}</ul>`}
-    </section>`
+            </li>`)}</ul>`}`
 });
 
 // 2) The search form: adopted as it is (no render) — markup, typed values and styles stay.

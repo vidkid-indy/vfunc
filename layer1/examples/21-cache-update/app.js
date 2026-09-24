@@ -14,13 +14,11 @@ const policy = POLICIES.hasOwnProperty(requested) ? requested : 'next-navigation
 const toast = vf.attach('#update-toast', {
   state: { info: null },
   render: (s) => vf.html`
-    <div class="update-toast" id="update-toast" role="status" aria-live="polite">
       ${s.info ? vf.html`<div class="update-toast__box" data-ref="box">
         <span>New version ${s.info.latest} is ready. / 새 버전이 준비되었습니다.</span>
         <button class="btn" type="button" data-action="apply" data-variant="primary">Update now / 지금 업데이트</button>
         <button class="btn" type="button" data-action="later">Later / 나중에</button>
-      </div>` : ''}
-    </div>`,
+      </div>` : ''}`,
   delegates: [
     { selector: '[data-action="apply"]', eventType: 'click', onEvent: () => update.apply() },
     { selector: '[data-action="later"]', eventType: 'click', onEvent: (e) => e.sender.setState({ info: null }) }

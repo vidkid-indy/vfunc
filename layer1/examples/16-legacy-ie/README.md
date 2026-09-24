@@ -12,8 +12,8 @@ The same engine as everywhere else, from `dist/vfunc.legacy.min.js` (ES5 + a Pro
 
 ```html
 <script type="module" src="./app.js"></script>                 <!-- modern browsers -->
-<script nomodule src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.4/dist/vfunc.legacy.min.js"
-        integrity="sha384-4tgE/3rBsjtoZHFKlLcjtW4SMtuT8CukNc586ARKKBdjZ3+Xiy4xoum642/YCROv"
+<script nomodule src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.5/dist/vfunc.legacy.min.js"
+        integrity="sha384-bL1ZXnqXK3oeqNGakaSmlvX73gkbIFAP+avMjWKTIkjC8uel1jS2AyWSyq6TQb9Q"
         crossorigin="anonymous"></script>                     <!-- IE11 -->
 <script nomodule src="./app.es5.js"></script>
 ```

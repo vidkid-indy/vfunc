@@ -12,9 +12,9 @@ This is the output of the prompt, in its own format (sections 1–7), for the da
 | `.topbar__logo`, `.sidebar`, `.content__title`, `.footer` | static | never change | none | — | — |
 | `.topbar__search` → `#order-search` | dynamic | filters the orders table | `vf.attach` without `render` (adopt) | — | `input` |
 | `.topbar__user` → `#user-menu` | dynamic | open/close, sign out | `vf.attach` without `render` (adopt) + document listeners in `onMount`/`onDestroy` | — | `click`, `keydown` (Escape), outside click |
-| `.kpis` → `#kpis` | dynamic | numbers come from the server | `vf.attach` **with** `render` (replace) | `dashboard.json` `kpis` | — |
+| `.kpis` → `#kpis` | dynamic | numbers come from the server | `vf.attach` **with** `render` (the section stays, its inside is rendered; `aria-busy` set in `onMount`/`onUpdate`) | `dashboard.json` `kpis` | — |
 | summary panel → `#summary-panel` | dynamic | tabs switch the text | `vf.attach` without `render` (adopt); text set with `textContent` | `summary` | `click` on tabs |
-| orders `<tbody>` → `#orders-body` | dynamic | rows come from the server and are filtered | `vf.attach` **with** `render`, `tag: 'table'` | `orders` | — |
+| orders `<tbody>` → `#orders-body` | dynamic | rows come from the server and are filtered | `vf.attach` **with** `render` (the `<tbody>` stays; rows are parsed as its content) | `orders` | — |
 | orders filter → `#orders-panel` | dynamic | status filter | `vf.attach` without `render` (adopt) | — | `change` |
 
 ## 2. HTML changes (added attributes and script tags only) / HTML 변경
@@ -113,4 +113,4 @@ Running the prompt on this page showed two gaps, now fixed in `prompt-html-to-vf
 1. **Inline `style` attributes** are blocked by the CSP like inline scripts. The rules now list them: show/hide styles become the `hidden` attribute, other styles move to the CSS file, and each change is reported.
 2. **State shown with the publisher's classes** (`tabs__tab--active`, `badge--paid`). The CSS must not change, so the class is toggled for looks, the state is also written to `aria-*` / `data-state`, and selectors never use the class; attribute selectors are suggested in the token list.
 
-It also exposed an engine behaviour worth knowing: markup for table rows must be parsed inside a table (`tag: 'table'`), which the manual now lists under common mistakes.
+It also exposed an engine behaviour worth knowing: markup for table rows must be parsed inside a table. Since 1.0.0-rc.5 `vf.attach` keeps the target element and parses `render` as its content, so attaching to the `<tbody>` is enough; `tag: 'table'` is still needed for a new `vf.vfunc` that renders rows.

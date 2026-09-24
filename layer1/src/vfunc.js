@@ -354,7 +354,8 @@ function attrValue(ctx, value) {
     unsafe(DEV && 'vf.html: interpolation into "srcdoc" is not allowed.');
     return '';
   }
-  let text = plainString(value);
+  // aria-* and data-* keep booleans as "true"/"false" (aria-selected="${on}"); other attributes drop false.
+  let text = typeof value === 'boolean' && /^(aria|data)-/.test(ctx.name) ? String(value) : plainString(value);
   if (hasOwn.call(URL_ATTRS, ctx.name) && !/[:\/?#]/.test(ctx.valueSoFar)) {
     // The scheme is not fixed yet: check what the browser will see so far.
     const decoded = ctx.valueSoFar.replace(/&amp;/g, '&');
@@ -722,7 +723,7 @@ function isReserved(key) {
  * @property {Object} [state] - State. Each key is also readable and writable as `instance.key`.
  * @property {Object<string, Function>} [methods] - Methods bound to the instance, callable as `instance.name()`.
  * @property {function(Object): (string|SafeHtml)} [render] - Returns markup for the current state. Use vf.html.
- * @property {boolean} [replaceRoot=false] - Use the first element of the markup as the root instead of wrapping it.
+ * @property {boolean} [replaceRoot=false] - Use the first element of the markup as the root, instead of a `tag`
  * @property {function(VfEvent)} [onEvent] - Fallback handler for events and delegates without their own onEvent.
  * @property {function(Error)} [onError] - Called when render, a handler or a lifecycle hook throws.
  *   The engine does not recover.
@@ -783,8 +784,21 @@ function vfunc(options) {
 
   const cfg = this._cfg;
   if (o._adopt) {
-    // vf.attach without render: take over an element that is already in the page.
+    // vf.attach: the element already in the page is the root. With render (or innerHTML) only its
+    // inside is replaced, so its attributes, listeners and aria-live role stay.
     this.$node = o._adopt;
+    if (cfg.render || cfg.innerHTML) {
+      const kept = collectKept(this.$node);
+      const holder = document.createElement(cfg.tag);
+      holder.innerHTML = cfg.render ? this._renderMarkup() : String(cfg.innerHTML);
+      restoreKept(holder, kept);
+      const first = holder.firstElementChild;
+      if (DEV && first && this.$node.id && first.id === this.$node.id) {
+        warn('attach: render returned the target element itself (id "' + this.$node.id + '"). Render only its inside, or pass replaceRoot: true.');
+      }
+      while (this.$node.firstChild) this.$node.removeChild(this.$node.firstChild);
+      while (holder.firstChild) this.$node.appendChild(holder.firstChild);
+    }
   } else {
     const holder = document.createElement(cfg.tag);
     if (cfg.render) holder.innerHTML = this._renderMarkup();
@@ -1174,11 +1188,12 @@ proto.toString = function () {
 
 /**
  * Turns an element that is already in the page into a component.
- * - Without `render` and `innerHTML`, the element itself becomes the root: its markup, form
- *   values and existing listeners stay as they are; state, methods, events and delegates are
- *   added on top.
- * - With `render` (or `innerHTML`), the new markup replaces the element in place.
- *   `replaceRoot` defaults to true here.
+ * The element itself becomes the root: its attributes and existing listeners stay; state, methods,
+ * events and delegates are added on top.
+ * - Without `render` and `innerHTML`, its markup and form values stay as they are too.
+ * - With `render` (or `innerHTML`), the markup replaces only the inside of the element. It is
+ *   parsed as content of the element's own tag, so rows can be rendered into a `<tbody>`.
+ * - With `replaceRoot: true`, the first element of the markup replaces the element itself.
  * `onMount` is called once the component is in the page.
  * @param {Element|string} target - An element or a selector.
  * @param {VfuncOptions} [options]
@@ -1193,13 +1208,13 @@ function attach(target, options) {
   const o = safeMerge({}, options || {}, false);
   delete o._adopt;
   let instance;
-  if (!o.render && !o.innerHTML) {
-    o._adopt = element;
-    instance = new vfunc(o);
-  } else {
-    if (!('replaceRoot' in o)) o.replaceRoot = true;
+  if (o.replaceRoot && (o.render || o.innerHTML)) {
     instance = new vfunc(o);
     if (element.parentNode) element.parentNode.replaceChild(instance.$node, element);
+  } else {
+    if (!o.tag) o.tag = element.tagName.toLowerCase();
+    o._adopt = element;
+    instance = new vfunc(o);
   }
   instance._hook('onMount');
   return instance;

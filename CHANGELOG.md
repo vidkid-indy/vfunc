@@ -40,6 +40,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - The README described the planned API of the first draft; it now shows the release candidate, installation with SRI, the files in the package and supported browsers.
 - Delegated events and router link interception did nothing in browsers without `Element.closest` (IE11). The engine now falls back to `msMatchesSelector` without patching `Element.prototype`.
 
+### Changed (since 1.0.0-rc.4)
+- `vf.attach` with `render` (or `innerHTML`) keeps the target element as the root and renders only its inside, parsed as content of the element's own tag. Its attributes, listeners and `aria-live` role stay across refreshes. `replaceRoot` now defaults to `false` for `vf.attach` as for `vf.vfunc`; pass `replaceRoot: true` for the previous behaviour. The development build warns when `render` returns the target element itself.
+- In quoted `aria-*` and `data-*` attributes, `vf.html` and `vf.tpl` write booleans as `"true"` / `"false"` (`aria-selected="${on}"`). Other attributes still drop `false`.
+
 ### Changed (compared with the pilot engine)
 - State, methods and element ids are exposed through property accessors instead of a `Proxy`, so the engine can run on IE11 after transpiling.
 - Configuration (`tag`, `opts`, `events`, …) is no longer exposed as instance properties.

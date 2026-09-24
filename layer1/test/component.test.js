@@ -124,14 +124,61 @@ test('vf.attach adopts published markup without re-rendering it', () => {
   document.body.innerHTML = '';
 });
 
-test('vf.attach with render replaces the element in place', async () => {
-  document.body.innerHTML = '<p>before</p><div id="slot">old</div><p>after</p>';
+test('vf.attach with render keeps the element and renders only its inside', async () => {
+  document.body.innerHTML = '<p>before</p><section id="slot" class="panel" aria-live="polite" data-x="1">old</section><p>after</p>';
+  const original = document.getElementById('slot');
+  const updates = [];
+  original.addEventListener('custom', () => updates.push('listener kept'));
   const c = vf.attach('#slot', { state: { n: 1 }, render: (s) => html`<output>${s.n}</output>` });
+  assert.equal(c.$node, original, 'the same element');
+  assert.equal(original.outerHTML, '<section id="slot" class="panel" aria-live="polite" data-x="1"><output>1</output></section>');
+  c.n = 2;
+  await flush();
+  assert.equal(document.body.children[1], original, 'still the same element after a refresh');
+  assert.equal(original.innerHTML, '<output>2</output>');
+  original.dispatchEvent(new Event('custom'));
+  assert.deepEqual(updates, ['listener kept']);
+  document.body.innerHTML = '';
+});
+
+test('vf.attach with render parses rows in the context of the target tag', async () => {
+  document.body.innerHTML = '<table><tbody id="rows"><tr><td>old</td></tr></tbody></table>';
+  const c = vf.attach('#rows', { state: { items: ['a', 'b'] }, render: (s) => html`${s.items.map((x) => html`<tr><td>${x}</td></tr>`)}` });
+  assert.equal(c.$node.tagName, 'TBODY');
+  assert.equal(document.querySelectorAll('#rows tr').length, 2);
+  c.items = ['a', 'b', 'c'];
+  await flush();
+  assert.equal(document.querySelectorAll('table tbody tr').length, 3, 'no second tbody or table');
+  document.body.innerHTML = '';
+});
+
+test('vf.attach with replaceRoot: true replaces the element with the first rendered element', async () => {
+  document.body.innerHTML = '<p>before</p><div id="slot">old</div><p>after</p>';
+  const c = vf.attach('#slot', { replaceRoot: true, state: { n: 1 }, render: (s) => html`<output>${s.n}</output>` });
   assert.equal(document.body.children[1], c.$node);
   assert.equal(c.$node.tagName, 'OUTPUT');
   c.n = 2;
   await flush();
   assert.equal(document.body.children[1].textContent, '2');
+  document.body.innerHTML = '';
+});
+
+test('vf.attach warns when render returns the target element itself', () => {
+  document.body.innerHTML = '<div id="box"></div>';
+  let c;
+  const warnings = captureWarnings(() => { c = vf.attach('#box', { render: () => html`<div id="box">x</div>` }); });
+  assert.equal(warnings.length, 1);
+  assert.match(warnings[0], /render returned the target element itself/);
+  assert.ok(c);
+  document.body.innerHTML = '';
+});
+
+test('vf.attach keeps data-vf-keep elements of the published markup on the first render', () => {
+  document.body.innerHTML = '<div id="w"><div data-vf-keep="map" id="map">widget</div></div>';
+  const widget = document.getElementById('map');
+  vf.attach('#w', { render: () => html`<h2>Map</h2><div data-vf-keep="map"></div>` });
+  assert.equal(document.getElementById('map'), widget);
+  assert.equal(document.querySelector('#w h2').textContent, 'Map');
   document.body.innerHTML = '';
 });
 

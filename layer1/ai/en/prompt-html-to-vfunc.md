@@ -17,9 +17,9 @@ You are converting a publisher's static HTML page into a vfunc.js app **without 
 3. Every dynamic value goes through `vf.html` (or `vf.tpl` for ES5). No string concatenation into HTML, no `innerHTML` from data.
 4. Remove `<script>` blocks, inline `on*` handlers and `javascript:` URLs from `SOURCE`. Inline `style="…"` attributes are blocked by the CSP too: turn show/hide styles into the `hidden` attribute and move other styles to the CSS file. Report each removal and replacement.
 5. No colors, sizes or fonts in JS. If the CSS has raw values, suggest tokens (`var(--vf-*)`) in a separate list — do not change the CSS unless asked.
-6. Prefer the smallest tool: nothing → `vf.attach` without `render` (adopt) → `vf.attach` with `render` (replace) → `vf.vfunc` (new component). When you replace, keep the original element: either `render` returns the whole element with its original tag, `id` and classes (default), or use `replaceRoot: false` with `tag` and `opts: { id, className }` and let `render` return only the inside.
-7. When the publisher's CSS shows state with classes (`tab--active`, `badge--paid`), keep toggling those classes **for looks**, also write the state to `aria-*` / `data-state` (as the strings `"true"`/`"false"`: `vf.html` turns `false` into an empty value), and never use the classes as selectors. Suggest attribute selectors in the token list.
-8. Table rows (`<tbody>`, `<tr>`) must be parsed inside a table: a component that renders them uses `tag: 'table'` (or `'tbody'` for rows only).
+6. Prefer the smallest tool: nothing → `vf.attach` without `render` (adopt) → `vf.attach` with `render` (replace) → `vf.vfunc` (new component). With `render`, the attached element stays (tag, `id`, classes, `aria-*`) and `render` returns only its inside; set state-dependent attributes of that element in `onMount`/`onUpdate`.
+7. When the publisher's CSS shows state with classes (`tab--active`, `badge--paid`), keep toggling those classes **for looks**, also write the state to `aria-*` / `data-state`, and never use the classes as selectors. Suggest attribute selectors in the token list.
+8. Table rows (`<tbody>`, `<tr>`) must be parsed inside a table: attach to the published `<tbody>` (rows are parsed as its content), or give a new `vf.vfunc` `tag: 'table'` (`'tbody'` for rows only).
 
 ## Steps
 1. **Area table.** Split the page into areas and fill one row per area:

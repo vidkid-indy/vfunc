@@ -1,9 +1,9 @@
-/*! vfunc.js v1.0.0-rc.4 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
+/*! vfunc.js v1.0.0-rc.5 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
 // layer1/src/vfunc.js
-var VERSION = false ? "0.0.0-dev" : "1.0.0-rc.4";
+var VERSION = false ? "0.0.0-dev" : "1.0.0-rc.5";
 var DEV = false ? true : true;
 var hasOwn = Object.prototype.hasOwnProperty;
 function ownValue(obj, key) {
@@ -291,7 +291,7 @@ function attrValue(ctx, value) {
     unsafe(DEV && 'vf.html: interpolation into "srcdoc" is not allowed.');
     return "";
   }
-  let text = plainString(value);
+  let text = typeof value === "boolean" && /^(aria|data)-/.test(ctx.name) ? String(value) : plainString(value);
   if (hasOwn.call(URL_ATTRS, ctx.name) && !/[:\/?#]/.test(ctx.valueSoFar)) {
     const decoded = ctx.valueSoFar.replace(/&amp;/g, "&");
     if (safeUrl(decoded + text) === "#") text = decoded === "" ? "#" : "";
@@ -586,6 +586,18 @@ function vfunc(options) {
   const cfg = this._cfg;
   if (o._adopt) {
     this.$node = o._adopt;
+    if (cfg.render || cfg.innerHTML) {
+      const kept = collectKept(this.$node);
+      const holder = document.createElement(cfg.tag);
+      holder.innerHTML = cfg.render ? this._renderMarkup() : String(cfg.innerHTML);
+      restoreKept(holder, kept);
+      const first = holder.firstElementChild;
+      if (DEV && first && this.$node.id && first.id === this.$node.id) {
+        warn('attach: render returned the target element itself (id "' + this.$node.id + '"). Render only its inside, or pass replaceRoot: true.');
+      }
+      while (this.$node.firstChild) this.$node.removeChild(this.$node.firstChild);
+      while (holder.firstChild) this.$node.appendChild(holder.firstChild);
+    }
   } else {
     const holder = document.createElement(cfg.tag);
     if (cfg.render) holder.innerHTML = this._renderMarkup();
@@ -944,13 +956,13 @@ function attach(target, options) {
   const o = safeMerge({}, options || {}, false);
   delete o._adopt;
   let instance;
-  if (!o.render && !o.innerHTML) {
-    o._adopt = element;
-    instance = new vfunc(o);
-  } else {
-    if (!("replaceRoot" in o)) o.replaceRoot = true;
+  if (o.replaceRoot && (o.render || o.innerHTML)) {
     instance = new vfunc(o);
     if (element.parentNode) element.parentNode.replaceChild(instance.$node, element);
+  } else {
+    if (!o.tag) o.tag = element.tagName.toLowerCase();
+    o._adopt = element;
+    instance = new vfunc(o);
   }
   instance._hook("onMount");
   return instance;

@@ -45,6 +45,15 @@ test('quoted attribute values are escaped, including quotes', () => {
   assert.equal(String(html`<p title='${"it's"}'>x</p>`), `<p title='it&#39;s'>x</p>`);
 });
 
+test('booleans stay "true"/"false" in aria-* and data-* attributes; other attributes drop false', () => {
+  const on = false;
+  assert.equal(String(html`<button aria-selected="${on}" aria-pressed="${!on}" data-open="${on}">x</button>`),
+    '<button aria-selected="false" aria-pressed="true" data-open="false">x</button>');
+  assert.equal(String(html`<p class="a ${on && 'b'}" title="${false}" aria-label="${null}">x</p>`),
+    '<p class="a " title="" aria-label="">x</p>');
+  assert.equal(String(tpl('<i aria-hidden="{h}" data-v="{v}"></i>', { h: true, v: false })), '<i aria-hidden="true" data-v="false"></i>');
+});
+
 test('an apostrophe in static attribute text does not confuse the context', () => {
   assert.equal(String(html`<p title="it's ${'<ok>'}">x</p>`), `<p title="it's &lt;ok&gt;">x</p>`);
 });

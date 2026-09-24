@@ -1,6 +1,6 @@
 {
   "name": "vfunc",
-  "version": "1.0.0-rc.4",
+  "version": "1.0.0-rc.5",
   "description": "UI as plain functions. A no-build vanilla JavaScript library: keep your HTML, control only what you need.",
   "license": "Apache-2.0",
   "author": "vidkid (https://github.com/vidkid-indy)",

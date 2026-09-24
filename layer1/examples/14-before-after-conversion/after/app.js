@@ -41,16 +41,18 @@ vf.attach('#user-menu', {
   }
 });
 
-// ② KPI cards — replaced (render): values come from the server. / 대체: 값은 서버에서
+// ② KPI cards — the published <section> stays; render fills it with server values. / 섹션은 그대로, 안쪽을 서버 값으로
+const busy = (inst) => inst.$node.setAttribute('aria-busy', inst.state.items ? 'false' : 'true');
 const kpis = vf.attach('#kpis', {
   state: { items: null },
-  render: (s) => vf.html`
-    <section class="kpis" id="kpis" aria-busy="${s.items ? 'false' : 'true'}">${(s.items || []).map((k) => vf.html`
+  onMount: busy,
+  onUpdate: busy,
+  render: (s) => vf.html`${(s.items || []).map((k) => vf.html`
       <div class="kpi">
         <p class="kpi__label">${k.label}</p>
         <p class="kpi__value">${k.kind === 'currency' ? vf.fmt.currency(k.value, 'KRW') : vf.fmt.number(k.value)}</p>
         <p class="${'kpi__delta ' + (k.delta >= 0 ? 'kpi__delta--up' : 'kpi__delta--down')}" data-state="${k.delta >= 0 ? 'up' : 'down'}">${(k.delta >= 0 ? '+' : '') + k.delta.toFixed(1) + '%'}</p>
-      </div>`)}</section>`
+      </div>`)}`
 });
 
 // ③ Summary tabs — adopted: the publisher's CSS shows the active tab with a class, so the class is
@@ -73,24 +75,22 @@ vf.attach('#summary-panel', {
   }]
 });
 
-// ④ Orders table body — replaced (render). Table rows must be parsed inside a table, hence tag: 'table'.
-// 대체: 표의 행은 table 안에서 파싱해야 하므로 tag: 'table'
+// ④ Orders table body — the published <tbody> stays; render fills its rows (parsed as tbody content).
+// 퍼블리싱 <tbody>는 그대로 두고 render가 행을 채웁니다(tbody 안으로 파싱).
 const orders = vf.attach('#orders-body', {
-  tag: 'table',
   state: { items: [], status: '', q: '' },
   render: (s) => {
     const q = s.q.trim().toLowerCase();
     const shown = s.items.filter((o) => (!s.status || o.status === s.status) &&
       (!q || String(o.id).indexOf(q.replace('#', '')) >= 0 || o.customer.toLowerCase().indexOf(q) >= 0));
-    return vf.html`
-      <tbody id="orders-body">${shown.length === 0
+    return vf.html`${shown.length === 0
         ? vf.html`<tr><td colspan="4" data-ref="empty">No orders match.</td></tr>`
         : shown.map((o) => vf.html`
           <tr data-id="${o.id}">
             <td>#${o.id}</td><td>${o.customer}</td>
             <td><span class="${'badge badge--' + o.status}" data-state="${o.status}">${LABELS[o.status] || o.status}</span></td>
             <td class="orders__num">${vf.fmt.currency(o.total, 'KRW')}</td>
-          </tr>`)}</tbody>`;
+          </tr>`)}`;
   }
 });
 

@@ -71,14 +71,14 @@ vf.attach('#content', {
 
 // ⑤ Search: headings of every page in this language, loaded on first use. / 첫 입력 때 색인을 불러옴
 let index = null;
+// The aria-live element stays in the page; only its inside is rendered. / 알림 영역은 그대로, 안쪽만 그림
 const results = vf.attach('#search-results', {
   state: { query: '', hits: [], empty: '' },
   render: (s) => vf.html`
-    <div class="search-results" id="search-results" aria-live="polite" data-state="${s.query ? 'open' : 'closed'}">
       ${!s.query ? '' : s.hits.length === 0 ? vf.html`<p class="search-results__empty">${s.empty}</p>` : vf.html`
         <ul class="search-results__list">${s.hits.map((h) => vf.html`
-          <li><a class="search-results__link" data-ref="hit" href="${h.href}">${h.title}${h.section ? vf.html` <span class="muted">· ${h.section}</span>` : ''}</a></li>`)}</ul>`}
-    </div>`
+          <li><a class="search-results__link" data-ref="hit" href="${h.href}">${h.title}${h.section ? vf.html` <span class="muted">· ${h.section}</span>` : ''}</a></li>`)}</ul>`}`,
+  onUpdate: (inst) => inst.$node.setAttribute('data-state', inst.state.query ? 'open' : 'closed')
 });
 
 function search(query) {
@@ -121,13 +121,12 @@ if (vf.$('#home-demo')) {
   vf.attach('#home-demo', {
     state: { name: 'vfunc', count: 0 },
     render: (s) => vf.html`
-      <div class="demo" id="home-demo" data-state="live">
         <p class="demo__title">${L.title}</p>
         <label class="demo__field">${L.name} <input class="demo__input" id="demo-name" value="${s.name}" data-action="name" autocomplete="off"></label>
         <p class="demo__output" data-ref="greeting">${L.hello}, <strong>${s.name}</strong>!</p>
         <p><button class="demo__button" type="button" data-action="add">${L.add}</button> <span data-ref="count">${s.count}</span> ${L.clicks}</p>
-        <p class="muted">${L.hint}</p>
-      </div>`,
+        <p class="muted">${L.hint}</p>`,
+    onMount: (inst) => inst.$node.setAttribute('data-state', 'live'),
     delegates: [
       { selector: '[data-action="name"]', eventType: 'input', onEvent: (e) => { e.sender.name = e.target.value; } },
       { selector: '[data-action="add"]', eventType: 'click', onEvent: (e) => { e.sender.count++; } }

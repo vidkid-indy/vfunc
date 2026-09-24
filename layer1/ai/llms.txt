@@ -6,7 +6,7 @@ For vfunc.js 1.0 (release candidates). The full reference is llms-full.txt (this
 
 ## Load
 
-- Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.4/dist/vfunc.min.js" integrity="sha384-EOBIff5t5V2ew+DDIOtyd9q4ev5U+zj9rggBJ0UKBU3d5dNTl9PeCGAG+0py+iMZ" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production; the integrity value differs per version and file (this one is 1.0.0-rc.4 vfunc.min.js). `dist/vfunc.js` is the development build with warnings.
+- Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.5/dist/vfunc.min.js" integrity="sha384-XVwq6bBMZad0alIKEG7vuAoxb0oNsyXYdIX6MxQGyF/NYfvVQjhzD8gJIStaZ2a/" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production; the integrity value differs per version and file (this one is 1.0.0-rc.5 vfunc.min.js). `dist/vfunc.js` is the development build with warnings.
 - ES module: `import vf from 'vfunc'` or `import { vfunc, html, router } from 'vfunc'`; a copied file works the same (`import vf from './lib/vfunc.esm.min.js'`). The ES modules never touch `window.vf`.
 - IE11 / Edge IE mode: `dist/vfunc.legacy.min.js` (same API; includes only a Promise polyfill). The app code must be ES5: no arrow functions, const/let, template literals or classes; use `vf.tpl('<b>{name}</b>', data)` instead of vf.html template literals. Polyfill anything else the app needs (Object.assign, fetch, …) yourself. Load pattern: `<script type="module" src="app.js">` + `<script nomodule src="vfunc.legacy.min.js">` + `<script nomodule src="app.es5.js">`.
 
@@ -22,7 +22,7 @@ For vfunc.js 1.0 (release candidates). The full reference is llms-full.txt (this
 
 ## vf.vfunc(options) — a component (with or without `new`)
 
-Options: `tag` ('div'), `opts` (root properties; innerHTML/outerHTML/srcdoc and string on* refused), `innerHTML` (trusted initial markup), `render(state)` → vf.html result (`this` is the instance), `replaceRoot` (false: the root is a new `tag` element with `opts` around the markup; true: the first element of the markup is the root), `state`, `methods`, `events: [{ id?, eventType, onEvent? }]` (`id` of an element inside the root; without `id` the listener is on the root itself), `delegates: [{ selector, eventType, onEvent? }]`, `childs: [instance | node | { targetId, component }]`, `onEvent`, `onError`, `onMount`, `onUpdate`, `onDestroy`.
+Options: `tag` ('div'), `opts` (root properties; innerHTML/outerHTML/srcdoc and string on* refused), `innerHTML` (trusted initial markup), `render(state)` → vf.html result (`this` is the instance), `replaceRoot` (default false: the root is a `tag` element — for vf.attach the target itself — and the markup is its inside; true: the first element of the markup is the root), `state`, `methods`, `events: [{ id?, eventType, onEvent? }]` (`id` of an element inside the root; without `id` the listener is on the root itself), `delegates: [{ selector, eventType, onEvent? }]`, `childs: [instance | node | { targetId, component }]`, `onEvent`, `onError`, `onMount`, `onUpdate`, `onDestroy`.
 
 Event object `e`: `sender` (instance), `event`, `eventType`, `target` (bound or matched element), `id`, `data`.
 
@@ -42,14 +42,14 @@ Refresh: the root's content is replaced; `childs` are moved back (their state ke
 
 ## vf.html and friends
 
-- `vf.html\`…\`` escapes by position: text (escaped; arrays joined; vf.html results and instances inserted as markup; null/undefined/false → ''), quoted attribute (escaped; `false`/null/undefined → '', arrays joined with spaces — so write `aria-selected="${on ? 'true' : 'false'}"`, not `${on}`), URL attributes href/src/action/formaction/poster/cite… (escaped + `vf.safeUrl`), inside a tag only bare names (`<button ${disabled ? 'disabled' : ''}>`), tag names except script/style/iframe/svg….
+- `vf.html\`…\`` escapes by position: text (escaped; arrays joined; vf.html results and instances inserted as markup; null/undefined/false → ''), quoted attribute (escaped; arrays joined with spaces; null/undefined → ''; `false` → '' except in `aria-*`/`data-*`, where booleans stay `"true"`/`"false"`, so `aria-selected="${on}"` works), URL attributes href/src/action/formaction/poster/cite… (escaped + `vf.safeUrl`), inside a tag only bare names (`<button ${disabled ? 'disabled' : ''}>`), tag names except script/style/iframe/svg….
 - Refused: `on*` attributes, `srcdoc`, unquoted values (`class=${x}`), content of `<script>`/`<style>`, functions. The value is dropped and reported; `vf.config({ strict: true })` throws instead (use in development and tests).
 - `vf.tpl('<a href="{url}">{label}</a>', data)` — the same protection without template literals (ES5).
 - `vf.esc(v)` → string, `vf.nl2br(v)` → SafeHtml, `vf.safeUrl(u)` → http/https/mailto/tel/relative or '#', `vf.unsafeHtml(markup)`.
 
 ## vf.attach(target, options) — control published HTML
 
-Options are the same as `vf.vfunc`. Without `render`/`innerHTML` the existing element becomes the root (markup, input values and listeners stay). With `render` the new markup replaces the element: by default (`replaceRoot: true`) `render` returns the whole element, so copy its tag, `id` and classes; with `replaceRoot: false` give `tag` and `opts: { id, className }` and `render` returns only the inside. Attributes of the original element that are not in the new markup or `opts` are lost. Returns null if not found.
+Options are the same as `vf.vfunc`. The existing element becomes the root and keeps its attributes and listeners. Without `render`/`innerHTML` its markup and input values stay too. With `render`, `render` returns **only the inside** of the element (do not repeat its tag); it is parsed as content of the element's own tag, so rows can be rendered into a `<tbody>` without `tag`. Attributes of the root that depend on state are set in `onMount`/`onUpdate` (`inst.$node.setAttribute(…)`). `replaceRoot: true` replaces the element with the first element of the markup instead. Returns null if not found.
 
 ```js
 vf.attach('#search', {
@@ -101,7 +101,7 @@ Token names are public API: `--vf-color-primary|-hover|-active|-soft`, `--vf-col
 - A `data-vf-keep` element keeps its old attributes; update changing attributes in `onUpdate`.
 - Give per-item buttons and checkboxes an `id` so focus survives a refresh.
 - With a CSP, no inline `style="…"` or inline `<script>`: use files (show/hide with the `hidden` attribute).
-- Table rows must be parsed inside a table: a component that renders `<tbody>`/`<tr>` uses `tag: 'table'`. `vf.node` / `vf.frag` parse in a `<div>`, so not for rows.
+- Table rows must be parsed inside a table: a `vf.vfunc` that renders `<tbody>`/`<tr>` uses `tag: 'table'` (or `'tbody'`); `vf.attach` on a `<tbody>` needs nothing. `vf.node` / `vf.frag` parse in a `<div>`, so not for rows.
 - Resolve data and locale URLs from the module (`new URL('./data/x.json', import.meta.url)`), so they still work inside a version folder.
 
 ## Examples, starter and prompt kit
