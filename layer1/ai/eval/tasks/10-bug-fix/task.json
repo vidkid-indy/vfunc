@@ -1,0 +1,21 @@
+{
+  "id": "10-bug-fix",
+  "title": { "en": "Fix seven bugs", "ko": "버그 일곱 개 고치기" },
+  "prompt": "prompt-debug.md",
+  "entry": "index.html",
+  "project": {
+    "index.html": "input/index.html",
+    "app.js": "input/app.js",
+    "store.js": "input/store.js",
+    "style.css": "input/style.css"
+  },
+  "reference": {},
+  "mustKeep": [],
+  "static": {},
+  "rubric": [
+    { "id": "causes", "en": "Names the cause of each bug (not only the symptom) with evidence", "ko": "버그마다 증상이 아닌 원인과 근거를 적음" },
+    { "id": "minimal", "en": "Fixes with few lines; no unrelated rewrites", "ko": "적은 줄로 고침, 관계없는 재작성 없음" },
+    { "id": "verify", "en": "Says how to verify each fix and what else could be affected", "ko": "고친 것마다 확인 방법과 영향을 받을 수 있는 곳을 적음" },
+    { "id": "report", "en": "Honest report (unverified items marked)", "ko": "정직한 보고(확인 못 한 항목 표시)" }
+  ]
+}

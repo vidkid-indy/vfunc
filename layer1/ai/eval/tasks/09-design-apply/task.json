@@ -1,0 +1,23 @@
+{
+  "id": "09-design-apply",
+  "title": { "en": "Apply a DESIGN.md without touching JS", "ko": "JS를 건드리지 않고 DESIGN.md 적용" },
+  "prompt": "design/prompt-apply-design.md",
+  "entry": "index.html",
+  "project": {
+    "index.html": "input/index.html",
+    "app.js": "input/app.js",
+    "styles/tokens.css": "@/layer1/css/vfunc.tokens.css",
+    "styles/app.css": "input/app.css",
+    "design/DESIGN.md": "input/DESIGN.md",
+    "design/STATUS.md": "input/STATUS.md"
+  },
+  "reference": {},
+  "mustKeep": ["app.js", "design/DESIGN.md"],
+  "static": { "cssStrict": true },
+  "rubric": [
+    { "id": "token-table", "en": "Token table (token, old, new) for light and dark in the report", "ko": "보고서에 라이트·다크 토큰 표(토큰, 이전, 새 값)" },
+    { "id": "violations", "en": "Reports the raw values it found in app.css as rule violations", "ko": "app.css에서 찾은 원시 값을 규칙 위반으로 보고" },
+    { "id": "status", "en": "Updates design/STATUS.md", "ko": "design/STATUS.md 갱신" },
+    { "id": "report", "en": "Honest checklist (contrast, screens to compare)", "ko": "정직한 확인 목록(대비, 비교할 화면)" }
+  ]
+}

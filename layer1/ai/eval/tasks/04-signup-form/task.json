@@ -1,0 +1,20 @@
+{
+  "id": "04-signup-form",
+  "title": { "en": "Sign-up form validation", "ko": "가입 폼 검증" },
+  "prompt": "prompt-add-feature.md",
+  "entry": "index.html",
+  "project": {
+    "index.html": "input/index.html",
+    "app.js": "input/app.js",
+    "style.css": "input/style.css"
+  },
+  "reference": {},
+  "mustKeep": [],
+  "static": {},
+  "rubric": [
+    { "id": "spec", "en": "Follows the validation rules, hooks and texts", "ko": "검증 규칙, 훅, 문구를 지킴" },
+    { "id": "adopt", "en": "Keeps the published form (attach, no re-render of the inputs)", "ko": "퍼블리싱 폼을 유지(attach, 입력칸을 다시 그리지 않음)" },
+    { "id": "privacy", "en": "Never logs form values; uses skipPassword where values are read for display", "ko": "폼 값을 로그로 남기지 않음, 표시용으로 읽을 때 skipPassword" },
+    { "id": "report", "en": "Honest report (assumptions, unverified items)", "ko": "정직한 보고(가정, 확인하지 못한 항목)" }
+  ]
+}

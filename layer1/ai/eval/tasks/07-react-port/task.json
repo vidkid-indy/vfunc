@@ -1,0 +1,24 @@
+{
+  "id": "07-react-port",
+  "title": { "en": "Port a React component", "ko": "React 컴포넌트 이식" },
+  "prompt": "prompt-migrate-from-react-vue.md",
+  "entry": "index.html",
+  "project": {
+    "data/products.json": "input/products.json"
+  },
+  "reference": {
+    "ProductFilter.jsx": "input/ProductFilter.jsx",
+    "ProductFilter.css": "input/ProductFilter.css"
+  },
+  "mustKeep": ["data/products.json"],
+  "static": {
+    "forbid": [
+      { "pattern": "from\\s+['\"]react|\\bReact\\.|\\buse(State|Effect|Memo)\\s*\\(|className=", "files": "\\.(js|mjs|html)$", "message": "React code left in the port" }
+    ]
+  },
+  "rubric": [
+    { "id": "mapping", "en": "Maps React concepts correctly (state, effects → onMount/onDestroy, derived values in render)", "ko": "React 개념을 올바르게 옮김(state, effect → onMount/onDestroy, 파생 값은 render에서)" },
+    { "id": "design", "en": "Moves the raw CSS values to tokens and states to attributes", "ko": "CSS 원시 값을 토큰으로, 상태를 속성으로 옮김" },
+    { "id": "report", "en": "Honest report (mapping table, assumptions)", "ko": "정직한 보고(대응표, 가정)" }
+  ]
+}

@@ -34,6 +34,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Continuous integration: unit tests, build check, `npm audit`, browser tests in Chromium, Firefox and WebKit, and a gitleaks scan of the whole history. A test keeps every CDN example on the package version and the SRI of the committed files.
 - Browser support table in the README and the FAQ.
 - npm releases are published from GitHub Actions with trusted publishing (no stored token) and provenance, after the maintainer approves the run.
+- LLM evaluation set in the repository (`layer1/ai/eval`, not in the npm package): ten tasks in English and Korean, one paste-ready bundle per task (kit + task + inputs), extraction of saved answers, and a grader that runs each task's checks, a console check and static rule checks in Chromium, Firefox and WebKit. Results are published on the website (Working with AI).
 
 ### Fixed
 - AI kit, after two independent runs of the HTML conversion prompt (sample 14): the prompt now allows the state attributes it asks for; `llms.txt` and the API page explain `vf.attach` options, `events` without `id`, keeping the original element with `replaceRoot`, `store.set` merging, importing a copied ESM file, that `false` becomes an empty attribute value in `vf.html`, and not to add properties to instances.

@@ -1,0 +1,15 @@
+{
+  "id": "01-counter-greeting",
+  "title": { "en": "Counter and greeting", "ko": "카운터와 인사" },
+  "prompt": null,
+  "entry": "index.html",
+  "project": {},
+  "reference": {},
+  "mustKeep": [],
+  "static": {},
+  "rubric": [
+    { "id": "spec", "en": "Follows the hooks and texts of the task", "ko": "과제의 훅과 문구를 지킴" },
+    { "id": "idiom", "en": "Idiomatic vfunc (vf.html, delegates, state; no DOM building by hand)", "ko": "vfunc다운 코드(vf.html, delegates, state, 손으로 DOM을 만들지 않음)" },
+    { "id": "report", "en": "Honest report (assumptions, unverified items)", "ko": "정직한 보고(가정, 확인하지 못한 항목)" }
+  ]
+}

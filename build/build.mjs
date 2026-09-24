@@ -307,9 +307,11 @@ function assembleNpmPackage() {
   // Optional design tokens (D-011). Not generated: the file in layer1/css is the source.
   copy(join(ROOT, 'layer1/css/vfunc.tokens.css'), join(out, 'css', 'vfunc.tokens.css'));
   // The AI kit (D-019): llms*.txt, AGENTS templates, prompts and design kit in en/ and ko/.
+  // Not the evaluation set (ai/eval, D-024): it is repository tooling and results.
   (function copyDir(from, to) {
     for (const name of readdirSync(from)) {
       const source = join(from, name);
+      if (source === join(ROOT, 'layer1/ai/eval')) continue;
       if (statSync(source).isDirectory()) copyDir(source, join(to, name));
       else copy(source, join(to, name));
     }

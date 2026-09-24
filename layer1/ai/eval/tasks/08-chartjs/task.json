@@ -1,0 +1,20 @@
+{
+  "id": "08-chartjs",
+  "title": { "en": "Chart.js inside a component", "ko": "컴포넌트 안의 Chart.js" },
+  "prompt": "prompt-add-feature.md",
+  "entry": "index.html",
+  "project": {
+    "index.html": "input/index.html",
+    "app.js": "input/app.js",
+    "style.css": "input/style.css"
+  },
+  "reference": {},
+  "mustKeep": [],
+  "static": {},
+  "rubric": [
+    { "id": "lifecycle", "en": "Chart created in onMount, updated in onUpdate, destroyed in onDestroy; DOM in data-vf-keep", "ko": "onMount에서 만들고 onUpdate에서 갱신, onDestroy에서 파괴, DOM은 data-vf-keep" },
+    { "id": "ownership", "en": "The chart instance lives in a closure or module variable, not on the component instance", "ko": "차트 인스턴스는 클로저나 모듈 변수에 둠(컴포넌트 인스턴스 속성이 아님)" },
+    { "id": "tokens", "en": "Colors read from tokens at run time; no color values in JS", "ko": "색은 실행 중에 토큰에서 읽음, JS에 색 값 없음" },
+    { "id": "report", "en": "Honest report (assumptions, unverified items)", "ko": "정직한 보고(가정, 확인하지 못한 항목)" }
+  ]
+}

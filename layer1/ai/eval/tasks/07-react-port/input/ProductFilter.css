@@ -1,0 +1,12 @@
+.pf { display: grid; gap: 12px; }
+.pf__controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+.pf__field { display: grid; gap: 4px; font-size: 13px; color: #475569; }
+.pf__input { padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font: inherit; }
+.pf__check { display: flex; gap: 6px; align-items: center; font-size: 13px; }
+.pf__count, .pf__note, .pf__empty { color: #475569; }
+.pf__note--error { color: #b91c1c; }
+.pf__list { list-style: none; margin: 0; padding: 0; }
+.pf__item { display: flex; gap: 12px; padding: 8px 0; border-top: 1px solid #e2e8f0; }
+.pf__item--out .pf__name { color: #94a3b8; }
+.pf__price { margin-left: auto; font-variant-numeric: tabular-nums; }
+.pf__badge { padding: 0 8px; border-radius: 9999px; background: #fef2f2; color: #b91c1c; font-size: 12px; }

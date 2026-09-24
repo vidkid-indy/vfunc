@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Sign up</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./lib/vfunc.tokens.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="page">
+    <form class="signup" id="signup" novalidate>
+      <h1 class="signup__title">Create your account</h1>
+      <div class="field">
+        <label class="field__label" for="email">Email</label>
+        <input class="field__input" id="email" name="email" type="email" autocomplete="email">
+      </div>
+      <div class="field">
+        <label class="field__label" for="password">Password</label>
+        <input class="field__input" id="password" name="password" type="password" autocomplete="new-password">
+      </div>
+      <div class="field">
+        <label class="field__label" for="confirm">Confirm password</label>
+        <input class="field__input" id="confirm" name="confirm" type="password" autocomplete="new-password">
+      </div>
+      <div class="field field--check">
+        <input class="field__check" id="terms" name="terms" type="checkbox">
+        <label class="field__label" for="terms">I accept the terms</label>
+      </div>
+      <button class="signup__submit" type="submit">Sign up</button>
+    </form>
+  </main>
+  <script src="./lib/vfunc.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

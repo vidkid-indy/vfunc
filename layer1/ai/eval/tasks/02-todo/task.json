@@ -1,0 +1,20 @@
+{
+  "id": "02-todo",
+  "title": { "en": "To-do list", "ko": "할 일 목록" },
+  "prompt": "prompt-add-feature.md",
+  "entry": "index.html",
+  "project": {
+    "index.html": "input/index.html",
+    "app.js": "input/app.js",
+    "style.css": "input/style.css"
+  },
+  "reference": {},
+  "mustKeep": [],
+  "static": {},
+  "rubric": [
+    { "id": "spec", "en": "Follows the hooks and texts of the task", "ko": "과제의 훅과 문구를 지킴" },
+    { "id": "minimal", "en": "Changes only what the feature needs (add-feature prompt)", "ko": "기능에 필요한 것만 바꿈(add-feature 프롬프트)" },
+    { "id": "idiom", "en": "One component with delegation; per-row ids; no instance per row", "ko": "위임을 쓰는 컴포넌트 하나, 행마다 id, 행마다 인스턴스를 만들지 않음" },
+    { "id": "report", "en": "Honest report (assumptions, unverified items)", "ko": "정직한 보고(가정, 확인하지 못한 항목)" }
+  ]
+}

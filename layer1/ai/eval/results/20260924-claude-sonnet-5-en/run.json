@@ -1,0 +1,21 @@
+{
+  "model": "Claude Sonnet 5",
+  "modelVersion": "claude-sonnet-5",
+  "service": "Claude Code subagent (reads the bundle, writes the answer; no other tools)",
+  "date": "2026-09-24",
+  "lang": "en",
+  "kit": "1.0.0-rc.5",
+  "settings": "Trial run of the evaluation set. One new session per task, no follow-up messages. The answers are unedited. Manual scores are not filled in yet.",
+  "tasks": {
+    "01": { "followUps": 0, "notes": "Works in every engine; style.css uses raw colors (#ccc, #888, #0a7) instead of tokens." },
+    "02": { "followUps": 0, "notes": "Adds nothing: inst.setState(function (s) { … }) is ignored, because setState takes an object (vf.store's set takes a function). The engine gives no warning." },
+    "03": { "followUps": 0, "notes": "All checks pass." },
+    "04": { "followUps": 0, "notes": "All checks pass." },
+    "05": { "followUps": 0, "notes": "All checks pass. The Retry button sits inside the status element, which the task allows (the check was relaxed after this run to read the status text without the button)." },
+    "06": { "followUps": 0, "notes": "Locale files use flat dotted keys (\"nav.home\"); vf.t reads \"nav.home\" as nested objects, so every text shows its key and the console warns about missing messages." },
+    "07": { "followUps": 0, "notes": "The search input re-renders on every key but has no id, data-ref or name, so the focus is not restored and typing stops after the first character. The report flagged focus restoration as not verified." },
+    "08": { "followUps": 0, "notes": "The chart component is vf.attach('#sales', …); destroy() removes #sales itself, so showing the chart again finds no target." },
+    "09": { "followUps": 0, "notes": "Design applied correctly in light, OS dark and data-theme=\"dark\"; two padding values stay in px in app.css." },
+    "10": { "followUps": 0, "notes": "All seven bugs fixed, but bug 4 keeps the timer on inst._timer (an own property on the instance) and only fixes the typo." }
+  }
+}

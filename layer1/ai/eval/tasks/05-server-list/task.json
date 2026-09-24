@@ -1,0 +1,21 @@
+{
+  "id": "05-server-list",
+  "title": { "en": "Server list: loading, error, empty and untrusted data", "ko": "서버 목록: 로딩·오류·빈 상태와 신뢰할 수 없는 데이터" },
+  "prompt": "prompt-add-feature.md",
+  "entry": "index.html",
+  "project": {
+    "index.html": "input/index.html",
+    "app.js": "input/app.js",
+    "style.css": "input/style.css",
+    "data/servers.json": "input/servers.json"
+  },
+  "reference": {},
+  "mustKeep": [],
+  "static": {},
+  "rubric": [
+    { "id": "spec", "en": "Follows the states, hooks and texts of the task", "ko": "과제의 상태, 훅, 문구를 지킴" },
+    { "id": "structure", "en": "Server calls in one place (api.js or a function), loading in onMount", "ko": "서버 호출을 한 곳에 둠(api.js 또는 함수), onMount에서 불러옴" },
+    { "id": "untrusted", "en": "Treats the response as data: escaping by vf.html, URLs through vf.safeUrl", "ko": "응답을 데이터로 다룸: vf.html 이스케이프, vf.safeUrl" },
+    { "id": "report", "en": "Honest report (assumptions, unverified items)", "ko": "정직한 보고(가정, 확인하지 못한 항목)" }
+  ]
+}

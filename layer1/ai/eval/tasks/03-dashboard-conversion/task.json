@@ -1,0 +1,19 @@
+{
+  "id": "03-dashboard-conversion",
+  "title": { "en": "Convert a published dashboard", "ko": "퍼블리싱 대시보드 변환" },
+  "prompt": "prompt-html-to-vfunc.md",
+  "entry": "index.html",
+  "project": {
+    "index.html": "@/layer1/examples/14-before-after-conversion/before/index.html",
+    "dashboard.css": "@/layer1/examples/14-before-after-conversion/before/dashboard.css"
+  },
+  "reference": {},
+  "mustKeep": ["dashboard.css"],
+  "static": {},
+  "rubric": [
+    { "id": "html-kept", "en": "HTML changes are only hook/state attributes, hidden, the removals of rule 4, the script tag and the CSP", "ko": "HTML 변경은 훅·상태 속성, hidden, 규칙 4의 제거, script 태그, CSP뿐" },
+    { "id": "smallest-tool", "en": "Chooses the smallest tool per area (adopt before replace)", "ko": "영역마다 가장 작은 도구를 고름(대체보다 채택 우선)" },
+    { "id": "area-table", "en": "Area table, removed items and token suggestions in the report", "ko": "보고서에 영역 판별표, 제거 목록, 토큰 제안" },
+    { "id": "report", "en": "Honest checklist (unverified items marked)", "ko": "정직한 확인 목록(확인 못 한 항목 표시)" }
+  ]
+}

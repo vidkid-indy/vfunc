@@ -1,0 +1,8 @@
+[
+  { "id": "k1", "name": "Compact Keyboard", "category": "keyboard", "price": 49, "stock": 12 },
+  { "id": "k2", "name": "Mechanical Keyboard", "category": "keyboard", "price": 129, "stock": 0 },
+  { "id": "m1", "name": "Travel Mouse", "category": "mouse", "price": 25, "stock": 40 },
+  { "id": "m2", "name": "Ergo Mouse", "category": "mouse", "price": 59, "stock": 3 },
+  { "id": "d1", "name": "27\" Monitor", "category": "monitor", "price": 329, "stock": 5 },
+  { "id": "d2", "name": "Portable Monitor", "category": "monitor", "price": 199, "stock": 0 }
+]

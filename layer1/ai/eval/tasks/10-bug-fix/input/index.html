@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'">
+  <title>Team board</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./lib/vfunc.tokens.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="board">
+    <h1 class="board__title">Team board</h1>
+
+    <section class="prefs" id="prefs" aria-label="Preferences"></section>
+
+    <section class="notice" id="notice" aria-live="polite"></section>
+
+    <section class="panel" id="details-panel">
+      <button class="panel__toggle" type="button" data-action="details" aria-controls="details">Details</button>
+      <div class="panel__body" id="details" hidden>
+        <p>The board shows this week's tasks for the web team.</p>
+      </div>
+    </section>
+
+    <section class="panel" id="tasks" aria-label="Tasks"></section>
+
+    <section class="panel" id="comments" aria-label="Comments">
+      <form class="comments__form" data-action="comment">
+        <label class="comments__label" for="comment-text">Comment</label>
+        <input class="comments__input" id="comment-text" data-ref="comment" autocomplete="off">
+        <button class="comments__button" type="submit">Post</button>
+      </form>
+      <ul class="comments__list" data-ref="comment-list"></ul>
+    </section>
+
+    <section class="panel" id="clock-slot"></section>
+  </main>
+  <footer class="footer" id="footer"></footer>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

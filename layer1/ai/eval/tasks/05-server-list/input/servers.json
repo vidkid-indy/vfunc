@@ -1,0 +1,6 @@
+[
+  { "id": "s1", "name": "Seoul web 1", "region": "ap-northeast-2", "status": "up", "url": "https://seoul-1.example.com/health" },
+  { "id": "s2", "name": "Seoul web 2", "region": "ap-northeast-2", "status": "up", "url": "https://seoul-2.example.com/health" },
+  { "id": "s3", "name": "Frankfurt API", "region": "eu-central-1", "status": "down", "url": "https://fra-api.example.com/health" },
+  { "id": "s4", "name": "Oregon batch", "region": "us-west-2", "status": "maintenance", "url": "https://or-batch.example.com/health" }
+]

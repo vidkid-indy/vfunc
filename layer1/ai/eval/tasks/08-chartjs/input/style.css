@@ -1,0 +1,5 @@
+body { margin: 0; background: var(--vf-color-bg); color: var(--vf-color-text); font-family: var(--vf-font-body); line-height: var(--vf-line-height); }
+.page { max-width: 48rem; margin: var(--vf-space-6) auto; padding: 0 var(--vf-space-4); }
+.page__head { display: flex; align-items: center; justify-content: space-between; }
+.page__title { font-size: var(--vf-font-size-2xl); }
+.sales { padding: var(--vf-space-4); background: var(--vf-color-surface); border: 1px solid var(--vf-color-border); border-radius: var(--vf-radius-lg); }

@@ -128,6 +128,8 @@ npx playwright install chromium firefox webkit   # 처음 한 번: 브라우저 
 npm run test:examples             # 예제·스타터·사이트 브라우저 테스트 (Playwright, 콘솔 에러·경고 0 + 핵심 동작)
 # 다른 엔진: PowerShell은 $env:VF_BROWSER='firefox' (또는 'webkit') 후 실행. CI는 세 엔진 모두 실행
 npm run site       # 사이트 → build/out/site/. 미리 보기: python -m http.server 8080 --directory build/out/site
+node layer1/ai/eval/tools/bundle.mjs              # LLM 평가 묶음 → build/out/eval/bundles/{en,ko}/
+node layer1/ai/eval/tools/grade.mjs <결과 폴더>    # 저장한 답 채점 → results.json, results.md (layer1/ai/eval/README.ko.md)
 ```
 
 - CI(`.github/workflows/ci.yml`): `npm test`, `build:check`, `npm audit --omit=dev`, 세 엔진의 `test:examples`, gitleaks(실행 파일, 버전·체크섬 고정). 새 브라우저 테스트는 세 엔진에서 모두 통과해야 합니다. 엔진 차이로 실패하면 사용자 관점의 조작(키보드 등)으로 검사하고 제품 코드를 엔진별로 분기하지 않습니다.
@@ -137,7 +139,8 @@ npm run site       # 사이트 → build/out/site/. 미리 보기: python -m htt
 - AI 프롬프트 킷(`layer1/ai/en`, `layer1/ai/ko`)은 같은 이름의 파일 쌍으로 두고, 한쪽을 고치면 다른 쪽도 같은 절 구성으로 고칩니다(`ai-kit.test.js`가 검사). `llms-full.txt`는 `llms.txt` + 사이트 영어 문서 + d.ts로 빌드가 생성합니다.
 - 스타터(`layer1/starter`)의 `lib/`, `styles/tokens.css`, `AGENTS*.md`, `design/DESIGN.md`, `docs/`는 빌드가 넣는 사본입니다. 원본을 고치고 `npm run build`를 실행합니다.
 - 사이트 문서의 원본은 `site/content/ko/*.md`(한국어)이고 `site/content/en/*.md`는 번역입니다. 두 언어는 같은 파일·같은 `##` 절·같은 `{{블록}}`을 가집니다(`build/site.test.js`). 페이지 목록은 `site/pages.json`. API 페이지는 d.ts의 모든 이름을 `### \`vf.이름\`` 제목으로 가져야 합니다.
-- 사이트의 마크다운은 `build/markdown.mjs`가 모두 이스케이프합니다. 원시 HTML은 쓸 수 없고, 생성 블록(`{{install}}`, `{{examples}}`, `{{prompts}}`, `{{licenses}}`, `{{demo}}`)과 `@VERSION@`만 빌드가 채웁니다.
+- 사이트의 마크다운은 `build/markdown.mjs`가 모두 이스케이프합니다. 원시 HTML은 쓸 수 없고, 생성 블록(`{{install}}`, `{{examples}}`, `{{prompts}}`, `{{licenses}}`, `{{eval}}`, `{{demo}}`)과 `@VERSION@`만 빌드가 채웁니다.
+- LLM 평가 세트(`layer1/ai/eval`)는 npm 패키지와 사이트 `/ai/`에 넣지 않습니다. 과제의 검사를 바꾸면 기준 답안이 세 엔진에서 통과해야 합니다(`eval.e2e.js`). `results/`의 답과 결과는 고치지 않고, 킷이 바뀌면 새 폴더로 다시 실행합니다.
 - 사이트의 동작은 `site/assets/site.js`의 `vf.attach` 섬으로만 붙입니다. 배포는 `.github/workflows/pages.yml`(수동 실행, Actions는 SHA 고정)입니다.
 - 엔진 소스(`layer1/src/`)를 고치면 `npm run build`로 `dist/`를 다시 만들어 함께 커밋합니다. `dist/` 테스트는 커밋된 파일을 검사합니다.
 - 빌드는 `vfunc.min.js` gzip 10KB 초과, min 파일에 남은 개발 경고, `third-party.json`에 없는 번들 모듈이 있으면 실패합니다.

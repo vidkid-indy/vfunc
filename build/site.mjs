@@ -104,6 +104,28 @@ function licensesBlock(lang) {
     rows.join('') + '</tbody></table></div>';
 }
 
+/** Results of the LLM evaluation set (layer1/ai/eval/results/<run>/, D-024), newest first. */
+function evalBlock(lang) {
+  const dir = join(ROOT, 'layer1/ai/eval/results');
+  const runs = existsSync(dir) ? readdirSync(dir).filter((name) => existsSync(join(dir, name, 'results.json'))).sort().reverse() : [];
+  if (!runs.length) return '<p class="muted">' + (lang === 'ko' ? '아직 공개한 결과가 없습니다.' : 'No results published yet.') + '</p>';
+  const head = lang === 'ko'
+    ? ['모델', '실행 방식', '날짜', '킷 버전', '언어', '통과한 과제', '통과한 검사', '추가 질문', '']
+    : ['Model', 'How it ran', 'Date', 'Kit version', 'Language', 'Tasks passed', 'Checks passed', 'Follow-ups', ''];
+  const rows = runs.map((name) => {
+    const results = json('layer1/ai/eval/results/' + name + '/results.json');
+    const run = json('layer1/ai/eval/results/' + name + '/run.json');
+    const followUps = Object.keys(run.tasks || {}).reduce((n, k) => n + (run.tasks[k].followUps || 0), 0);
+    const s = results.summary;
+    return '<tr><td>' + esc(run.model + (run.modelVersion ? ' (' + run.modelVersion + ')' : '')) + '</td><td>' + esc(run.service) +
+      '</td><td>' + esc(run.date) + '</td><td>' + esc(run.kit) + '</td><td>' + esc(run.lang) + '</td><td>' + s.tasksPassed + ' / ' + s.tasks +
+      '</td><td>' + s.checksPassed + ' / ' + s.checks + '</td><td>' + followUps + '</td><td><a href="https://github.com/vidkid-indy/vfunc/blob/main/layer1/ai/eval/results/' +
+      esc(name) + '/results.md" rel="noopener">' + (lang === 'ko' ? '자세히' : 'details') + '</a></td></tr>';
+  });
+  return '<div class="table"><table><thead><tr>' + head.map((h) => '<th>' + h + '</th>').join('') + '</tr></thead><tbody>' +
+    rows.join('') + '</tbody></table></div>';
+}
+
 function demoBlock(lang) {
   return '<div class="demo" id="home-demo" data-state="static"><p class="muted">' +
     (lang === 'ko' ? '이 데모는 JavaScript가 켜져 있을 때 동작합니다.' : 'This demo runs with JavaScript enabled.') + '</p></div>';
@@ -164,6 +186,7 @@ export function buildSite(outDir) {
       examples: examplesBlock(lang),
       prompts: promptsBlock(lang, t),
       licenses: licensesBlock(lang),
+      eval: evalBlock(lang),
       demo: demoBlock(lang)
     };
     const search = [];
@@ -221,7 +244,8 @@ export function buildSite(outDir) {
   copyDir(join(ROOT, 'layer1/dist'), join(out, 'layer1/dist'));
   copyDir(join(ROOT, 'layer1/css'), join(out, 'layer1/css'));
   copyDir(join(ROOT, 'layer1/examples'), join(out, 'layer1/examples'));
-  copyDir(join(ROOT, 'layer1/ai'), join(out, 'ai'));
+  // The evaluation set is repository tooling: the site shows its results table only (D-024).
+  copyDir(join(ROOT, 'layer1/ai'), join(out, 'ai'), (name, path) => name === 'eval' && dirname(path) === join(ROOT, 'layer1/ai'));
   for (const file of ['llms.txt', 'llms.ko.txt', 'llms-full.txt']) copyFileSync(join(ROOT, 'layer1/ai', file), join(out, file));
   writeFileSync(join(out, '.nojekyll'), '');
   return { out: out, pages: report.pages, version: version };

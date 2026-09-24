@@ -1,0 +1,18 @@
+{
+  "id": "06-spa-scaffold",
+  "title": { "en": "SPA scaffold: router, store, two languages", "ko": "SPA 뼈대: 라우터, store, 두 언어" },
+  "prompt": "prompt-spa-scaffold.md",
+  "entry": "index.html",
+  "project": {
+    "data/servers.json": "../05-server-list/input/servers.json"
+  },
+  "reference": {},
+  "mustKeep": ["data/servers.json"],
+  "static": {},
+  "rubric": [
+    { "id": "structure", "en": "Standard structure: app.js routes, store.js with change functions, api.js, pages/*.js", "ko": "표준 구조: app.js 라우트, 변경 함수가 있는 store.js, api.js, pages/*.js" },
+    { "id": "lifecycle", "en": "Pages are destroyed on navigation and release subscriptions in onDestroy", "ko": "이동할 때 페이지를 destroy하고 onDestroy에서 구독을 해제" },
+    { "id": "messages", "en": "No hard-coded visible text; both locale files have every key", "ko": "보이는 문구를 하드코딩하지 않음, 두 로케일 파일에 모든 키" },
+    { "id": "report", "en": "Screen list, state map and an honest checklist", "ko": "화면 목록, 상태 지도, 정직한 확인 목록" }
+  ]
+}

@@ -1,0 +1,23 @@
+body { margin: 0; background: var(--vf-color-bg); color: var(--vf-color-text); font-family: var(--vf-font-body); line-height: var(--vf-line-height); }
+.page { max-width: 32rem; margin: var(--vf-space-6) auto; padding: 0 var(--vf-space-4); }
+
+.card { padding: 20px; background: var(--vf-color-surface); border: 1px solid var(--vf-color-border); border-radius: var(--vf-radius-lg); box-shadow: var(--vf-shadow-1); }
+.card__title { margin: 0 0 var(--vf-space-2); font-size: var(--vf-font-size-xl); font-weight: var(--vf-font-weight-strong); }
+.card__text { color: var(--vf-color-text-muted); }
+.card__actions { display: flex; justify-content: flex-end; gap: var(--vf-space-2); margin-top: var(--vf-space-4); }
+
+.button { padding: var(--vf-space-2) var(--vf-space-4); border: 1px solid var(--vf-color-border-strong); border-radius: var(--vf-radius-md); background: var(--vf-color-surface); color: var(--vf-color-text); font: inherit; }
+.button[data-variant="primary"] { border-color: transparent; background: var(--vf-color-primary); color: var(--vf-color-on-primary); }
+.button[data-variant="primary"]:hover { background: #1d4ed8; }
+.button:focus-visible, .toggle:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); }
+
+.toggle { padding: 6px 14px; border: 1px solid var(--vf-color-border-strong); border-radius: var(--vf-radius-md); background: var(--vf-color-surface); color: var(--vf-color-text); font: inherit; }
+.toggle[aria-pressed="true"] { border-color: transparent; background: #2563eb; color: #ffffff; }
+
+.list { list-style: none; margin: var(--vf-space-4) 0 0; padding: 0; }
+.list__item { display: flex; justify-content: space-between; padding: var(--vf-space-2) 0; border-top: 1px solid var(--vf-color-border); }
+.badge { padding: 0 var(--vf-space-2); border-radius: var(--vf-radius-full); font-size: var(--vf-font-size-xs); }
+.badge[data-state="on"] { background: var(--vf-color-success-soft); color: var(--vf-color-success-text); }
+.badge[data-state="off"] { background: var(--vf-color-surface-muted); color: var(--vf-color-text-muted); }
+
+.notice[data-state="success"] { margin: var(--vf-space-3) 0 0; padding: 8px 12px; border-radius: var(--vf-radius-md); background: #ecfdf5; color: #047857; }
