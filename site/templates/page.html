@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="{{lang}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'">
+  <meta name="description" content="{{description}}">
+  <title>{{title}} — vfunc.js</title>
+  <link rel="icon" href="data:,">
+  <link rel="alternate" hreflang="{{otherLang}}" href="{{otherHref}}">
+  <link rel="stylesheet" href="{{root}}layer1/css/vfunc.tokens.css">
+  <link rel="stylesheet" href="{{root}}assets/site.css">
+  <script src="{{root}}assets/theme-early.js"></script>
+</head>
+<body data-lang="{{lang}}" data-root="{{root}}" data-copied-label="{{copiedLabel}}">
+  <a class="skip" href="#content">{{skip}}</a>
+  <header class="topbar">
+    <a class="topbar__brand" href="./index.html">vfunc<span class="topbar__dot">.js</span></a>
+    <form class="topbar__search" id="site-search" role="search" data-action="search">
+      <input class="topbar__search-input" type="search" data-ref="query" placeholder="{{searchPlaceholder}}" aria-label="{{search}}" autocomplete="off">
+      <div class="search-results" id="search-results" aria-live="polite"></div>
+    </form>
+    <nav class="topbar__tools" aria-label="Site">
+      <a class="topbar__link" href="{{otherHref}}" hreflang="{{otherLang}}" lang="{{otherLang}}" data-ref="other-lang">{{other}}</a>
+      <a class="topbar__link" href="https://github.com/vidkid-indy/vfunc" rel="noopener">{{source}}</a>
+      <button class="topbar__button" type="button" id="theme-toggle" data-action="theme" aria-label="{{theme}}" data-state="system">◐</button>
+      <button class="topbar__button topbar__menu" type="button" id="nav-toggle" data-action="nav" aria-expanded="false" aria-controls="site-nav">{{menu}}</button>
+    </nav>
+  </header>
+  <div class="layout">
+    <nav class="sidenav" id="site-nav" aria-label="Docs" data-state="closed">
+{{nav}}
+    </nav>
+    <main class="page" id="content" tabindex="-1">
+{{content}}
+    </main>
+    <aside class="toc" aria-label="{{onThisPage}}">
+{{toc}}
+    </aside>
+  </div>
+  <footer class="footer">{{footer}} · v{{version}}</footer>
+  <script type="module" src="{{root}}assets/site.js"></script>
+</body>
+</html>

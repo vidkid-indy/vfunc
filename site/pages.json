@@ -1,0 +1,21 @@
+{
+  "$comment": "Site pages (build/site.mjs, D-020). Each slug has site/content/ko/<slug>.md (original) and site/content/en/<slug>.md. group: nav section; nav: optional short menu label per language (default: the page's # title).",
+  "languages": ["ko", "en"],
+  "pages": [
+    { "slug": "index", "group": "start", "nav": { "ko": "홈", "en": "Home" } },
+    { "slug": "getting-started", "group": "start" },
+    { "slug": "compare", "group": "start" },
+    { "slug": "guide", "group": "learn" },
+    { "slug": "spa", "group": "learn" },
+    { "slug": "design", "group": "learn" },
+    { "slug": "extend", "group": "learn" },
+    { "slug": "deploy", "group": "learn" },
+    { "slug": "ai", "group": "learn" },
+    { "slug": "api", "group": "reference" },
+    { "slug": "examples", "group": "reference" },
+    { "slug": "faq", "group": "reference" },
+    { "slug": "roadmap", "group": "about" },
+    { "slug": "licenses", "group": "about" },
+    { "slug": "privacy", "group": "about" }
+  ]
+}

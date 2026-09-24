@@ -11,11 +11,11 @@
 
 > vfunc.js is a no-build vanilla JavaScript UI library (Apache-2.0). No virtual DOM: components render with innerHTML, events use delegation, and elements are reached through `data-ref`. Idea: keep your HTML as it is and use vfunc only where you need control. One global `vf`.
 
-Draft for 1.0.0-rc.1 (Phase 3). The full reference is ai-docs/vfunc_manual.md; this file keeps only what is needed to write correct code. Korean: llms.ko.txt.
+For vfunc.js 1.0 (release candidates). The full reference is ai-docs/vfunc_manual.md; this file keeps only what is needed to write correct code. Korean: llms.ko.txt.
 
 ## Load
 
-- Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.2/dist/vfunc.min.js" integrity="sha384-UeQW7ievyV8iCu5aVhO1m9GaBzCEqNGRhgaXopQv6bK0gGVbtZpU1DnMIBd94h9e" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production; the integrity value differs per version and file (this one is 1.0.0-rc.2 vfunc.min.js). `dist/vfunc.js` is the development build with warnings.
+- Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.3/dist/vfunc.min.js" integrity="sha384-9rQRHZ01NE8fXwGg8EwsBHAKd7xU2YR5VsIZWlz36hWfsyZS3iSCavHxi5lrJ0td" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production; the integrity value differs per version and file (this one is 1.0.0-rc.3 vfunc.min.js). `dist/vfunc.js` is the development build with warnings.
 - ES module: `import vf from 'vfunc'` or `import { vfunc, html, router } from 'vfunc'`. The ES modules never touch `window.vf`.
 - IE11 / Edge IE mode: `dist/vfunc.legacy.min.js` (same API; includes only a Promise polyfill). The app code must be ES5: no arrow functions, const/let, template literals or classes; use `vf.tpl('<b>{name}</b>', data)` instead of vf.html template literals. Polyfill anything else the app needs (Object.assign, fetch, …) yourself. Load pattern: `<script type="module" src="app.js">` + `<script nomodule src="vfunc.legacy.min.js">` + `<script nomodule src="app.es5.js">`.
 
@@ -156,10 +156,10 @@ layer1/starter/: a copyable app (router, store, i18n, tokens, update plugin, des
 
 ```html
 <!-- 운영: 정확한 버전 고정 + SRI (규칙 20, 24) -->
-<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.2/dist/vfunc.min.js"
-        integrity="sha384-UeQW7ievyV8iCu5aVhO1m9GaBzCEqNGRhgaXopQv6bK0gGVbtZpU1DnMIBd94h9e"
+<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.3/dist/vfunc.min.js"
+        integrity="sha384-9rQRHZ01NE8fXwGg8EwsBHAKd7xU2YR5VsIZWlz36hWfsyZS3iSCavHxi5lrJ0td"
         crossorigin="anonymous"></script>
-<!-- integrity 값은 버전·파일마다 다릅니다. 위 값은 1.0.0-rc.2의 vfunc.min.js 값입니다 -->
+<!-- integrity 값은 버전·파일마다 다릅니다. 위 값은 1.0.0-rc.3의 vfunc.min.js 값입니다 -->
 
 <script src="./app.js"></script>  <!-- 전역 vf 사용 -->
 ```
@@ -190,8 +190,8 @@ import vf from './layer1/src/vfunc.js';
 ```html
 <!-- 모던 브라우저는 module을, IE는 nomodule을 실행합니다 -->
 <script type="module" src="./app.js"></script>
-<script nomodule src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.2/dist/vfunc.legacy.min.js"
-        integrity="sha384-GVp6bDG/eEvhSGaXhfJSsZ3jrkvT5kzxY3aeC9Uaqe54HjCA7dCSoXfvKMb0en5N"
+<script nomodule src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.3/dist/vfunc.legacy.min.js"
+        integrity="sha384-jO/nyKi8wan/8r5fR1nuH2stklej6uDgKwLvBQ9/BzCvqaCkiWVfZlyL9+WJ/ir5"
         crossorigin="anonymous"></script>
 <script nomodule src="./app.es5.js"></script>
 

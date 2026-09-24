@@ -1,0 +1,40 @@
+{
+  "ko": {
+    "lang": "한국어",
+    "other": "English",
+    "skip": "본문으로 건너뛰기",
+    "menu": "메뉴",
+    "theme": "테마",
+    "search": "문서 검색",
+    "searchPlaceholder": "검색…",
+    "noResults": "결과가 없습니다.",
+    "copy": "복사",
+    "copied": "복사됨",
+    "onThisPage": "이 페이지",
+    "groups": { "start": "시작하기", "learn": "배우기", "reference": "레퍼런스", "about": "정보" },
+    "footer": "vfunc.js · Apache-2.0 · 이 사이트도 vfunc로 만들었습니다.",
+    "source": "GitHub",
+    "prompt": "프롬프트",
+    "open": "열기",
+    "file": "파일"
+  },
+  "en": {
+    "lang": "English",
+    "other": "한국어",
+    "skip": "Skip to content",
+    "menu": "Menu",
+    "theme": "Theme",
+    "search": "Search the docs",
+    "searchPlaceholder": "Search…",
+    "noResults": "No results.",
+    "copy": "Copy",
+    "copied": "Copied",
+    "onThisPage": "On this page",
+    "groups": { "start": "Start", "learn": "Learn", "reference": "Reference", "about": "About" },
+    "footer": "vfunc.js · Apache-2.0 · This site is built with vfunc.",
+    "source": "GitHub",
+    "prompt": "Prompt",
+    "open": "Open",
+    "file": "File"
+  }
+}

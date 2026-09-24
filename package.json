@@ -29,6 +29,7 @@
     "build": "node build/build.mjs",
     "build:check": "node build/build.mjs --check",
     "licenses": "node build/licenses.mjs",
+    "site": "node build/site.mjs",
     "pack:dry": "npm pack --dry-run ./build/out/npm"
   },
   "devDependencies": {

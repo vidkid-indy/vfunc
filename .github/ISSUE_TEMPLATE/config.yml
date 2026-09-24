@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas / 질문과 아이디어 (Discussions)
+    url: https://github.com/vidkid-indy/vfunc/discussions
+    about: Ask and share in Discussions. / Discussions에서 묻고 나눠 주세요.
+  - name: Security / 보안
+    url: https://github.com/vidkid-indy/vfunc/blob/main/SECURITY.md
+    about: Report security issues privately. / 보안 문제는 비공개로 알려 주세요.

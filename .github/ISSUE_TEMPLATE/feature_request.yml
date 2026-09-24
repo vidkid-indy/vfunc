@@ -1,0 +1,28 @@
+name: Feature request / 기능 요청
+description: Suggest an addition to vfunc.js. For open questions, use Discussions first. / 기능을 제안합니다. 열린 질문은 먼저 Discussions에.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does it solve? / 어떤 문제를 푸나요?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal (API sketch welcome) / 제안(API 스케치 환영)
+      render: js
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What you do today instead / 지금은 어떻게 하고 있나요
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks / 확인
+      options:
+        - label: It could not be done as a plugin (`vf.use`) or with the public API. / 플러그인이나 공개 API로는 할 수 없습니다.
+        - label: I read EXTENDING.md and the rejected patterns in the docs. / EXTENDING.md와 거절된 패턴을 확인했습니다.

@@ -12,8 +12,8 @@ The smallest vfunc.js page: one `<script>` tag and one component. `esm.html` sho
 
 ```html
 <!-- Production: exact version + SRI / 운영: 정확한 버전 + SRI -->
-<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.2/dist/vfunc.min.js"
-        integrity="sha384-UeQW7ievyV8iCu5aVhO1m9GaBzCEqNGRhgaXopQv6bK0gGVbtZpU1DnMIBd94h9e"
+<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.3/dist/vfunc.min.js"
+        integrity="sha384-9rQRHZ01NE8fXwGg8EwsBHAKd7xU2YR5VsIZWlz36hWfsyZS3iSCavHxi5lrJ0td"
         crossorigin="anonymous"></script>
 ```
 

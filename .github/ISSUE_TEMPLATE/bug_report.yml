@@ -1,0 +1,41 @@
+name: Bug report / 버그 신고
+description: Something does not work as documented. / 문서와 다르게 동작합니다.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Security issues: do not open an issue.** Follow SECURITY.md. / **보안 문제는 이슈로 올리지 말고** SECURITY.md를 따라 주세요.
+        Please use the development build (`vfunc.js`, not `.min.js`): it explains many mistakes in the console. / 개발 빌드로 재현해 주세요.
+  - type: input
+    id: version
+    attributes:
+      label: vfunc version / 버전
+      placeholder: "1.0.0-rc.3 (vf.version)"
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS / 브라우저와 OS
+      placeholder: "Chrome 140, Windows 11 · Edge IE mode · …"
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce (a minimal page is best) / 재현 방법(최소 페이지가 가장 좋습니다)
+      render: html
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behaviour / 기대한 동작과 실제 동작
+    validations:
+      required: true
+  - type: textarea
+    id: console
+    attributes:
+      label: Console output / 콘솔 출력
+      render: text

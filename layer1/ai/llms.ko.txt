@@ -2,11 +2,11 @@
 
 > vfunc.js는 빌드가 필요 없는 순수 Vanilla JavaScript UI 라이브러리입니다(Apache-2.0). Virtual DOM 없이 innerHTML로 렌더링하고, 이벤트는 위임으로, 요소는 `data-ref`로 찾습니다. 기본 개념: HTML은 그대로 쓰고 제어가 필요한 곳만 vfunc로 만든다. 전역은 `vf` 하나입니다.
 
-1.0.0-rc.1 초안(Phase 3)입니다. 전체 레퍼런스는 ai-docs/vfunc_manual.md이고, 이 파일에는 올바른 코드를 쓰는 데 필요한 것만 담았습니다. 코드 예시와 API 설명은 영어판 llms.txt와 같습니다.
+vfunc.js 1.0(릴리스 후보)용입니다. 전체 레퍼런스는 ai-docs/vfunc_manual.md이고, 이 파일에는 올바른 코드를 쓰는 데 필요한 것만 담았습니다. 코드 예시와 API 설명은 영어판 llms.txt와 같습니다.
 
 ## 불러오기
 
-- 스크립트 태그: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.2/dist/vfunc.min.js" integrity="sha384-UeQW7ievyV8iCu5aVhO1m9GaBzCEqNGRhgaXopQv6bK0gGVbtZpU1DnMIBd94h9e" crossorigin="anonymous"></script>` → 전역 `vf`. 운영에서는 정확한 버전과 SRI를 붙입니다. integrity 값은 버전·파일마다 다릅니다(이 값은 1.0.0-rc.2의 vfunc.min.js). `dist/vfunc.js`는 경고가 나오는 개발용입니다.
+- 스크립트 태그: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.3/dist/vfunc.min.js" integrity="sha384-9rQRHZ01NE8fXwGg8EwsBHAKd7xU2YR5VsIZWlz36hWfsyZS3iSCavHxi5lrJ0td" crossorigin="anonymous"></script>` → 전역 `vf`. 운영에서는 정확한 버전과 SRI를 붙입니다. integrity 값은 버전·파일마다 다릅니다(이 값은 1.0.0-rc.3의 vfunc.min.js). `dist/vfunc.js`는 경고가 나오는 개발용입니다.
 - ES 모듈: `import vf from 'vfunc'` 또는 `import { vfunc, html, router } from 'vfunc'`. ES 모듈은 `window.vf`를 건드리지 않습니다.
 - IE11·Edge IE 모드: `dist/vfunc.legacy.min.js`(API 동일, Promise 폴리필만 포함). 앱 코드도 ES5여야 합니다. 화살표 함수·const/let·템플릿 리터럴·클래스를 쓰지 말고, vf.html 템플릿 리터럴 대신 `vf.tpl('<b>{name}</b>', data)`을 씁니다. 앱에 필요한 다른 기능(Object.assign, fetch 등)은 앱이 직접 폴리필합니다. 불러오기: `<script type="module" src="app.js">` + `<script nomodule src="vfunc.legacy.min.js">` + `<script nomodule src="app.es5.js">`.
 
