@@ -6,7 +6,7 @@ For vfunc.js 1.0 (release candidates). The full reference is llms-full.txt (this
 
 ## Load
 
-- Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.3/dist/vfunc.min.js" integrity="sha384-9rQRHZ01NE8fXwGg8EwsBHAKd7xU2YR5VsIZWlz36hWfsyZS3iSCavHxi5lrJ0td" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production; the integrity value differs per version and file (this one is 1.0.0-rc.3 vfunc.min.js). `dist/vfunc.js` is the development build with warnings.
+- Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.4/dist/vfunc.min.js" integrity="sha384-EOBIff5t5V2ew+DDIOtyd9q4ev5U+zj9rggBJ0UKBU3d5dNTl9PeCGAG+0py+iMZ" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production; the integrity value differs per version and file (this one is 1.0.0-rc.4 vfunc.min.js). `dist/vfunc.js` is the development build with warnings.
 - ES module: `import vf from 'vfunc'` or `import { vfunc, html, router } from 'vfunc'`. The ES modules never touch `window.vf`.
 - IE11 / Edge IE mode: `dist/vfunc.legacy.min.js` (same API; includes only a Promise polyfill). The app code must be ES5: no arrow functions, const/let, template literals or classes; use `vf.tpl('<b>{name}</b>', data)` instead of vf.html template literals. Polyfill anything else the app needs (Object.assign, fetch, …) yourself. Load pattern: `<script type="module" src="app.js">` + `<script nomodule src="vfunc.legacy.min.js">` + `<script nomodule src="app.es5.js">`.
 
