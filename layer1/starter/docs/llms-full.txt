@@ -15,7 +15,7 @@ For vfunc.js 1.0 (release candidates). The full reference is llms-full.txt (this
 ## Load
 
 - Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.4/dist/vfunc.min.js" integrity="sha384-EOBIff5t5V2ew+DDIOtyd9q4ev5U+zj9rggBJ0UKBU3d5dNTl9PeCGAG+0py+iMZ" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production; the integrity value differs per version and file (this one is 1.0.0-rc.4 vfunc.min.js). `dist/vfunc.js` is the development build with warnings.
-- ES module: `import vf from 'vfunc'` or `import { vfunc, html, router } from 'vfunc'`. The ES modules never touch `window.vf`.
+- ES module: `import vf from 'vfunc'` or `import { vfunc, html, router } from 'vfunc'`; a copied file works the same (`import vf from './lib/vfunc.esm.min.js'`). The ES modules never touch `window.vf`.
 - IE11 / Edge IE mode: `dist/vfunc.legacy.min.js` (same API; includes only a Promise polyfill). The app code must be ES5: no arrow functions, const/let, template literals or classes; use `vf.tpl('<b>{name}</b>', data)` instead of vf.html template literals. Polyfill anything else the app needs (Object.assign, fetch, …) yourself. Load pattern: `<script type="module" src="app.js">` + `<script nomodule src="vfunc.legacy.min.js">` + `<script nomodule src="app.es5.js">`.
 
 ## Rules for generated code
@@ -30,11 +30,11 @@ For vfunc.js 1.0 (release candidates). The full reference is llms-full.txt (this
 
 ## vf.vfunc(options) — a component (with or without `new`)
 
-Options: `tag` ('div'), `opts` (root properties; innerHTML/outerHTML/srcdoc and string on* refused), `innerHTML` (trusted initial markup), `render(state)` → vf.html result (`this` is the instance), `replaceRoot`, `state`, `methods`, `events: [{ id?, eventType, onEvent? }]`, `delegates: [{ selector, eventType, onEvent? }]`, `childs: [instance | node | { targetId, component }]`, `onEvent`, `onError`, `onMount`, `onUpdate`, `onDestroy`.
+Options: `tag` ('div'), `opts` (root properties; innerHTML/outerHTML/srcdoc and string on* refused), `innerHTML` (trusted initial markup), `render(state)` → vf.html result (`this` is the instance), `replaceRoot` (false: the root is a new `tag` element with `opts` around the markup; true: the first element of the markup is the root), `state`, `methods`, `events: [{ id?, eventType, onEvent? }]` (`id` of an element inside the root; without `id` the listener is on the root itself), `delegates: [{ selector, eventType, onEvent? }]`, `childs: [instance | node | { targetId, component }]`, `onEvent`, `onError`, `onMount`, `onUpdate`, `onDestroy`.
 
 Event object `e`: `sender` (instance), `event`, `eventType`, `target` (bound or matched element), `id`, `data`.
 
-Instance: `$node`, `state`, `methods`, `ids`, `refs`, `setState(patch)` (batched, one render per tick), `scheduleRefresh()`, `refresh()`, `mount(parentOrSelector)` → Promise, `destroy()`, `toString()` (outerHTML). Shortcuts: `inst.count` ↔ `inst.state.count` (assignment schedules a render), `inst.save()` → methods, `inst.btnSave` → ids; priority state > methods > ids. Reserved names cannot be shortcuts: $node, state, methods, ids, refs, isvfunc, setState, refresh, scheduleRefresh, mount, destroy, toString, valueOf, names starting with `_`.
+Instance: `$node`, `state`, `methods`, `ids`, `refs`, `setState(patch)` (batched, one render per tick), `scheduleRefresh()`, `refresh()`, `mount(parentOrSelector)` → Promise, `destroy()`, `toString()` (outerHTML). Shortcuts: `inst.count` ↔ `inst.state.count` (assignment schedules a render), `inst.save()` → methods, `inst.btnSave` → ids; priority state > methods > ids. Reserved names cannot be shortcuts: $node, state, methods, ids, refs, isvfunc, setState, refresh, scheduleRefresh, mount, destroy, toString, valueOf, names starting with `_`. Do not add your own properties to an instance (names starting with `_` belong to the engine): keep listener functions and timers in a closure or module variable.
 
 ```js
 const counter = vf.vfunc({
@@ -50,14 +50,14 @@ Refresh: the root's content is replaced; `childs` are moved back (their state ke
 
 ## vf.html and friends
 
-- `vf.html\`…\`` escapes by position: text (escaped; arrays joined; vf.html results and instances inserted as markup; null/undefined/false → ''), quoted attribute (escaped), URL attributes href/src/action/formaction/poster/cite… (escaped + `vf.safeUrl`), inside a tag only bare names (`<button ${disabled ? 'disabled' : ''}>`), tag names except script/style/iframe/svg….
+- `vf.html\`…\`` escapes by position: text (escaped; arrays joined; vf.html results and instances inserted as markup; null/undefined/false → ''), quoted attribute (escaped; `false`/null/undefined → '', arrays joined with spaces — so write `aria-selected="${on ? 'true' : 'false'}"`, not `${on}`), URL attributes href/src/action/formaction/poster/cite… (escaped + `vf.safeUrl`), inside a tag only bare names (`<button ${disabled ? 'disabled' : ''}>`), tag names except script/style/iframe/svg….
 - Refused: `on*` attributes, `srcdoc`, unquoted values (`class=${x}`), content of `<script>`/`<style>`, functions. The value is dropped and reported; `vf.config({ strict: true })` throws instead (use in development and tests).
 - `vf.tpl('<a href="{url}">{label}</a>', data)` — the same protection without template literals (ES5).
 - `vf.esc(v)` → string, `vf.nl2br(v)` → SafeHtml, `vf.safeUrl(u)` → http/https/mailto/tel/relative or '#', `vf.unsafeHtml(markup)`.
 
 ## vf.attach(target, options) — control published HTML
 
-Without `render`/`innerHTML` the existing element becomes the root (markup, input values and listeners stay). With `render` the new markup replaces it (`replaceRoot` defaults to true). Returns null if not found.
+Options are the same as `vf.vfunc`. Without `render`/`innerHTML` the existing element becomes the root (markup, input values and listeners stay). With `render` the new markup replaces the element: by default (`replaceRoot: true`) `render` returns the whole element, so copy its tag, `id` and classes; with `replaceRoot: false` give `tag` and `opts: { id, className }` and `render` returns only the inside. Attributes of the original element that are not in the new markup or `opts` are lost. Returns null if not found.
 
 ```js
 vf.attach('#search', {
@@ -82,7 +82,7 @@ r.start(); r.go('/users/7'); r.replace('/'); r.current(); r.href('/x');
 ```
 `go` accepts only app paths starting with "/". Links: `<a data-link href="#/users/7">`.
 
-`const s = vf.store({ items: [] }); const off = s.subscribe(fn); s.set((st) => ({ items: st.items.concat(x) })); s.get('items');` — one notification per tick.
+`const s = vf.store({ items: [] }); const off = s.subscribe(fn); s.set((st) => ({ items: st.items.concat(x) })); s.get('items');` — `set(patch | (state) => patch)` shallow-merges the patch (other keys stay); `get()` without a key returns the whole state; subscribers receive the new state, one notification per tick.
 
 ## i18n
 
@@ -520,23 +520,23 @@ Creates a component (`new` optional). Options:
 | `opts` | root element properties; `innerHTML` · `outerHTML` · `srcdoc` and string `on*` refused, URLs through `safeUrl` |
 | `innerHTML` | fixed markup when there is no `render` (trusted as is) |
 | `render(state)` | markup for the current state, written with `vf.html`; `this` is the instance |
-| `replaceRoot` | use the first element of the markup as the root |
+| `replaceRoot` | `true`: the first element of the markup is the root; `false` (default): a new `tag` element with `opts` wraps the markup |
 | `state`, `methods` | state and methods; also reachable as `inst.key`, `inst.method()` |
-| `events` | `[{ id?, eventType, onEvent? }]` direct listeners |
+| `events` | `[{ id?, eventType, onEvent? }]` direct listeners on the element with that `id` inside the root, or on the root when `id` is omitted |
 | `delegates` | `[{ selector, eventType, onEvent? }]` delegated listeners |
 | `childs` | child instances or nodes, `{ targetId, component }` slots |
 | `onEvent`, `onError` | fallback handler, error report (the engine does not recover) |
 | `onMount`, `onUpdate`, `onDestroy` | lifecycle |
 
-Instance: `$node`, `state`, `methods`, `ids`, `refs`, `setState(patch)`, `scheduleRefresh()`, `refresh()`, `mount(parent)` → `Promise`, `destroy()`, `toString()`. Reserved names (`state`, `refresh`, `mount` … and names starting with `_`) cannot be used as shortcut names for state keys, methods or ids.
+Instance: `$node`, `state`, `methods`, `ids`, `refs`, `setState(patch)`, `scheduleRefresh()`, `refresh()`, `mount(parent)` → `Promise`, `destroy()`, `toString()`. Reserved names (`state`, `refresh`, `mount` … and names starting with `_`) cannot be used as shortcut names for state keys, methods or ids. Do not add your own properties to an instance; keep listener functions and timers in a closure.
 
 #### `vf.attach(target, options)`
-Turns an element already in the page into a component. Without `render` the element is adopted as it is; with `render` new markup replaces it (`replaceRoot` defaults to `true`). Returns `null` when the target is missing.
+Turns an element already in the page into a component. The options are those of `vf.vfunc`. Without `render` the element is adopted as it is. With `render` new markup replaces it: by default (`replaceRoot: true`) `render` returns the whole element, so keep its tag, `id` and classes; with `replaceRoot: false` give `tag` and `opts: { id, className }` and return only the inside. Attributes of the original element that are in neither are lost. Returns `null` when the target is missing.
 
 ### Safe HTML
 
 #### `vf.html`
-Tagged template. Escapes each value for its position and refuses dangerous ones (`on*`, `<script>`, unquoted attributes). Returns `SafeHtml`. In ES5 it can be called as a function: `vf.html(['<b>', '</b>'], value)`.
+Tagged template. Escapes each value for its position and refuses dangerous ones (`on*`, `<script>`, unquoted attributes). In a quoted attribute `false`, `null` and `undefined` become an empty value and arrays are joined with spaces, so write `aria-selected="${on ? 'true' : 'false'}"`. Returns `SafeHtml`. In ES5 it can be called as a function: `vf.html(['<b>', '</b>'], value)`.
 
 #### `vf.tpl(template, data)`
 Fills `{key}` and `{user.name}` from own properties of `data`, without template literals. Same protection as `vf.html`.
@@ -588,7 +588,7 @@ A DocumentFragment with every top-level node.
 `{ mode: 'hash' | 'history', base, routes, notFound, onChange, linkSelector, focus }` → `start()`, `stop()`, `go(path, { replace })`, `replace(path)`, `current()`, `href(path)`. Follows only app paths starting with `/`.
 
 #### `vf.store(initial)`
-`get(key?)`, `set(patch | fn)` (one notification per tick), `subscribe(fn)` → an unsubscribe function.
+`get(key?)` (the whole state without a key), `set(patch | (state) => patch)` (shallow merge: other keys stay; one notification per tick), `subscribe(fn)` (receives the new state) → an unsubscribe function.
 
 ### i18n
 

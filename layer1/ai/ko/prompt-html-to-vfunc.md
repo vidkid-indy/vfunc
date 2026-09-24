@@ -12,13 +12,13 @@
 - `DATA`(선택): 데이터 출처(API 주소, JSON 예시). 모르는 엔드포인트는 `VERIFY:`로 표시합니다.
 
 ## 규칙
-1. **정적 HTML을 다시 쓰지 않습니다.** 줄 바꿈 정리, 클래스 이름 변경, 요소 이동을 하지 않습니다. 훅 속성만 **추가**할 수 있습니다: `id`, `data-action`, `data-ref`, `data-id`, `data-i18n`, `data-vf-keep`. 추가한 속성은 모두 목록으로 적습니다.
+1. **정적 HTML을 다시 쓰지 않습니다.** 줄 바꿈 정리, 클래스 이름 변경, 요소 이동을 하지 않습니다. 추가할 수 있는 것은 훅 속성(`id`, `data-action`, `data-ref`, `data-id`, `data-i18n`, `data-vf-keep`)과 규칙 7의 상태 속성(`aria-expanded`, `aria-selected`, `aria-pressed`, `aria-current`, `data-state`)뿐입니다. 그 밖의 변경은 규칙 4의 대체만 허용합니다. 추가하거나 대체한 속성은 모두 목록으로 적습니다.
 2. 동작은 `data-action` / `data-ref` / `id`에 겁니다. 퍼블리셔의 클래스에 걸지 않습니다.
 3. 모든 동적 값은 `vf.html`(ES5는 `vf.tpl`)을 거칩니다. HTML 문자열 이어 붙이기, 데이터로 `innerHTML` 설정은 하지 않습니다.
 4. `SOURCE`의 `<script>` 블록, 인라인 `on*` 핸들러, `javascript:` URL은 제거합니다. 인라인 `style="…"` 속성도 CSP에 막히므로, 보이기/숨기기 스타일은 `hidden` 속성으로 바꾸고 나머지 스타일은 CSS 파일로 옮깁니다. 제거와 대체를 하나하나 보고합니다.
 5. JS에 색, 크기, 글꼴을 넣지 않습니다. CSS에 원시 값이 있으면 토큰(`var(--vf-*)`)으로 바꾸는 안을 별도 목록으로 제안만 합니다. 요청이 없으면 CSS는 고치지 않습니다.
-6. 가장 작은 도구를 고릅니다: 아무것도 안 함 → `render` 없는 `vf.attach`(채택) → `render` 있는 `vf.attach`(대체) → `vf.vfunc`(새 컴포넌트).
-7. 퍼블리셔 CSS가 상태를 클래스로 표시하면(`tab--active`, `badge--paid`) 그 클래스는 **모양을 위해** 계속 토글하되, 상태를 `aria-*`/`data-state`에도 쓰고, 그 클래스를 셀렉터로 쓰지 않습니다. 속성 셀렉터로 바꾸는 안은 토큰 목록에 제안합니다.
+6. 가장 작은 도구를 고릅니다: 아무것도 안 함 → `render` 없는 `vf.attach`(채택) → `render` 있는 `vf.attach`(대체) → `vf.vfunc`(새 컴포넌트). 대체할 때는 원래 요소를 유지합니다. `render`가 원래 태그·`id`·클래스까지 포함한 요소 전체를 돌려주거나(기본), `replaceRoot: false`와 `tag`, `opts: { id, className }`을 주고 `render`는 안쪽만 돌려줍니다.
+7. 퍼블리셔 CSS가 상태를 클래스로 표시하면(`tab--active`, `badge--paid`) 그 클래스는 **모양을 위해** 계속 토글하되, 상태를 `aria-*`/`data-state`에도 쓰고(`"true"`/`"false"` 문자열로. `vf.html`은 `false`를 빈 값으로 만듭니다), 그 클래스를 셀렉터로 쓰지 않습니다. 속성 셀렉터로 바꾸는 안은 토큰 목록에 제안합니다.
 8. 표의 행(`<tbody>`, `<tr>`)은 table 안에서 파싱해야 합니다. 행을 렌더하는 컴포넌트는 `tag: 'table'`(행만이면 `'tbody'`)을 씁니다.
 
 ## 단계
@@ -28,7 +28,7 @@
 2. **훅.** 동적 영역마다 훅 속성을 정하고, 원본 마크업에 대한 diff(추가한 속성만)로 보여 줍니다.
 3. **동적 영역 설계.** 영역마다 `state`, `render` 필요 여부(마크업이 데이터에 따라 바뀔 때만), `methods`, `delegates`(`data-action` + 이벤트 종류), 라이프사이클(타이머·서드파티 위젯은 `onMount`/`onDestroy`, 그 DOM은 `data-vf-keep`)을 정합니다. 값만 읽으면 되는 폼은 `vf.form.values`.
 4. **이스케이프 점검.** 값이 마크업에 들어가는 곳을 모두 짚고 `vf.html`/`vf.tpl`인지 확인합니다. `vf.unsafeHtml`을 썼다면 이유와 함께 적습니다(거의 없어야 합니다).
-5. **조립.** `app.js`(진입점 하나, `<script type="module">` 또는 일반 스크립트), 서버 데이터가 있으면 `api.js`, 필요하면 `pages/*.js`·`components/*.js`를 씁니다. 원본 HTML 파일은 유지하고, 훅 속성과 `<script>` 태그 하나(없으면 CSP 메타 태그)만 추가합니다.
+5. **조립.** `app.js`(진입점 하나, `<script type="module">` 또는 일반 스크립트), 서버 데이터가 있으면 `api.js`, 필요하면 `pages/*.js`·`components/*.js`를 씁니다. 원본 HTML 파일은 유지하고, 규칙 1의 속성, 규칙 4의 대체, `<script>` 태그 하나(없으면 CSP 메타 태그)만 바뀝니다.
 6. **검증.** 아래 확인 목록을 하나씩 점검하고 결과를 보고합니다.
 
 ## 출력 형식
@@ -41,7 +41,7 @@
 7. 확인 목록 결과
 
 ## 확인 목록
-- [ ] 정적 영역은 추가한 훅 속성 말고는 바이트 단위로 같다
+- [ ] 정적 영역은 규칙 1의 속성과 규칙 4의 대체 말고는 바이트 단위로 같다
 - [ ] 퍼블리셔 클래스를 쓰는 셀렉터가 없다
 - [ ] 모든 동적 값이 `vf.html`/`vf.tpl` 안에 있다
 - [ ] 인라인 스크립트, 인라인 핸들러, `javascript:` URL이 남아 있지 않다. CSP 메타 태그가 있고 `script-src`에 `'unsafe-inline'`이 없다

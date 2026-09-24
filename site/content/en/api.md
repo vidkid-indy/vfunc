@@ -13,23 +13,23 @@ Creates a component (`new` optional). Options:
 | `opts` | root element properties; `innerHTML` · `outerHTML` · `srcdoc` and string `on*` refused, URLs through `safeUrl` |
 | `innerHTML` | fixed markup when there is no `render` (trusted as is) |
 | `render(state)` | markup for the current state, written with `vf.html`; `this` is the instance |
-| `replaceRoot` | use the first element of the markup as the root |
+| `replaceRoot` | `true`: the first element of the markup is the root; `false` (default): a new `tag` element with `opts` wraps the markup |
 | `state`, `methods` | state and methods; also reachable as `inst.key`, `inst.method()` |
-| `events` | `[{ id?, eventType, onEvent? }]` direct listeners |
+| `events` | `[{ id?, eventType, onEvent? }]` direct listeners on the element with that `id` inside the root, or on the root when `id` is omitted |
 | `delegates` | `[{ selector, eventType, onEvent? }]` delegated listeners |
 | `childs` | child instances or nodes, `{ targetId, component }` slots |
 | `onEvent`, `onError` | fallback handler, error report (the engine does not recover) |
 | `onMount`, `onUpdate`, `onDestroy` | lifecycle |
 
-Instance: `$node`, `state`, `methods`, `ids`, `refs`, `setState(patch)`, `scheduleRefresh()`, `refresh()`, `mount(parent)` → `Promise`, `destroy()`, `toString()`. Reserved names (`state`, `refresh`, `mount` … and names starting with `_`) cannot be used as shortcut names for state keys, methods or ids.
+Instance: `$node`, `state`, `methods`, `ids`, `refs`, `setState(patch)`, `scheduleRefresh()`, `refresh()`, `mount(parent)` → `Promise`, `destroy()`, `toString()`. Reserved names (`state`, `refresh`, `mount` … and names starting with `_`) cannot be used as shortcut names for state keys, methods or ids. Do not add your own properties to an instance; keep listener functions and timers in a closure.
 
 ### `vf.attach(target, options)`
-Turns an element already in the page into a component. Without `render` the element is adopted as it is; with `render` new markup replaces it (`replaceRoot` defaults to `true`). Returns `null` when the target is missing.
+Turns an element already in the page into a component. The options are those of `vf.vfunc`. Without `render` the element is adopted as it is. With `render` new markup replaces it: by default (`replaceRoot: true`) `render` returns the whole element, so keep its tag, `id` and classes; with `replaceRoot: false` give `tag` and `opts: { id, className }` and return only the inside. Attributes of the original element that are in neither are lost. Returns `null` when the target is missing.
 
 ## Safe HTML
 
 ### `vf.html`
-Tagged template. Escapes each value for its position and refuses dangerous ones (`on*`, `<script>`, unquoted attributes). Returns `SafeHtml`. In ES5 it can be called as a function: `vf.html(['<b>', '</b>'], value)`.
+Tagged template. Escapes each value for its position and refuses dangerous ones (`on*`, `<script>`, unquoted attributes). In a quoted attribute `false`, `null` and `undefined` become an empty value and arrays are joined with spaces, so write `aria-selected="${on ? 'true' : 'false'}"`. Returns `SafeHtml`. In ES5 it can be called as a function: `vf.html(['<b>', '</b>'], value)`.
 
 ### `vf.tpl(template, data)`
 Fills `{key}` and `{user.name}` from own properties of `data`, without template literals. Same protection as `vf.html`.
@@ -81,7 +81,7 @@ A DocumentFragment with every top-level node.
 `{ mode: 'hash' | 'history', base, routes, notFound, onChange, linkSelector, focus }` → `start()`, `stop()`, `go(path, { replace })`, `replace(path)`, `current()`, `href(path)`. Follows only app paths starting with `/`.
 
 ### `vf.store(initial)`
-`get(key?)`, `set(patch | fn)` (one notification per tick), `subscribe(fn)` → an unsubscribe function.
+`get(key?)` (the whole state without a key), `set(patch | (state) => patch)` (shallow merge: other keys stay; one notification per tick), `subscribe(fn)` (receives the new state) → an unsubscribe function.
 
 ## i18n
 

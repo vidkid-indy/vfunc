@@ -6,7 +6,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ## [Unreleased]
 
 ### Added
-- Repository foundation: license (Apache-2.0), NOTICE, contribution and security policies, agent rules, decision records.
+- Repository foundation: license (Apache-2.0), NOTICE, contribution and security policies, agent rules (`CLAUDE.md`, `AGENTS.md`).
 - `layer1/src/vfunc.js`: the engine `vf.vfunc` (callable without `new`) and helpers `vf.$`, `vf.$$`, `vf.el`, `vf.node`, `vf.frag`, `vf.idMap`, `vf.form.values`, `vf.form.reset`, `vf.esc`, `vf.nl2br`, `vf.safeUrl`, `vf.version`.
 - Unit tests for the engine, helpers and security rules (`npm test`).
 - `vf.html` tagged template with context-aware escaping (text, quoted attributes, URL attributes; refuses event handler attributes, `srcdoc`, unquoted values, `<script>`/`<style>` content), `vf.tpl` for ES5 code, `vf.unsafeHtml`, `vf.SafeHtml`.
@@ -30,11 +30,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - 21 runnable examples in `layer1/examples/` (hello to cache-update), each checked in Chromium, Firefox and WebKit by `npm run test:examples`. Sample 14 is a published dashboard converted with the AI prompt, with its conversion record.
 - Starter template `layer1/starter/`: router, store, i18n, tokens, update plugin, `design/`, `AGENTS.md`, `tools/release.mjs` (version-folder releases, copy only) and `deploy/` cache header examples for Apache, Nginx, IIS, Tomcat, Netlify and GitHub Pages.
 - Website (`site/`, built by `npm run site`): Korean and English pages generated from Markdown by a small dependency-free converter, with vfunc islands for the theme switch, copy buttons, search, navigation and a live demo. Getting started, compare, guides, API reference, examples, AI prompts with copy buttons, FAQ with limits, licenses (from `third-party.json`) and privacy. A GitHub Pages workflow (manual, actions pinned to commit SHAs), issue templates and a code of conduct.
-- AI prompt kit in English and Korean (`layer1/ai/en`, `layer1/ai/ko`, and `ai/` in the npm package): `AGENTS.template.md`, prompts for converting published HTML, scaffolding, migrating from React/Vue, adding features, debugging and deployment, anti-patterns, a `DESIGN.md` template and four design prompts. `llms-full.txt` is generated from the manual and the type declarations.
+- AI prompt kit in English and Korean (`layer1/ai/en`, `layer1/ai/ko`, and `ai/` in the npm package): `AGENTS.template.md`, prompts for converting published HTML, scaffolding, migrating from React/Vue, adding features, debugging and deployment, anti-patterns, a `DESIGN.md` template and four design prompts. `llms-full.txt` is generated from `llms.txt`, the English website pages and the type declarations.
 - Continuous integration: unit tests, build check, `npm audit`, browser tests in Chromium, Firefox and WebKit, and a gitleaks scan of the whole history. A test keeps every CDN example on the package version and the SRI of the committed files.
 - Browser support table in the README and the FAQ.
+- npm releases are published from GitHub Actions with trusted publishing (no stored token) and provenance, after the maintainer approves the run.
 
 ### Fixed
+- AI kit, after two independent runs of the HTML conversion prompt (sample 14): the prompt now allows the state attributes it asks for; `llms.txt` and the API page explain `vf.attach` options, `events` without `id`, keeping the original element with `replaceRoot`, `store.set` merging, importing a copied ESM file, that `false` becomes an empty attribute value in `vf.html`, and not to add properties to instances.
 - The README described the planned API of the first draft; it now shows the release candidate, installation with SRI, the files in the package and supported browsers.
 - Delegated events and router link interception did nothing in browsers without `Element.closest` (IE11). The engine now falls back to `msMatchesSelector` without patching `Element.prototype`.
 
