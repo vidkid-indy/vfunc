@@ -1,0 +1,21 @@
+{
+  "model": "Claude Sonnet 5",
+  "modelVersion": "claude-sonnet-5",
+  "service": "Claude Code subagent (reads the bundle, writes the answer; no other tools)",
+  "date": "2026-09-25",
+  "lang": "en",
+  "kit": "1.0.0-rc.7",
+  "settings": "Fourth run, with the rc.7 kit that stresses tokens in new CSS and render on the smallest changing element (no engine change since the third run). Same conditions: one new session per task, no follow-up messages, unedited answers. Manual scores are not filled in yet.",
+  "tasks": {
+    "01": { "followUps": 0 },
+    "02": { "followUps": 0 },
+    "03": { "followUps": 0 },
+    "04": { "followUps": 0, "notes": "Reads e.sender.refs.done for an element outside the form, but refs only cover the component root; the welcome step throws." },
+    "05": { "followUps": 0 },
+    "06": { "followUps": 0, "notes": "Calls vf.i18n.set(locale) and re-renders at once without waiting for the locale to load, so the Korean texts never appear; it replaced persist with its own localStorage key because the kit does not describe persist." },
+    "07": { "followUps": 0 },
+    "08": { "followUps": 0 },
+    "09": { "followUps": 0 },
+    "10": { "followUps": 0, "notes": "All seven bugs fixed; keeps inst._timer and builds the comment list by string concatenation with vf.esc." }
+  }
+}

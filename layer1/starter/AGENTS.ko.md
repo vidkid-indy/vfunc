@@ -97,6 +97,7 @@
 
 - [ ] 모든 동적 값이 `vf.html`/`vf.tpl`을 거친다. 데이터로 `innerHTML`을 설정하지 않는다
 - [ ] 셀렉터는 `data-action`/`data-ref`/`id`만. JS에 색·크기가 없다
+- [ ] 새로 만든 CSS 파일도 `var(--vf-*)` 토큰만 쓴다. hex·`rgb()`·`px` 값은 `styles/tokens.css`에만 있다
 - [ ] 새 텍스트는 모든 로케일의 메시지 키를 쓴다. 날짜·숫자는 `vf.fmt`
 - [ ] 리스너, 타이머, 구독을 `onDestroy`에서 해제한다
 - [ ] 페이지를 열었을 때 **콘솔 에러·경고가 0개**다(개발 빌드 `vfunc.js`가 실수를 알려 줌)

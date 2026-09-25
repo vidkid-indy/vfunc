@@ -97,6 +97,7 @@ Keep this structure. A new screen = a new file in `pages/` + one route in `app.j
 
 - [ ] Every dynamic value goes through `vf.html` / `vf.tpl`; no `innerHTML` from data
 - [ ] Selectors use `data-action` / `data-ref` / `id` only; no colors or sizes in JS
+- [ ] New CSS files too use only `var(--vf-*)` tokens; hex, `rgb()` and `px` values live only in `styles/tokens.css`
 - [ ] New text uses message keys in every locale; dates and numbers use `vf.fmt`
 - [ ] Listeners, timers and subscriptions are released in `onDestroy`
 - [ ] The page opens with **no console errors or warnings** (the development build `vfunc.js` explains mistakes)

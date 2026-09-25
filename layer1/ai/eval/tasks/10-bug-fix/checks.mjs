@@ -48,7 +48,12 @@ export default [
         const el = document.querySelector('[data-ref="updates"]');
         return el && Number(el.textContent) >= 2;
       });
-      await page.click('[data-action="close-clock"]');
+      // The clock re-renders every 250 ms, so a click can land on a button that was just replaced
+      // (seen in Firefox). Click again, as a person would, until the clock is gone.
+      for (let i = 0; i < 5 && (await count(page, '[data-action="close-clock"]')) > 0; i++) {
+        await page.click('[data-action="close-clock"]').catch(() => {});
+        await page.waitForTimeout(100);
+      }
       await waitCount(page, '[data-action="close-clock"]', 0);
       await page.waitForTimeout(300);
       const before = await text(page, '[data-ref="updates"]');

@@ -41,6 +41,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - The README described the planned API of the first draft; it now shows the release candidate, installation with SRI, the files in the package and supported browsers.
 - Delegated events and router link interception did nothing in browsers without `Element.closest` (IE11). The engine now falls back to `msMatchesSelector` without patching `Element.prototype`.
 
+### Changed (since 1.0.0-rc.6)
+- AI kit only (no engine change), after the evaluation set showed two mistakes in every run: `llms.txt`, `AGENTS.template.md` and `prompt-html-to-vfunc.md` (both languages) now say that CSS in a page written from scratch uses only `var(--vf-*)` tokens, and that `render` is attached to the smallest element whose content changes, not to a panel with static text or controls.
+
 ### Changed (since 1.0.0-rc.5)
 Found by the first run of the evaluation set (`layer1/ai/eval`), where each of these made a model's otherwise reasonable code fail.
 - `setState` also takes a function `(state) => patch`, like `vf.store`'s `set` (it was ignored without a warning). Any other value that is not an object warns in the development build.

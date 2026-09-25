@@ -4,7 +4,7 @@
 
 [한국어](README.ko.md) · [Website](https://vidkid-indy.github.io/vfunc/en/) · [Discussions](https://github.com/vidkid-indy/vfunc/discussions)
 
-> **Status: 1.0 release candidate (`1.0.0-rc.6`).** The 1.0 API is complete; changes before 1.0.0 come only from release-candidate feedback.
+> **Status: 1.0 release candidate (`1.0.0-rc.7`).** The 1.0 API is complete; changes before 1.0.0 come only from release-candidate feedback.
 
 vfunc.js is a small vanilla JavaScript library for building interactive pages and single-page apps.
 Its core idea: **keep your HTML as it is, and turn only the parts you need to control into vfunc components.**
@@ -22,8 +22,8 @@ Script tag (pin the exact version and keep the SRI hash):
 
 ```html
 <div id="counter"></div>
-<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.6/dist/vfunc.min.js"
-        integrity="sha384-GwVQoCmhF6sXRB5A1yeptmNyn17sMVNzWH5DgQIA+mvG54Y4TMKMvctz4Kus4Jtd"
+<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.7/dist/vfunc.min.js"
+        integrity="sha384-VcX1hu8m+g9DMkbKU9OAHkF7vifW5Iglb4xlRfgvyrGtRUPpIRsnOMxzohR4Mt5N"
         crossorigin="anonymous"></script>
 <script src="app.js"></script>
 ```
