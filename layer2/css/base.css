@@ -17,3 +17,7 @@
 @keyframes vf-spin {
   to { transform: rotate(360deg); }
 }
+
+/* The page does not scroll behind a modal layer (vfModal, vfDrawer, vfConfirm; D-032). */
+[data-vf-scroll-lock] { overflow: hidden; }
+[data-vf-scroll-lock] body { overflow: hidden; }

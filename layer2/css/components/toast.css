@@ -1,0 +1,67 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vfToast. The region's corner from data-position; tone from data-variant. */
+
+.vf-toast-region {
+  position: fixed;
+  z-index: var(--vf-z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--vf-space-2);
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  inline-size: 24em;
+  padding: var(--vf-space-4);
+  pointer-events: none;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+}
+
+.vf-toast-region[data-position="bottom-start"] { inset-inline: 0 auto; }
+.vf-toast-region[data-position="bottom-center"] { inset-inline: 0; margin-inline: auto; }
+.vf-toast-region[data-position^="top"] { inset-block: 0 auto; }
+.vf-toast-region[data-position="top-start"] { inset-inline: 0 auto; }
+.vf-toast-region[data-position="top-center"] { inset-inline: 0; margin-inline: auto; }
+
+.vf-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--vf-space-2);
+  padding-block: var(--vf-space-3);
+  padding-inline: var(--vf-space-4);
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-sm);
+  line-height: var(--vf-line-height);
+  color: var(--vf-color-text);
+  background: var(--vf-color-surface);
+  border: 1px solid var(--vf-color-border);
+  border-inline-start: 2px solid var(--vf-color-info);
+  border-radius: var(--vf-radius-md);
+  box-shadow: var(--vf-shadow-2);
+  pointer-events: auto;
+}
+
+.vf-toast[data-variant="success"] { border-inline-start-color: var(--vf-color-success); }
+.vf-toast[data-variant="warning"] { border-inline-start-color: var(--vf-color-warning); }
+.vf-toast[data-variant="danger"] { border-inline-start-color: var(--vf-color-danger); }
+
+.vf-toast__body { flex: 1; min-inline-size: 0; }
+.vf-toast__title { margin: 0; font-weight: var(--vf-font-weight-strong); }
+.vf-toast__message { margin: 0; }
+
+.vf-toast__action,
+.vf-toast__dismiss {
+  flex: none;
+  padding-block: 0;
+  padding-inline: var(--vf-space-2);
+  font: inherit;
+  color: var(--vf-color-primary);
+  background: transparent;
+  border: 0;
+  border-radius: var(--vf-radius-sm);
+  cursor: pointer;
+}
+
+.vf-toast__action { font-weight: var(--vf-font-weight-strong); }
+.vf-toast__dismiss { color: var(--vf-color-text-muted); font-size: var(--vf-font-size-lg); line-height: 1; }
+.vf-toast__action:focus-visible,
+.vf-toast__dismiss:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); }

@@ -1,0 +1,53 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vfPopover. The panel is position: fixed next to its trigger (coordinates set by JS); the gap is
+   in menu.css (data-placement). */
+
+.vf-popover { position: relative; display: inline-flex; }
+
+.vf-popover__panel {
+  position: fixed;
+  z-index: var(--vf-z-popover);
+  box-sizing: border-box;
+  inline-size: max-content;
+  max-inline-size: 22em;
+  padding-block: var(--vf-space-3);
+  padding-inline: var(--vf-space-4);
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-sm);
+  line-height: var(--vf-line-height);
+  color: var(--vf-color-text);
+  background: var(--vf-color-surface);
+  border: 1px solid var(--vf-color-border);
+  border-radius: var(--vf-radius-md);
+  box-shadow: var(--vf-shadow-2);
+}
+
+.vf-popover__panel[hidden] { display: none; }
+.vf-popover__panel:focus-visible { outline: none; box-shadow: var(--vf-shadow-2), var(--vf-focus-ring); }
+
+.vf-popover__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--vf-space-2);
+}
+
+.vf-popover__title { margin: 0; font-weight: var(--vf-font-weight-strong); }
+
+.vf-popover__close {
+  flex: none;
+  margin-inline-start: auto;
+  padding: 0;
+  inline-size: 1.5em;
+  block-size: 1.5em;
+  font: inherit;
+  font-size: var(--vf-font-size-md);
+  line-height: 1;
+  color: var(--vf-color-text-muted);
+  background: transparent;
+  border: 0;
+  border-radius: var(--vf-radius-sm);
+  cursor: pointer;
+}
+
+.vf-popover__close:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); }
+.vf-popover__body { margin-block-start: var(--vf-space-1); }

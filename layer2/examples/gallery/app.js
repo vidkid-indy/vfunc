@@ -121,6 +121,58 @@
   mount('pagination', vf.vfPagination({ id: 'pages', total: 230, pageSize: 20,
     onChange: function (e) { log('page ' + e.data.page); } }));
 
+  mount('split', vf.vfSplitButton({ id: 'save', label: 'Save', variant: 'primary', action: 'save',
+    items: [{ label: 'Save as draft', action: 'draft' }, { label: 'Save and close', action: 'close' }],
+    onClick: function (e) { log('split click ' + e.data.action); },
+    onSelect: function (e) { log('split select ' + e.data.action); } }));
+
+  // --- overlays ----------------------------------------------------------------------------------
+
+  var toast = vf.vfToast({ duration: 5000 });
+  var modal = vf.vfModal({ id: 'edit', title: 'Edit profile',
+    content: html`${vf.vsInput({ name: 'first', label: 'First name', ref: 'first', id: 'first' })}${vf.vsInput({ name: 'last', label: 'Last name', id: 'last' })}`,
+    footer: html`${vf.vsButton({ label: 'Cancel', action: 'cancel' })}${vf.vsButton({ label: 'Save', action: 'save', variant: 'primary', id: 'modal-save' })}`,
+    onAction: function (e) {
+      if (e.data.action === 'save') toast.show({ message: 'Profile saved', variant: 'success' });
+      e.sender.close(e.data.action);
+    },
+    onClose: function (e) { log('modal ' + e.data.reason); } });
+  var drawer = vf.vfDrawer({ id: 'filters', title: 'Filters', side: 'end',
+    content: vf.vsRadioGroup({ name: 'status', label: 'Status', options: ['all', 'open', 'closed'], value: 'all' }),
+    onClose: function (e) { log('drawer ' + e.data.reason); } });
+  instances.push(toast, modal, drawer); // messages follow the language too
+
+  vf.attach('#overlay-buttons', {
+    render: function () {
+      return html`
+        ${vf.vsButton({ label: 'Open modal', action: 'open-modal', id: 'open-modal' })}
+        ${vf.vsButton({ label: 'Open drawer', action: 'open-drawer', id: 'open-drawer' })}
+        ${vf.vsButton({ label: 'Delete…', action: 'confirm', variant: 'danger', id: 'open-confirm' })}
+        ${vf.vsButton({ label: 'Show toast', action: 'toast', id: 'show-toast' })}`;
+    },
+    delegates: [
+      { selector: '[data-action="open-modal"]', eventType: 'click', onEvent: function () { modal.open(); } },
+      { selector: '[data-action="open-drawer"]', eventType: 'click', onEvent: function () { drawer.open(); } },
+      { selector: '[data-action="toast"]', eventType: 'click', onEvent: function () { toast.show({ title: 'Hello', message: 'A toast', action: { label: 'Undo', onClick: function () { log('toast undo'); } } }); } },
+      {
+        selector: '[data-action="confirm"]',
+        eventType: 'click',
+        onEvent: function () {
+          vf.vfConfirm({ title: 'Delete 3 items?', message: 'This cannot be undone.', variant: 'danger', confirmLabel: 'Delete' })
+            .open().then(function (ok) { log('confirm ' + ok); });
+        }
+      }
+    ]
+  });
+
+  mount('dropdown', vf.vfDropdown({ id: 'actions', trigger: { label: 'Actions' },
+    items: [{ label: 'Rename', action: 'rename' }, { label: 'Duplicate', action: 'duplicate' }, { separator: true },
+      { label: 'Archive', action: 'archive', disabled: true }, { label: 'Delete', action: 'delete', danger: true }],
+    onSelect: function (e) { log('menu ' + e.data.action); } }));
+  mount('popover', vf.vfPopover({ id: 'help', trigger: { label: 'Help' }, title: 'Shortcuts',
+    content: html`<p>Press / to search.</p><a href="#h-input">Go to inputs</a>`,
+    onClose: function (e) { log('popover ' + e.data.reason); } }));
+
   // --- language and shortcut -------------------------------------------------------------------
 
   vf.vfSelectButton({ ariaLabel: 'Language', id: 'lang-switch', options: [{ value: 'en', label: 'English' }, { value: 'ko', label: '한국어' }], value: 'en',

@@ -60,6 +60,10 @@
       pause: "Pause",
       play: "Play"
     },
+    confirm: {
+      ok: "OK",
+      cancel: "Cancel"
+    },
     datePicker: {
       placeholder: "YYYY-MM-DD"
     },
@@ -69,6 +73,9 @@
     },
     emptyState: {
       title: "No data"
+    },
+    modal: {
+      close: "Close"
     },
     numberInput: {
       decrement: "Decrease",
@@ -93,6 +100,9 @@
       placeholder: "Search",
       clear: "Clear search"
     },
+    splitButton: {
+      more: "More options"
+    },
     statCard: {
       up: "Up",
       down: "Down"
@@ -105,6 +115,10 @@
     },
     timePicker: {
       placeholder: "HH:MM"
+    },
+    toast: {
+      dismiss: "Dismiss",
+      region: "Notifications"
     }
   };
 
@@ -135,7 +149,7 @@
     const loading = !!p.loading;
     const spinner = loading ? html`<span class="vf-button__spinner" aria-hidden="true"></span>` : "";
     const status = loading ? html`<span class="vf-visually-hidden">${msg("common.loading", p.loadingText)}</span>` : "";
-    return html`<button ${attrs({
+    const map = {
       type: oneOf("vsButton type", p.type, TYPES),
       class: "vf-button" + (p.className ? " " + p.className : ""),
       id: p.id,
@@ -147,7 +161,11 @@
       "aria-describedby": p.describedBy,
       "aria-busy": loading || null,
       disabled: !!p.disabled || loading
-    })}>${spinner}<span class="vf-button__label">${p.label}</span>${status}</button>`;
+    };
+    if (p.aria) {
+      for (const key in p.aria) if (Object.prototype.hasOwnProperty.call(p.aria, key)) map["aria-" + key] = p.aria[key];
+    }
+    return html`<button ${attrs(map)}>${spinner}<span class="vf-button__label">${p.label}</span>${status}</button>`;
   }
   __name(vsButton, "vsButton");
 
@@ -717,6 +735,7 @@
       render: spec.render,
       delegates: spec.delegates || [],
       events: spec.events,
+      childs: spec.childs,
       methods,
       onMount: spec.onMount,
       onUpdate: spec.onUpdate,
@@ -1631,7 +1650,7 @@
     }
     const mode = oneOf("vsListView selectable", p.selectable, SELECTABLE);
     const itemKey = p.itemKey || "id";
-    const render3 = typeof p.render === "function" ? p.render : defaultItem;
+    const render6 = typeof p.render === "function" ? p.render : defaultItem;
     const base = present(p.id) ? String(p.id) : uid("list");
     let focusIndex = 0;
     if (mode !== "none") {
@@ -1645,7 +1664,7 @@
     const rows = [];
     for (let i = 0; i < items.length; i++) {
       const key = keyOf(items[i], i, itemKey);
-      rows.push(mode === "none" ? html31`<li class="vf-list-view__item">${render3(items[i], i)}</li>` : html31`<li ${attrs({
+      rows.push(mode === "none" ? html31`<li class="vf-list-view__item">${render6(items[i], i)}</li>` : html31`<li ${attrs({
         class: "vf-list-view__item",
         role: "option",
         id: base + "-option-" + i,
@@ -1654,7 +1673,7 @@
         "data-action": "select",
         "data-value": key,
         "data-index": i
-      })}>${render3(items[i], i)}</li>`);
+      })}>${render6(items[i], i)}</li>`);
     }
     return html31`<ul ${attrs({
       class: cls("vf-list-view", p.className),
@@ -2320,6 +2339,868 @@
   }
   __name(vfStepper, "vfStepper");
 
+  // layer2/src/_internal/overlay.js
+  var layers = [];
+  var locks = 0;
+  var listening = false;
+  var FOCUSABLE = 'a[href], button, input, select, textarea, iframe, [tabindex], [contenteditable="true"]';
+  function onKeyDown(event) {
+    const key = event.key;
+    if (key !== "Escape" && key !== "Esc" || !layers.length) return;
+    const top = layers[layers.length - 1];
+    event.preventDefault();
+    top.close("escape", event);
+  }
+  __name(onKeyDown, "onKeyDown");
+  function pushLayer(layer) {
+    layers.push(layer);
+    if (!listening && typeof document !== "undefined") {
+      document.addEventListener("keydown", onKeyDown);
+      listening = true;
+    }
+  }
+  __name(pushLayer, "pushLayer");
+  function removeLayer(layer) {
+    const i = layers.indexOf(layer);
+    if (i >= 0) layers.splice(i, 1);
+    if (!layers.length && listening) {
+      document.removeEventListener("keydown", onKeyDown);
+      listening = false;
+    }
+  }
+  __name(removeLayer, "removeLayer");
+  function lockScroll() {
+    locks += 1;
+    if (locks === 1) document.documentElement.setAttribute("data-vf-scroll-lock", "true");
+  }
+  __name(lockScroll, "lockScroll");
+  function unlockScroll() {
+    if (locks === 0) return;
+    locks -= 1;
+    if (locks === 0) document.documentElement.removeAttribute("data-vf-scroll-lock");
+  }
+  __name(unlockScroll, "unlockScroll");
+  function focusables(root) {
+    const out = [];
+    const list2 = root.querySelectorAll(FOCUSABLE);
+    for (let i = 0; i < list2.length; i++) {
+      const el = list2[i];
+      if (el.disabled || el.getAttribute("tabindex") === "-1") continue;
+      if (el.tagName === "INPUT" && el.type === "hidden") continue;
+      if (el.tagName === "A" && !el.getAttribute("href")) continue;
+      let hidden = false;
+      for (let node = el; node && node !== root.parentNode; node = node.parentNode) {
+        if (node.nodeType === 1 && node.hasAttribute("hidden")) {
+          hidden = true;
+          break;
+        }
+      }
+      if (!hidden) out.push(el);
+    }
+    return out;
+  }
+  __name(focusables, "focusables");
+  function trapTab(event, root) {
+    if (event.key !== "Tab") return;
+    const list2 = focusables(root);
+    if (!list2.length) {
+      event.preventDefault();
+      root.focus();
+      return;
+    }
+    const first = list2[0];
+    const last = list2[list2.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey && (active === first || active === root)) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+  __name(trapTab, "trapTab");
+  function restoreFocus(el) {
+    if (el && typeof el.focus === "function" && document.documentElement.contains(el)) el.focus();
+  }
+  __name(restoreFocus, "restoreFocus");
+
+  // layer2/src/components/modal.js
+  var html38 = vf_default.html;
+  var SIZES6 = ["md", "sm", "lg"];
+  var SIDES = ["end", "start", "bottom"];
+  var OWN_ACTIONS = { close: 1, backdrop: 1 };
+  function isInstance(value) {
+    return !!(value && value.isvfunc);
+  }
+  __name(isInstance, "isInstance");
+  function render3(s) {
+    const base = s.id;
+    const titleId = base + "-title";
+    const dismissible = s.dismissible !== false;
+    const close = dismissible ? html38`<button ${attrs({ type: "button", class: "vf-modal__close", "data-action": "close", "aria-label": msg("modal.close", s.closeLabel) })}><span aria-hidden="true">&times;</span></button>` : "";
+    const title = present(s.title) ? html38`<h2 ${attrs({ class: "vf-modal__title", id: titleId })}>${s.title}</h2>` : "";
+    const footer = present(s.footer) ? html38`<div class="vf-modal__footer">${s.footer}</div>` : "";
+    return html38`<div ${attrs({
+      class: cls(s.kind === "drawer" ? "vf-modal vf-drawer" : "vf-modal", s.className),
+      id: base,
+      "data-ref": s.ref,
+      "data-size": s.size,
+      "data-side": s.kind === "drawer" ? s.side : null
+    })}><div class="vf-modal__backdrop" data-action="backdrop"></div><div ${attrs({
+      class: "vf-modal__dialog",
+      id: base + "-dialog",
+      role: s.role || "dialog",
+      "aria-modal": true,
+      "aria-labelledby": present(s.title) ? titleId : null,
+      "aria-label": present(s.title) ? null : s.label,
+      "aria-describedby": s.describedBy,
+      tabindex: -1
+    })}>${title || close ? html38`<div class="vf-modal__header">${title}${close}</div>` : ""}<div ${attrs({ class: "vf-modal__body", id: base + "-body" })}>${isInstance(s.content) ? "" : s.content}</div>${footer}</div></div>`;
+  }
+  __name(render3, "render");
+  function createModal(p, kind, extra) {
+    const x = extra || {};
+    let layer = null;
+    let returnTo = null;
+    let mounted = false;
+    function dialog(sender) {
+      return sender.ids[sender.state.id + "-dialog"] || null;
+    }
+    __name(dialog, "dialog");
+    function firstFocus(sender) {
+      const d = dialog(sender);
+      if (!d) return;
+      const wanted = present(sender.state.initialFocus) ? sender.refs[sender.state.initialFocus] : null;
+      if (wanted) return wanted.focus();
+      const list2 = focusables(d);
+      for (let i = 0; i < list2.length; i++) {
+        if (list2[i].getAttribute("data-action") !== "close") return list2[i].focus();
+      }
+      d.focus();
+    }
+    __name(firstFocus, "firstFocus");
+    function open(sender, event) {
+      if (layer) return;
+      returnTo = document.activeElement;
+      if (!mounted) {
+        mounted = true;
+        sender.mount(document.body);
+      } else {
+        document.body.appendChild(sender.$node);
+      }
+      lockScroll();
+      layer = {
+        close: /* @__PURE__ */ __name(function(reason, ev) {
+          if (sender.state.dismissible !== false) close(sender, reason, ev);
+        }, "close")
+      };
+      pushLayer(layer);
+      firstFocus(sender);
+      emit(p.onOpen, sender, event, {});
+    }
+    __name(open, "open");
+    function release() {
+      if (!layer) return false;
+      removeLayer(layer);
+      unlockScroll();
+      layer = null;
+      return true;
+    }
+    __name(release, "release");
+    function close(sender, reason, event) {
+      if (!release()) return;
+      const node = sender.$node;
+      if (node.parentNode) node.parentNode.removeChild(node);
+      restoreFocus(returnTo);
+      returnTo = null;
+      emit(p.onClose, sender, event, { reason });
+      if (x.onClose) x.onClose(reason);
+    }
+    __name(close, "close");
+    const state = stateOf(p, kind, {
+      kind,
+      size: oneOf((kind === "drawer" ? "vfDrawer" : "vfModal") + " size", p.size, SIZES6),
+      side: kind === "drawer" ? oneOf("vfDrawer side", p.side, SIDES) : null,
+      role: x.role,
+      describedBy: x.describedBy
+    });
+    return instance({
+      state,
+      render: render3,
+      childs: isInstance(p.content) ? [{ targetId: state.id + "-body", component: p.content }] : void 0,
+      delegates: [
+        { selector: '[data-action="close"]', eventType: "click", onEvent: /* @__PURE__ */ __name(function(e) {
+          close(e.sender, "close", e.event);
+        }, "onEvent") },
+        {
+          selector: '[data-action="backdrop"]',
+          eventType: "click",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            if (e.sender.state.dismissible !== false) close(e.sender, "backdrop", e.event);
+          }, "onEvent")
+        },
+        {
+          selector: "[data-action]",
+          eventType: "click",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            const action = e.target.getAttribute("data-action");
+            if (OWN_ACTIONS[action]) return;
+            if (x.onAction) x.onAction(e.sender, action, e.event);
+            emit(p.onAction, e.sender, e.event, { action });
+          }, "onEvent")
+        },
+        { selector: idSelector(state.id + "-dialog"), eventType: "keydown", onEvent: /* @__PURE__ */ __name(function(e) {
+          trapTab(e.event, dialog(e.sender));
+        }, "onEvent") }
+      ],
+      methods: {
+        open: /* @__PURE__ */ __name(function() {
+          const self = this;
+          if (x.open) return x.open(function() {
+            open(self, null);
+          });
+          open(self, null);
+        }, "open"),
+        close: /* @__PURE__ */ __name(function(reason) {
+          close(this, reason || "code", null);
+        }, "close"),
+        isOpen: /* @__PURE__ */ __name(function() {
+          return !!layer;
+        }, "isOpen")
+      },
+      onDestroy: /* @__PURE__ */ __name(function() {
+        if (release()) restoreFocus(returnTo);
+      }, "onDestroy")
+    });
+  }
+  __name(createModal, "createModal");
+  function vfModal(props) {
+    return createModal(props || {}, "modal");
+  }
+  __name(vfModal, "vfModal");
+  function vfDrawer(props) {
+    return createModal(props || {}, "drawer");
+  }
+  __name(vfDrawer, "vfDrawer");
+
+  // layer2/src/components/confirm.js
+  var html39 = vf_default.html;
+  function vfConfirm(props) {
+    const p = props || {};
+    const danger = p.variant === "danger";
+    const base = present(p.id) ? String(p.id) : uid("confirm");
+    const messageId = base + "-message";
+    let settle = null;
+    let pending = null;
+    let answer = false;
+    return createModal({
+      id: base,
+      title: p.title,
+      className: p.className,
+      size: "sm",
+      content: present(p.message) ? html39`<p class="vf-confirm__message" id="${messageId}">${p.message}</p>` : "",
+      footer: html39`${vsButton({ label: msg("confirm.cancel", p.cancelLabel), action: "cancel", ref: "cancel" })}${vsButton({
+        label: msg("confirm.ok", p.confirmLabel),
+        action: "confirm",
+        ref: "confirm",
+        variant: danger ? "danger" : "primary"
+      })}`,
+      initialFocus: danger ? "cancel" : "confirm"
+    }, "modal", {
+      role: "alertdialog",
+      describedBy: present(p.message) ? messageId : null,
+      open: /* @__PURE__ */ __name(function(doOpen) {
+        if (pending) return pending;
+        pending = new Promise(function(resolve) {
+          settle = resolve;
+        });
+        doOpen();
+        return pending;
+      }, "open"),
+      onAction: /* @__PURE__ */ __name(function(sender, action) {
+        if (action !== "confirm" && action !== "cancel") return;
+        answer = action === "confirm";
+        sender.close(action);
+      }, "onAction"),
+      onClose: /* @__PURE__ */ __name(function() {
+        const done = settle;
+        const result = answer;
+        settle = null;
+        pending = null;
+        answer = false;
+        if (done) done(result);
+      }, "onClose")
+    });
+  }
+  __name(vfConfirm, "vfConfirm");
+
+  // layer2/src/components/toast.js
+  var html40 = vf_default.html;
+  var POSITIONS = ["bottom-end", "bottom-start", "bottom-center", "top-end", "top-start", "top-center"];
+  var VARIANTS4 = ["info", "success", "warning", "danger"];
+  function renderItems(s) {
+    const out = [];
+    for (let i = 0; i < s.items.length; i++) {
+      const t = s.items[i];
+      const action = t.action && present(t.action.label) ? html40`<button ${attrs({ type: "button", class: "vf-toast__action", "data-action": "toast-action", "data-value": t.id })}>${t.action.label}</button>` : "";
+      out.push(html40`<div ${attrs({
+        class: "vf-toast",
+        id: t.id,
+        "data-variant": t.variant,
+        role: t.variant === "danger" || t.variant === "warning" ? "alert" : null
+      })}><div class="vf-toast__body">${present(t.title) ? html40`<p class="vf-toast__title">${t.title}</p>` : ""}<p class="vf-toast__message">${t.message}</p></div>${action}<button ${attrs({
+        type: "button",
+        class: "vf-toast__dismiss",
+        "data-action": "dismiss",
+        "data-value": t.id,
+        "aria-label": msg("toast.dismiss")
+      })}><span aria-hidden="true">&times;</span></button></div>`);
+    }
+    return html40`${out}`;
+  }
+  __name(renderItems, "renderItems");
+  function vfToast(props) {
+    const p = props || {};
+    const base = uid("toast");
+    const timers = {};
+    let held = false;
+    let count = 0;
+    function stopTimer(id) {
+      if (timers[id]) clearTimeout(timers[id]);
+      delete timers[id];
+    }
+    __name(stopTimer, "stopTimer");
+    function startTimer(self, t) {
+      stopTimer(t.id);
+      if (held || !(t.duration > 0)) return;
+      timers[t.id] = setTimeout(function() {
+        self.dismiss(t.id);
+      }, t.duration);
+    }
+    __name(startTimer, "startTimer");
+    function hold(self, on) {
+      held = on;
+      for (let i = 0; i < self.state.items.length; i++) {
+        if (on) stopTimer(self.state.items[i].id);
+        else startTimer(self, self.state.items[i]);
+      }
+    }
+    __name(hold, "hold");
+    function find(self, id) {
+      for (let i = 0; i < self.state.items.length; i++) if (self.state.items[i].id === id) return self.state.items[i];
+      return null;
+    }
+    __name(find, "find");
+    const toaster = vf_default.vfunc({
+      tag: "div",
+      state: {
+        items: [],
+        duration: p.duration == null ? 4e3 : Math.max(0, Number(p.duration) || 0),
+        max: Math.max(1, Math.floor(Number(p.max) || 3))
+      },
+      render: renderItems,
+      events: [
+        { eventType: "mouseenter", onEvent: /* @__PURE__ */ __name(function(e) {
+          hold(e.sender, true);
+        }, "onEvent") },
+        { eventType: "mouseleave", onEvent: /* @__PURE__ */ __name(function(e) {
+          hold(e.sender, false);
+        }, "onEvent") },
+        { eventType: "focusin", onEvent: /* @__PURE__ */ __name(function(e) {
+          hold(e.sender, true);
+        }, "onEvent") },
+        {
+          eventType: "focusout",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            const next = e.event.relatedTarget;
+            if (!next || !e.sender.$node.contains(next)) hold(e.sender, false);
+          }, "onEvent")
+        }
+      ],
+      delegates: [
+        { selector: '[data-action="dismiss"]', eventType: "click", onEvent: /* @__PURE__ */ __name(function(e) {
+          e.sender.dismiss(e.target.getAttribute("data-value"));
+        }, "onEvent") },
+        {
+          selector: '[data-action="toast-action"]',
+          eventType: "click",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            const id = e.target.getAttribute("data-value");
+            const t = find(e.sender, id);
+            if (t && t.action) emit(t.action.onClick, e.sender, e.event, { id });
+            e.sender.dismiss(id);
+          }, "onEvent")
+        }
+      ],
+      methods: {
+        show: /* @__PURE__ */ __name(function(options) {
+          const o = options || {};
+          count += 1;
+          const t = {
+            id: base + "-" + count,
+            title: o.title,
+            message: o.message,
+            variant: oneOf("vfToast variant", o.variant, VARIANTS4),
+            duration: o.duration == null ? this.state.duration : Math.max(0, Number(o.duration) || 0),
+            action: o.action ? extend({}, o.action) : null
+          };
+          const items = this.state.items.concat([t]);
+          while (items.length > this.state.max) stopTimer(items.shift().id);
+          this.setState({ items });
+          startTimer(this, t);
+          return t.id;
+        }, "show"),
+        dismiss: /* @__PURE__ */ __name(function(id) {
+          stopTimer(id);
+          const items = [];
+          for (let i = 0; i < this.state.items.length; i++) if (this.state.items[i].id !== id) items.push(this.state.items[i]);
+          if (items.length !== this.state.items.length) this.setState({ items });
+        }, "dismiss"),
+        clear: /* @__PURE__ */ __name(function() {
+          for (const id in timers) if (Object.prototype.hasOwnProperty.call(timers, id)) stopTimer(id);
+          this.setState({ items: [] });
+        }, "clear")
+      },
+      onUpdate: /* @__PURE__ */ __name(function(self) {
+        self.$node.setAttribute("aria-label", msg("toast.region", p.label));
+      }, "onUpdate"),
+      onDestroy: /* @__PURE__ */ __name(function() {
+        for (const id in timers) if (Object.prototype.hasOwnProperty.call(timers, id)) stopTimer(id);
+      }, "onDestroy")
+    });
+    const root = toaster.$node;
+    root.className = "vf-toast-region";
+    root.id = base;
+    root.setAttribute("role", "region");
+    root.setAttribute("aria-live", "polite");
+    root.setAttribute("aria-label", msg("toast.region", p.label));
+    root.setAttribute("data-position", oneOf("vfToast position", p.position, POSITIONS));
+    toaster.mount(document.body);
+    return toaster;
+  }
+  __name(vfToast, "vfToast");
+
+  // layer2/src/_internal/position.js
+  var PLACEMENTS2 = ["bottom-start", "bottom-end", "top-start", "top-end"];
+  function placementOf(value) {
+    return PLACEMENTS2.indexOf(value) >= 0 ? value : PLACEMENTS2[0];
+  }
+  __name(placementOf, "placementOf");
+  function place(panel, anchor, placement) {
+    const parts = placementOf(placement).split("-");
+    let side = parts[0];
+    const a = anchor.getBoundingClientRect();
+    const width = panel.offsetWidth;
+    const height = panel.offsetHeight;
+    const vw = window.innerWidth || document.documentElement.clientWidth;
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    if (side === "bottom" && a.bottom + height > vh && a.top - height >= 0) side = "top";
+    else if (side === "top" && a.top - height < 0 && a.bottom + height <= vh) side = "bottom";
+    const rtl = window.getComputedStyle && window.getComputedStyle(anchor).direction === "rtl";
+    const alignLeft = parts[1] === "start" !== !!rtl;
+    let left = alignLeft ? a.left : a.right - width;
+    if (left + width > vw) left = vw - width;
+    if (left < 0) left = 0;
+    const top = side === "top" ? a.top - height : a.bottom;
+    panel.style.top = Math.round(top) + "px";
+    panel.style.left = Math.round(left) + "px";
+    panel.setAttribute("data-placement", side);
+  }
+  __name(place, "place");
+
+  // layer2/src/_internal/floating.js
+  function floatControl(o) {
+    let sender = null;
+    let layer = null;
+    function reposition() {
+      if (!sender) return;
+      const panel = o.panel(sender);
+      const trigger = o.trigger(sender);
+      if (panel && trigger) place(panel, trigger, sender.state.placement);
+    }
+    __name(reposition, "reposition");
+    function outside(event) {
+      if (sender && !sender.$node.contains(event.target)) close("outside", event, false);
+    }
+    __name(outside, "outside");
+    function listen(on) {
+      const method = on ? "addEventListener" : "removeEventListener";
+      window[method]("resize", reposition);
+      window[method]("scroll", reposition, true);
+      document[method]("mousedown", outside, true);
+    }
+    __name(listen, "listen");
+    function open(s) {
+      if (sender) return;
+      sender = s;
+      s.state.expanded = true;
+      s.refresh();
+      reposition();
+      listen(true);
+      layer = { close: /* @__PURE__ */ __name(function(reason, event) {
+        close(reason, event, true);
+      }, "close") };
+      pushLayer(layer);
+    }
+    __name(open, "open");
+    function stop() {
+      if (!sender) return false;
+      listen(false);
+      removeLayer(layer);
+      layer = null;
+      sender = null;
+      return true;
+    }
+    __name(stop, "stop");
+    function close(reason, event, focusTrigger) {
+      const s = sender;
+      if (!stop()) return;
+      s.state.expanded = false;
+      s.refresh();
+      if (focusTrigger) {
+        const trigger = o.trigger(s);
+        if (trigger) trigger.focus();
+      }
+      if (o.onClose) o.onClose(s, reason, event || null);
+    }
+    __name(close, "close");
+    return {
+      open,
+      close,
+      isOpen: /* @__PURE__ */ __name(function() {
+        return !!sender;
+      }, "isOpen"),
+      /** For onUpdate: a refresh draws a new panel without its coordinates. */
+      reposition,
+      /** For onDestroy: release listeners without drawing. */
+      stop
+    };
+  }
+  __name(floatControl, "floatControl");
+
+  // layer2/src/_internal/menu.js
+  var html41 = vf_default.html;
+  function menuMarkup(base, items, open, label) {
+    const out = [];
+    const list2 = items || [];
+    let index = 0;
+    for (let i = 0; i < list2.length; i++) {
+      const item = list2[i] || {};
+      if (item.separator) {
+        out.push(html41`<div class="vf-menu__separator" role="separator"></div>`);
+        continue;
+      }
+      out.push(html41`<button ${attrs({
+        type: "button",
+        role: "menuitem",
+        class: "vf-menu__item",
+        tabindex: -1,
+        "data-action": "menu-item",
+        "data-value": item.action,
+        "data-index": index,
+        "data-variant": item.danger ? "danger" : null,
+        "aria-disabled": item.disabled ? true : null
+      })}>${item.label}</button>`);
+      index += 1;
+    }
+    return html41`<div ${attrs({ class: "vf-menu", role: "menu", id: base + "-menu", "aria-labelledby": label ? null : base + "-trigger", "aria-label": label, hidden: !open })}>${out}</div>`;
+  }
+  __name(menuMarkup, "menuMarkup");
+  function triggerAria(base, open) {
+    return { haspopup: "menu", expanded: !!open, controls: base + "-menu" };
+  }
+  __name(triggerAria, "triggerAria");
+  function modelItems(items) {
+    const out = [];
+    for (let i = 0; i < (items || []).length; i++) if (items[i] && !items[i].separator) out.push(items[i]);
+    return out;
+  }
+  __name(modelItems, "modelItems");
+  function menuBehavior(onSelect) {
+    const ctrl = floatControl({
+      panel: /* @__PURE__ */ __name(function(s) {
+        return s.ids[s.state.id + "-menu"] || null;
+      }, "panel"),
+      trigger: /* @__PURE__ */ __name(function(s) {
+        return s.ids[s.state.id + "-trigger"] || null;
+      }, "trigger")
+    });
+    function items(sender) {
+      return sender.$node.querySelectorAll('[data-action="menu-item"]');
+    }
+    __name(items, "items");
+    function focusAt(sender, index) {
+      const list2 = items(sender);
+      if (!list2.length) return;
+      const i = (index % list2.length + list2.length) % list2.length;
+      list2[i].focus();
+    }
+    __name(focusAt, "focusAt");
+    function openAt(sender, index) {
+      ctrl.open(sender);
+      focusAt(sender, index);
+    }
+    __name(openAt, "openAt");
+    function choose(sender, event, element) {
+      if (element.getAttribute("aria-disabled") === "true") return;
+      const item = modelItems(sender.state.items)[Number(element.getAttribute("data-index"))];
+      ctrl.close("select", event, true);
+      onSelect(sender, event, item || {});
+    }
+    __name(choose, "choose");
+    function typeahead(sender, from, letter) {
+      const list2 = items(sender);
+      for (let n = 1; n <= list2.length; n++) {
+        const i = (from + n) % list2.length;
+        if ((list2[i].textContent || "").replace(/^\s+/, "").charAt(0).toLowerCase() === letter) return focusAt(sender, i);
+      }
+    }
+    __name(typeahead, "typeahead");
+    return {
+      ctrl,
+      delegates: [
+        {
+          selector: '[data-action="menu"]',
+          eventType: "click",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            if (ctrl.isOpen()) ctrl.close("toggle", e.event, true);
+            else openAt(e.sender, 0);
+          }, "onEvent")
+        },
+        {
+          selector: '[data-action="menu"]',
+          eventType: "keydown",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            const key = e.event.key;
+            if (key === "ArrowDown" || key === "Down") {
+              e.event.preventDefault();
+              openAt(e.sender, 0);
+            } else if (key === "ArrowUp" || key === "Up") {
+              e.event.preventDefault();
+              openAt(e.sender, -1);
+            }
+          }, "onEvent")
+        },
+        { selector: '[data-action="menu-item"]', eventType: "click", onEvent: /* @__PURE__ */ __name(function(e) {
+          choose(e.sender, e.event, e.target);
+        }, "onEvent") },
+        {
+          selector: '[data-action="menu-item"]',
+          eventType: "keydown",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            const key = e.event.key;
+            const from = Number(e.target.getAttribute("data-index"));
+            let to = null;
+            if (key === "ArrowDown" || key === "Down") to = from + 1;
+            else if (key === "ArrowUp" || key === "Up") to = from - 1;
+            else if (key === "Home") to = 0;
+            else if (key === "End") to = -1;
+            else if (key === "Tab") return ctrl.close("tab", e.event, false);
+            else if (key === " " || key === "Spacebar" || key === "Enter") {
+              e.event.preventDefault();
+              return choose(e.sender, e.event, e.target);
+            } else if (key && key.length === 1 && /\S/.test(key)) {
+              return typeahead(e.sender, from, key.toLowerCase());
+            }
+            if (to == null) return;
+            e.event.preventDefault();
+            focusAt(e.sender, to);
+          }, "onEvent")
+        }
+      ],
+      methods: {
+        open: /* @__PURE__ */ __name(function() {
+          openAt(this, 0);
+        }, "open"),
+        close: /* @__PURE__ */ __name(function() {
+          ctrl.close("code", null, false);
+        }, "close")
+      },
+      onUpdate: /* @__PURE__ */ __name(function() {
+        ctrl.reposition();
+      }, "onUpdate"),
+      onDestroy: /* @__PURE__ */ __name(function() {
+        ctrl.stop();
+      }, "onDestroy")
+    };
+  }
+  __name(menuBehavior, "menuBehavior");
+  function withMenu(spec, behavior) {
+    return extend({}, spec, {
+      delegates: (spec.delegates || []).concat(behavior.delegates),
+      methods: extend({}, behavior.methods, spec.methods),
+      onUpdate: behavior.onUpdate,
+      onDestroy: behavior.onDestroy
+    });
+  }
+  __name(withMenu, "withMenu");
+
+  // layer2/src/components/dropdown.js
+  var html42 = vf_default.html;
+  function render4(s) {
+    const trigger = vsButton(extend({}, s.trigger, { id: s.id + "-trigger", action: "menu", aria: triggerAria(s.id, s.expanded) }));
+    return html42`<div ${attrs({ class: cls("vf-dropdown", s.className), id: s.id, "data-ref": s.ref })}>${trigger}${menuMarkup(s.id, s.items, s.expanded, s.label)}</div>`;
+  }
+  __name(render4, "render");
+  function vfDropdown(props) {
+    const p = props || {};
+    const behavior = menuBehavior(function(sender, event, item) {
+      emit(p.onSelect, sender, event, { action: item.action, item });
+    });
+    return instance(withMenu({
+      state: stateOf(p, "dropdown", { trigger: p.trigger || {}, expanded: false, placement: placementOf(p.placement) }),
+      render: render4,
+      methods: { isOpen: /* @__PURE__ */ __name(function() {
+        return behavior.ctrl.isOpen();
+      }, "isOpen") }
+    }, behavior));
+  }
+  __name(vfDropdown, "vfDropdown");
+
+  // layer2/src/components/popover.js
+  var html43 = vf_default.html;
+  function render5(s) {
+    const panelId = s.id + "-panel";
+    const titleId = s.id + "-title";
+    const trigger = vsButton(extend({}, s.trigger, {
+      id: s.id + "-trigger",
+      action: "popover",
+      aria: { haspopup: "dialog", expanded: !!s.expanded, controls: panelId }
+    }));
+    const title = present(s.title) ? html43`<p ${attrs({ class: "vf-popover__title", id: titleId })}>${s.title}</p>` : "";
+    return html43`<div ${attrs({ class: cls("vf-popover", s.className), id: s.id, "data-ref": s.ref })}>${trigger}<div ${attrs({
+      class: "vf-popover__panel",
+      id: panelId,
+      role: "dialog",
+      tabindex: -1,
+      "aria-labelledby": present(s.title) ? titleId : null,
+      "aria-label": present(s.title) ? null : s.label,
+      hidden: !s.expanded
+    })}><div class="vf-popover__header">${title}<button ${attrs({
+      type: "button",
+      class: "vf-popover__close",
+      "data-action": "close",
+      "aria-label": msg("modal.close")
+    })}><span aria-hidden="true">&times;</span></button></div><div class="vf-popover__body">${s.content}</div></div></div>`;
+  }
+  __name(render5, "render");
+  function vfPopover(props) {
+    const p = props || {};
+    const ctrl = floatControl({
+      panel: /* @__PURE__ */ __name(function(s) {
+        return s.ids[s.state.id + "-panel"] || null;
+      }, "panel"),
+      trigger: /* @__PURE__ */ __name(function(s) {
+        return s.ids[s.state.id + "-trigger"] || null;
+      }, "trigger"),
+      onClose: /* @__PURE__ */ __name(function(s, reason, event) {
+        emit(p.onClose, s, event, { reason });
+      }, "onClose")
+    });
+    function open(sender, event) {
+      if (ctrl.isOpen()) return;
+      ctrl.open(sender);
+      const panel = sender.ids[sender.state.id + "-panel"];
+      if (panel) {
+        const list2 = focusables(panel);
+        (list2.length > 1 ? list2[1] : panel).focus();
+      }
+      emit(p.onOpen, sender, event, {});
+    }
+    __name(open, "open");
+    const state = stateOf(p, "popover", { trigger: p.trigger || {}, expanded: false, placement: placementOf(p.placement) });
+    return instance({
+      state,
+      render: render5,
+      delegates: [
+        {
+          selector: '[data-action="popover"]',
+          eventType: "click",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            if (ctrl.isOpen()) ctrl.close("toggle", e.event, true);
+            else open(e.sender, e.event);
+          }, "onEvent")
+        },
+        { selector: '[data-action="close"]', eventType: "click", onEvent: /* @__PURE__ */ __name(function(e) {
+          ctrl.close("close", e.event, true);
+        }, "onEvent") },
+        {
+          selector: idSelector(state.id),
+          eventType: "focusout",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            const next = e.event.relatedTarget;
+            if (ctrl.isOpen() && next && !e.sender.$node.contains(next)) ctrl.close("blur", e.event, false);
+          }, "onEvent")
+        }
+      ],
+      methods: {
+        open: /* @__PURE__ */ __name(function() {
+          open(this, null);
+        }, "open"),
+        close: /* @__PURE__ */ __name(function() {
+          ctrl.close("code", null, false);
+        }, "close"),
+        isOpen: /* @__PURE__ */ __name(function() {
+          return ctrl.isOpen();
+        }, "isOpen")
+      },
+      onUpdate: /* @__PURE__ */ __name(function() {
+        ctrl.reposition();
+      }, "onUpdate"),
+      onDestroy: /* @__PURE__ */ __name(function() {
+        ctrl.stop();
+      }, "onDestroy")
+    });
+  }
+  __name(vfPopover, "vfPopover");
+
+  // layer2/src/components/split-button.js
+  var html44 = vf_default.html;
+  function vsSplitButton(props) {
+    const p = props || {};
+    const base = present(p.id) ? String(p.id) : uid("split");
+    const shared = { variant: p.variant, size: p.size, disabled: !!p.disabled };
+    const main = vsButton({ label: p.label, action: p.action, id: base + "-main", variant: shared.variant, size: shared.size, disabled: shared.disabled, className: "vf-split-button__main" });
+    const more = vsButton({
+      label: html44`<span class="vf-split-button__caret" aria-hidden="true"></span>`,
+      ariaLabel: msg("splitButton.more", p.menuLabel),
+      id: base + "-trigger",
+      action: "menu",
+      aria: triggerAria(base, p.expanded),
+      variant: shared.variant,
+      size: shared.size,
+      disabled: shared.disabled,
+      className: "vf-split-button__toggle"
+    });
+    return html44`<div ${attrs({ class: cls("vf-split-button", p.className), id: base, "data-ref": p.ref, role: "group" })}>${main}${more}${menuMarkup(base, p.items, p.expanded)}</div>`;
+  }
+  __name(vsSplitButton, "vsSplitButton");
+  function vfSplitButton(props) {
+    const p = props || {};
+    const behavior = menuBehavior(function(sender, event, item) {
+      emit(p.onSelect, sender, event, { action: item.action, item });
+    });
+    const state = stateOf(p, "split", { expanded: false, placement: placementOf(p.placement || "bottom-end") });
+    return instance(withMenu({
+      state,
+      render: /* @__PURE__ */ __name(function(s) {
+        return vsSplitButton(s);
+      }, "render"),
+      delegates: [{
+        selector: idSelector(state.id + "-main"),
+        eventType: "click",
+        onEvent: /* @__PURE__ */ __name(function(e) {
+          emit(p.onClick, e.sender, e.event, { action: e.sender.state.action });
+        }, "onEvent")
+      }],
+      methods: { isOpen: /* @__PURE__ */ __name(function() {
+        return behavior.ctrl.isOpen();
+      }, "isOpen") }
+    }, behavior));
+  }
+  __name(vfSplitButton, "vfSplitButton");
+
   // layer2/src/index.js
   var members = {
     vsButton,
@@ -2375,7 +3256,15 @@
     vsAccordion,
     vfAccordion,
     vsStepper,
-    vfStepper
+    vfStepper,
+    vfModal,
+    vfDrawer,
+    vfConfirm,
+    vfToast,
+    vfDropdown,
+    vfPopover,
+    vsSplitButton,
+    vfSplitButton
   };
   var hasOwn2 = Object.prototype.hasOwnProperty;
   var conflicts = [];

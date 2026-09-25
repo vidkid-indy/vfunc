@@ -23,6 +23,10 @@ export default {
     pause: 'Pause',
     play: 'Play'
   },
+  confirm: {
+    ok: 'OK',
+    cancel: 'Cancel'
+  },
   datePicker: {
     placeholder: 'YYYY-MM-DD'
   },
@@ -32,6 +36,9 @@ export default {
   },
   emptyState: {
     title: 'No data'
+  },
+  modal: {
+    close: 'Close'
   },
   numberInput: {
     decrement: 'Decrease',
@@ -56,6 +63,9 @@ export default {
     placeholder: 'Search',
     clear: 'Clear search'
   },
+  splitButton: {
+    more: 'More options'
+  },
   statCard: {
     up: 'Up',
     down: 'Down'
@@ -68,5 +78,9 @@ export default {
   },
   timePicker: {
     placeholder: 'HH:MM'
+  },
+  toast: {
+    dismiss: 'Dismiss',
+    region: 'Notifications'
   }
 };

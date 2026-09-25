@@ -119,6 +119,119 @@ test('vfAccordion, vfStepper, vfPagination, vfCarousel respond to clicks', async
   await waitLog('carousel 1');
 });
 
+const active = () => page.evaluate(() => document.activeElement && (document.activeElement.id || document.activeElement.getAttribute('data-action') || document.activeElement.textContent));
+const activeText = () => page.evaluate(() => document.activeElement && document.activeElement.textContent);
+// WebKit does not focus a button on click, so openers are pressed from the keyboard: the focus
+// then returns to them as it does for keyboard and screen reader users (CI rule: user actions).
+const press = async (selector) => { await page.focus(selector); await page.keyboard.press('Enter'); };
+const locked = () => page.evaluate(() => document.documentElement.getAttribute('data-vf-scroll-lock'));
+
+test('vfModal: focus moves in, Tab stays inside, Escape closes and returns focus', async () => {
+  await press('#open-modal');
+  await page.waitForSelector('#edit-dialog');
+  assert.equal(await active(), 'first');
+  assert.equal(await locked(), 'true');
+  // DOM order: close (header), first, last, Cancel, Save. From first: last → Cancel → Save.
+  for (let i = 0; i < 3; i++) await page.keyboard.press('Tab');
+  assert.equal(await active(), 'modal-save');
+  await page.keyboard.press('Tab');
+  assert.equal(await active(), 'close', 'Tab wraps to the first control of the dialog');
+  await page.keyboard.press('Shift+Tab');
+  assert.equal(await active(), 'modal-save', 'Shift+Tab wraps to the last');
+  await page.keyboard.press('Escape');
+  await waitLog('modal escape');
+  assert.equal(await page.locator('#edit').count(), 0, 'taken out of the page');
+  assert.equal(await active(), 'open-modal');
+  assert.equal(await locked(), null);
+});
+
+test('vfModal footer action shows a toast; the toast is announced in a live region', async () => {
+  await press('#open-modal');
+  await page.click('#modal-save');
+  await waitLog('modal save');
+  const region = page.locator('.vf-toast-region');
+  assert.equal(await region.getAttribute('aria-live'), 'polite');
+  await page.waitForFunction(() => document.querySelector('.vf-toast-region').textContent.indexOf('Profile saved') >= 0);
+  await page.click('.vf-toast-region [data-action="dismiss"]');
+});
+
+test('vfDrawer opens from the end side and closes on the backdrop', async () => {
+  await press('#open-drawer');
+  await page.waitForSelector('#filters-dialog');
+  assert.equal(await page.getAttribute('#filters', 'data-side'), 'end');
+  await page.mouse.click(5, 5);
+  await waitLog('drawer backdrop');
+  assert.equal(await active(), 'open-drawer');
+});
+
+test('vfConfirm: danger starts on cancel; Enter on Delete answers true, Escape answers false', async () => {
+  await press('#open-confirm');
+  await page.waitForSelector('[role="alertdialog"]');
+  assert.equal(await active(), 'cancel');
+  await page.keyboard.press('Tab');
+  assert.equal(await active(), 'confirm');
+  await page.keyboard.press('Enter');
+  await waitLog('confirm true');
+  await press('#open-confirm');
+  await page.waitForSelector('[role="alertdialog"]');
+  await page.keyboard.press('Escape');
+  await waitLog('confirm false');
+  assert.equal(await active(), 'open-confirm');
+});
+
+test('vfDropdown: keyboard menu button, typeahead, Escape back to the trigger', async () => {
+  await page.focus('#actions-trigger');
+  await page.keyboard.press('ArrowDown');
+  assert.equal(await page.getAttribute('#actions-trigger', 'aria-expanded'), 'true');
+  assert.equal(await activeText(), 'Rename');
+  await page.keyboard.press('d');
+  assert.equal(await activeText(), 'Duplicate');
+  await page.keyboard.press('Escape');
+  assert.equal(await active(), 'actions-trigger');
+  assert.equal(await page.isVisible('#actions-menu'), false);
+  await page.keyboard.press('ArrowUp');
+  assert.equal(await activeText(), 'Delete', 'ArrowUp opens on the last item');
+  await page.keyboard.press('Enter');
+  await waitLog('menu delete');
+  assert.equal(await active(), 'actions-trigger');
+});
+
+test('vfDropdown: the menu sits next to the trigger on the side it says, inside the viewport', async () => {
+  await press('#actions-trigger');
+  const box = await page.evaluate(() => {
+    const t = document.getElementById('actions-trigger').getBoundingClientRect();
+    const menu = document.getElementById('actions-menu');
+    const m = menu.getBoundingClientRect();
+    return { side: menu.getAttribute('data-placement'), t: { top: t.top, bottom: t.bottom }, m: { top: m.top, bottom: m.bottom, right: m.right },
+      width: window.innerWidth, height: window.innerHeight };
+  });
+  // Near the bottom of the window the menu flips above the trigger.
+  if (box.side === 'bottom') assert.ok(box.m.top >= box.t.bottom, 'below the trigger');
+  else assert.ok(box.m.bottom <= box.t.top, 'above the trigger (flipped)');
+  assert.ok(box.m.top >= 0 && box.m.bottom <= box.height, 'inside the viewport vertically');
+  assert.ok(box.m.right <= box.width, 'inside the viewport horizontally');
+  await page.mouse.click(5, 5);
+  assert.equal(await page.isVisible('#actions-menu'), false, 'an outside click closes');
+});
+
+test('vfSplitButton: main click and a menu item', async () => {
+  await page.click('#save-main');
+  await waitLog('split click save');
+  await press('#save-trigger');
+  await page.keyboard.press('ArrowDown');
+  await page.keyboard.press('Enter');
+  await waitLog('split select close');
+});
+
+test('vfPopover: focus into the content, Escape back to the trigger', async () => {
+  await press('#help-trigger');
+  assert.equal(await page.getAttribute('#help-panel', 'role'), 'dialog');
+  assert.equal(await activeText(), 'Go to inputs');
+  await page.keyboard.press('Escape');
+  await waitLog('popover escape');
+  assert.equal(await active(), 'help-trigger');
+});
+
 test('switching the language re-renders the messages', async () => {
   await page.click('#lang [data-value="ko"]');
   await page.waitForFunction(() => document.querySelector('#pages').getAttribute('aria-label') === '페이지 이동');

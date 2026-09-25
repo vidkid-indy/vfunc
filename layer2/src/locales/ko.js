@@ -23,6 +23,10 @@ export default {
     pause: '일시 정지',
     play: '재생'
   },
+  confirm: {
+    ok: '확인',
+    cancel: '취소'
+  },
   datePicker: {
     placeholder: 'YYYY-MM-DD'
   },
@@ -32,6 +36,9 @@ export default {
   },
   emptyState: {
     title: '데이터가 없습니다'
+  },
+  modal: {
+    close: '닫기'
   },
   numberInput: {
     decrement: '감소',
@@ -56,6 +63,9 @@ export default {
     placeholder: '검색',
     clear: '검색어 지우기'
   },
+  splitButton: {
+    more: '다른 동작'
+  },
   statCard: {
     up: '증가',
     down: '감소'
@@ -68,5 +78,9 @@ export default {
   },
   timePicker: {
     placeholder: 'HH:MM'
+  },
+  toast: {
+    dismiss: '닫기',
+    region: '알림'
   }
 };

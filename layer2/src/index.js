@@ -47,6 +47,13 @@ import { vsPagination, vfPagination } from './components/pagination.js';
 import { vsTabs, vfTabs } from './components/tabs.js';
 import { vsAccordion, vfAccordion } from './components/accordion.js';
 import { vsStepper, vfStepper } from './components/stepper.js';
+import { vfModal } from './components/modal.js';
+import { vfDrawer } from './components/modal.js';
+import { vfConfirm } from './components/confirm.js';
+import { vfToast } from './components/toast.js';
+import { vfDropdown } from './components/dropdown.js';
+import { vfPopover } from './components/popover.js';
+import { vsSplitButton, vfSplitButton } from './components/split-button.js';
 
 const members = {
   vsButton: vsButton,
@@ -102,7 +109,15 @@ const members = {
   vsAccordion: vsAccordion,
   vfAccordion: vfAccordion,
   vsStepper: vsStepper,
-  vfStepper: vfStepper
+  vfStepper: vfStepper,
+  vfModal: vfModal,
+  vfDrawer: vfDrawer,
+  vfConfirm: vfConfirm,
+  vfToast: vfToast,
+  vfDropdown: vfDropdown,
+  vfPopover: vfPopover,
+  vsSplitButton: vsSplitButton,
+  vfSplitButton: vfSplitButton
 };
 
 const hasOwn = Object.prototype.hasOwnProperty;
@@ -171,6 +186,14 @@ export {
   vsAccordion,
   vfAccordion,
   vsStepper,
-  vfStepper
+  vfStepper,
+  vfModal,
+  vfDrawer,
+  vfConfirm,
+  vfToast,
+  vfDropdown,
+  vfPopover,
+  vsSplitButton,
+  vfSplitButton
 };
 export default members;

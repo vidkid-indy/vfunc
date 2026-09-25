@@ -1,0 +1,73 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* The menu of vfDropdown and vfSplitButton; the split button group. The panel is position: fixed
+   next to its trigger (coordinates set by JS); the gap comes from data-placement. */
+
+.vf-dropdown,
+.vf-split-button { position: relative; display: inline-flex; }
+
+.vf-menu {
+  position: fixed;
+  z-index: var(--vf-z-dropdown);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-inline-size: 10em;
+  max-inline-size: 20em;
+  padding-block: var(--vf-space-1);
+  padding-inline: 0;
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-md);
+  color: var(--vf-color-text);
+  background: var(--vf-color-surface);
+  border: 1px solid var(--vf-color-border);
+  border-radius: var(--vf-radius-md);
+  box-shadow: var(--vf-shadow-2);
+}
+
+.vf-menu[hidden] { display: none; }
+.vf-menu[data-placement="bottom"],
+.vf-popover__panel[data-placement="bottom"] { margin-block-start: var(--vf-space-1); }
+.vf-menu[data-placement="top"],
+.vf-popover__panel[data-placement="top"] { margin-block-start: calc(var(--vf-space-1) * -1); }
+
+.vf-menu__item {
+  display: block;
+  inline-size: 100%;
+  padding-block: var(--vf-space-2);
+  padding-inline: var(--vf-space-3);
+  font: inherit;
+  text-align: start;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.vf-menu__item:hover,
+.vf-menu__item:focus { outline: none; background: var(--vf-color-surface-muted); }
+.vf-menu__item[data-variant="danger"] { color: var(--vf-color-danger-text); }
+.vf-menu__item[aria-disabled="true"] { color: var(--vf-color-text-disabled); cursor: not-allowed; }
+
+.vf-menu__separator {
+  margin-block: var(--vf-space-1);
+  border-block-start: 1px solid var(--vf-color-border);
+}
+
+/* SplitButton: the two buttons joined. */
+.vf-split-button > .vf-button:first-child { border-start-end-radius: 0; border-end-end-radius: 0; }
+.vf-split-button > .vf-split-button__toggle {
+  margin-inline-start: -1px;
+  padding-inline: var(--vf-space-2);
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+.vf-split-button > .vf-button:focus-visible { position: relative; }
+
+.vf-split-button__caret {
+  inline-size: 0.4em;
+  block-size: 0.4em;
+  margin-block-end: 0.2em;
+  border-block-end: 2px solid currentColor;
+  border-inline-end: 2px solid currentColor;
+  transform: rotate(45deg);
+}

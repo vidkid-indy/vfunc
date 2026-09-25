@@ -713,6 +713,133 @@
         "ko": "진행 단계: 완료, 현재(aria-current=\"step\"), 예정."
       },
       "example": "vf.vfStepper({ steps: ['Cart', 'Shipping', 'Payment'], active: 1 })"
+    },
+    {
+      "id": "modal",
+      "tier": "F",
+      "category": "overlay",
+      "names": [
+        "vfModal"
+      ],
+      "source": "layer2/src/components/modal.js",
+      "css": "layer2/css/components/modal.css",
+      "messages": [
+        "modal.close"
+      ],
+      "summary": {
+        "en": "A modal dialog: focus kept inside and returned, Escape for the top layer, page scroll locked; footer actions through onAction.",
+        "ko": "모달 대화상자. 포커스를 안에 가두고 되돌리며, Esc는 가장 위 레이어만, 배경 스크롤 잠금. footer 동작은 onAction."
+      },
+      "example": "const dialog = vf.vfModal({ title: 'Edit user', content: form, footer: vf.vsButton({ label: 'Save', action: 'save', variant: 'primary' }), onAction: (e) => save() }); dialog.open();"
+    },
+    {
+      "id": "drawer",
+      "tier": "F",
+      "category": "overlay",
+      "names": [
+        "vfDrawer"
+      ],
+      "source": "layer2/src/components/modal.js",
+      "css": "layer2/css/components/modal.css",
+      "messages": [
+        "modal.close"
+      ],
+      "summary": {
+        "en": "vfModal as a full-height panel at the end, start or bottom of the screen.",
+        "ko": "화면 끝·시작·아래에 붙는 전체 높이 패널 형태의 vfModal."
+      },
+      "example": "vf.vfDrawer({ title: 'Filters', side: 'end', content: filtersHtml }).open()"
+    },
+    {
+      "id": "confirm",
+      "tier": "F",
+      "category": "overlay",
+      "names": [
+        "vfConfirm"
+      ],
+      "source": "layer2/src/components/confirm.js",
+      "css": "layer2/css/components/modal.css",
+      "messages": [
+        "confirm.cancel",
+        "confirm.ok"
+      ],
+      "summary": {
+        "en": "A yes/no alertdialog; open() returns a Promise of the answer; danger starts on cancel.",
+        "ko": "예/아니요 alertdialog. open()이 답의 Promise를 돌려주고, danger면 취소 버튼에서 시작."
+      },
+      "example": "if (await vf.vfConfirm({ title: 'Delete 3 items?', variant: 'danger', confirmLabel: 'Delete' }).open()) remove();"
+    },
+    {
+      "id": "toast",
+      "tier": "F",
+      "category": "overlay",
+      "names": [
+        "vfToast"
+      ],
+      "source": "layer2/src/components/toast.js",
+      "css": "layer2/css/components/toast.css",
+      "messages": [
+        "toast.dismiss",
+        "toast.region"
+      ],
+      "summary": {
+        "en": "One notification region (live region); show() adds toasts that go after a while and stay while hovered or focused.",
+        "ko": "알림 영역 하나(라이브 영역). show()로 추가하고 일정 시간 뒤 사라지며, hover·focus 중에는 유지."
+      },
+      "example": "const toast = vf.vfToast(); toast.show({ message: 'Saved', variant: 'success' });"
+    },
+    {
+      "id": "dropdown",
+      "tier": "F",
+      "category": "overlay",
+      "names": [
+        "vfDropdown"
+      ],
+      "source": "layer2/src/components/dropdown.js",
+      "css": "layer2/css/components/menu.css",
+      "messages": [],
+      "summary": {
+        "en": "A button that opens a menu of actions (WAI-ARIA menu button: arrows, Home, End, letters, Escape).",
+        "ko": "동작 메뉴를 여는 버튼(WAI-ARIA 메뉴 버튼: 화살표, Home, End, 글자, Esc)."
+      },
+      "example": "vf.vfDropdown({ trigger: { label: 'Actions' }, items: [{ label: 'Rename', action: 'rename' }, { separator: true }, { label: 'Delete', action: 'delete', danger: true }], onSelect: (e) => run(e.data.action) })"
+    },
+    {
+      "id": "popover",
+      "tier": "F",
+      "category": "overlay",
+      "names": [
+        "vfPopover"
+      ],
+      "source": "layer2/src/components/popover.js",
+      "css": "layer2/css/components/popover.css",
+      "messages": [
+        "modal.close"
+      ],
+      "summary": {
+        "en": "A non-modal dialog next to a button; Escape, an outside press or leaving it closes.",
+        "ko": "버튼 옆의 비모달 대화상자. Esc, 바깥 클릭, 포커스 이탈로 닫힘."
+      },
+      "example": "vf.vfPopover({ trigger: { label: 'Help' }, title: 'Shortcuts', content: vf.html`<p>Press / to search.</p>` })"
+    },
+    {
+      "id": "split-button",
+      "tier": "P",
+      "category": "navigation",
+      "names": [
+        "vsSplitButton",
+        "vfSplitButton"
+      ],
+      "source": "layer2/src/components/split-button.js",
+      "css": "layer2/css/components/menu.css",
+      "messages": [
+        "splitButton.more"
+      ],
+      "summary": {
+        "en": "A main action with a menu of related actions (the vfDropdown menu).",
+        "ko": "주 동작과 관련 동작 메뉴(vfDropdown 메뉴 공유)."
+      },
+      "example": "vf.vfSplitButton({ label: 'Save', variant: 'primary', items: [{ label: 'Save as draft', action: 'draft' }], onClick: save, onSelect: (e) => run(e.data.action) })"
     }
   ]
 }

@@ -85,6 +85,8 @@ export interface VsButtonProps {
   ariaLabel?: string;
   /** Extra ids for `aria-describedby`. */
   describedBy?: string;
+  /** More aria-* attributes by name without the prefix, e.g. `{ haspopup: 'menu', expanded: false }`. */
+  aria?: Record<string, string | number | boolean | null | undefined>;
   /** Extra classes for your own CSS. */
   className?: string;
 }
@@ -472,6 +474,189 @@ export interface VfStepperProps extends VsStepperProps {
 export declare function vfStepper(props: VfStepperProps): VfValueInstance<number, {
   next(): void; prev(): void; goTo(index: number): void;
 }>;
+
+/** A menu entry of vfDropdown and vfSplitButton. */
+export interface VfMenuItem {
+  label?: VsContent;
+  /** Reported by onSelect (and `data-value` of the item). */
+  action?: string;
+  /** aria-disabled: focusable, not chosen. */
+  disabled?: boolean;
+  danger?: boolean;
+  /** A line between groups (no label). */
+  separator?: boolean;
+}
+
+export type VfPlacement = 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end';
+
+export interface VsSplitButtonProps {
+  /** The main button. */
+  label: string | SafeHtml;
+  /** data-action of the main button. */
+  action?: string;
+  items: VfMenuItem[];
+  variant?: 'secondary' | 'primary' | 'danger' | 'ghost';
+  size?: 'md' | 'sm' | 'lg';
+  disabled?: boolean;
+  /** The menu button's label; replaces `splitButton.more`. */
+  menuLabel?: string;
+  /** Base of the ids (base-main, base-trigger, base-menu); generated when absent. */
+  id?: string;
+  ref?: string;
+  className?: string;
+}
+
+/** A main button and a menu button (data-action "menu") in a `role="group"`, with a hidden menu. */
+export declare function vsSplitButton(props: VsSplitButtonProps): SafeHtml;
+
+export interface VfSplitButtonProps extends VsSplitButtonProps {
+  /** Default 'bottom-end'. */
+  placement?: VfPlacement;
+  /** The main button. */
+  onClick?: (e: VfUiEvent<{ action: string | undefined }>) => void;
+  /** A menu item. */
+  onSelect?: (e: VfUiEvent<{ action: string | undefined; item: VfMenuItem }>) => void;
+}
+
+export declare function vfSplitButton(props: VfSplitButtonProps): VfuncInstance & { open(): void; close(): void; isOpen(): boolean };
+
+// ---------------------------------------------------------------------------------------------
+// Overlay
+// ---------------------------------------------------------------------------------------------
+
+/** open / close of the modal layers. */
+export interface VfModalMethods {
+  /** Adds the overlay to document.body, locks the page scroll and moves the focus in. */
+  open(): void;
+  /** Takes it out and returns the focus to where it was. */
+  close(reason?: string): void;
+  isOpen(): boolean;
+}
+
+export interface VfModalProps {
+  /** Names the dialog (else `label`). */
+  title?: VsContent;
+  /** aria-label when there is no title. */
+  label?: string;
+  /** Markup, or a vfunc instance (appended as a child, destroyed with the modal). */
+  content?: VsSlot;
+  /** Markup such as buttons with data-action (reported by onAction). */
+  footer?: VsSlot;
+  /** `data-size`. Default 'md'. */
+  size?: 'md' | 'sm' | 'lg';
+  /** Close button, Escape and backdrop close it. Default true. */
+  dismissible?: boolean;
+  /** data-ref of the element to focus on open (default: the first control). */
+  initialFocus?: string;
+  /** Replaces the `modal.close` message. */
+  closeLabel?: string;
+  onOpen?: (e: VfUiEvent<{}>) => void;
+  /** reason: 'close' | 'escape' | 'backdrop' | 'code' or the value given to close(). */
+  onClose?: (e: VfUiEvent<{ reason: string }>) => void;
+  /** A click on an element with data-action inside the dialog. */
+  onAction?: (e: VfUiEvent<{ action: string }>) => void;
+  id?: string;
+  ref?: string;
+  className?: string;
+}
+
+/** A `role="dialog"` with `aria-modal` (no native <dialog>, same path in IE11). */
+export declare function vfModal(props: VfModalProps): VfuncInstance & VfModalMethods;
+
+export interface VfDrawerProps extends VfModalProps {
+  /** `data-side`. Default 'end'. */
+  side?: 'end' | 'start' | 'bottom';
+}
+
+/** vfModal as a panel at one side of the screen. */
+export declare function vfDrawer(props: VfDrawerProps): VfuncInstance & VfModalMethods;
+
+export interface VfConfirmProps {
+  title: VsContent;
+  message?: VsContent;
+  /** Replaces the `confirm.ok` message. */
+  confirmLabel?: string;
+  /** Replaces the `confirm.cancel` message. */
+  cancelLabel?: string;
+  /** danger: red confirm button, the focus starts on cancel. Default 'primary'. */
+  variant?: 'primary' | 'danger';
+  id?: string;
+  className?: string;
+}
+
+/** A `role="alertdialog"`; Escape, the backdrop and the close button answer false. */
+export declare function vfConfirm(props: VfConfirmProps): VfuncInstance & {
+  open(): Promise<boolean>;
+  close(reason?: string): void;
+  isOpen(): boolean;
+};
+
+export interface VfToastOptions {
+  message: VsContent;
+  title?: VsContent;
+  /** Default 'info'. danger and warning are role="alert". */
+  variant?: 'info' | 'success' | 'warning' | 'danger';
+  /** ms; 0 keeps it until dismissed. Default: the region's duration. */
+  duration?: number;
+  /** A button in the toast; the toast goes after onClick. */
+  action?: { label: string; onClick?: (e: VfUiEvent<{ id: string }>) => void };
+}
+
+export interface VfToastProps {
+  /** `data-position`. Default 'bottom-end'. */
+  position?: 'bottom-end' | 'bottom-start' | 'bottom-center' | 'top-end' | 'top-start' | 'top-center';
+  /** ms before a toast goes. Default 4000; 0 keeps them. */
+  duration?: number;
+  /** The oldest goes when more are shown. Default 3. */
+  max?: number;
+  /** The region's aria-label; replaces `toast.region`. */
+  label?: string;
+}
+
+/** The notification region (a live region added to document.body at once). Create it once. */
+export declare function vfToast(props?: VfToastProps): VfuncInstance & {
+  show(options: VfToastOptions): string;
+  dismiss(id: string): void;
+  clear(): void;
+};
+
+export interface VfDropdownProps {
+  /** vsButton props of the trigger. */
+  trigger: Omit<VsButtonProps, 'id' | 'action' | 'aria'>;
+  items: VfMenuItem[];
+  /** Default 'bottom-start'. */
+  placement?: VfPlacement;
+  /** aria-label of the menu (default: named by the trigger). */
+  label?: string;
+  onSelect?: (e: VfUiEvent<{ action: string | undefined; item: VfMenuItem }>) => void;
+  id?: string;
+  ref?: string;
+  className?: string;
+}
+
+/** A menu button (WAI-ARIA): arrows, Home, End, first letters, Escape, Tab. */
+export declare function vfDropdown(props: VfDropdownProps): VfuncInstance & { open(): void; close(): void; isOpen(): boolean };
+
+export interface VfPopoverProps {
+  /** vsButton props of the trigger. */
+  trigger: Omit<VsButtonProps, 'id' | 'action' | 'aria'>;
+  content: VsSlot;
+  /** Names the panel. */
+  title?: VsContent;
+  /** Names the panel when there is no title. */
+  label?: string;
+  /** Default 'bottom-start'. */
+  placement?: VfPlacement;
+  onOpen?: (e: VfUiEvent<{}>) => void;
+  /** reason: 'close' | 'escape' | 'outside' | 'blur' | 'toggle' | 'code'. */
+  onClose?: (e: VfUiEvent<{ reason: string }>) => void;
+  id?: string;
+  ref?: string;
+  className?: string;
+}
+
+/** A non-modal `role="dialog"` next to its trigger. */
+export declare function vfPopover(props: VfPopoverProps): VfuncInstance & { open(): void; close(): void; isOpen(): boolean };
 
 // ---------------------------------------------------------------------------------------------
 // Input
@@ -879,6 +1064,14 @@ declare const ui: {
   readonly vfAccordion: typeof vfAccordion;
   readonly vsStepper: typeof vsStepper;
   readonly vfStepper: typeof vfStepper;
+  readonly vfModal: typeof vfModal;
+  readonly vfDrawer: typeof vfDrawer;
+  readonly vfConfirm: typeof vfConfirm;
+  readonly vfToast: typeof vfToast;
+  readonly vfDropdown: typeof vfDropdown;
+  readonly vfPopover: typeof vfPopover;
+  readonly vsSplitButton: typeof vsSplitButton;
+  readonly vfSplitButton: typeof vfSplitButton;
 };
 export default ui;
 
@@ -938,5 +1131,13 @@ declare module '../../layer1/types/vfunc' {
     readonly vfAccordion: typeof vfAccordion;
     readonly vsStepper: typeof vsStepper;
     readonly vfStepper: typeof vfStepper;
+    readonly vfModal: typeof vfModal;
+    readonly vfDrawer: typeof vfDrawer;
+    readonly vfConfirm: typeof vfConfirm;
+    readonly vfToast: typeof vfToast;
+    readonly vfDropdown: typeof vfDropdown;
+    readonly vfPopover: typeof vfPopover;
+    readonly vsSplitButton: typeof vsSplitButton;
+    readonly vfSplitButton: typeof vfSplitButton;
   }
 }

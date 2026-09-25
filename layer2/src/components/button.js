@@ -30,6 +30,8 @@ const TYPES = ['button', 'submit', 'reset'];
  * @param {string} [props.loadingText] - replaces the `common.loading` message
  * @param {string} [props.ariaLabel] - for icon-only buttons
  * @param {string} [props.describedBy] - `aria-describedby`, e.g. the id vsTooltip passes to `trigger`
+ * @param {Object<string, *>} [props.aria] - more aria-* attributes by name without the prefix,
+ *   e.g. { haspopup: 'menu', expanded: false, controls: 'menu-1' } (names are checked by attrs)
  * @param {string} [props.className] - extra classes, for your own CSS
  * @returns {SafeHtml}
  */
@@ -38,7 +40,7 @@ export function vsButton(props) {
   const loading = !!p.loading;
   const spinner = loading ? html`<span class="vf-button__spinner" aria-hidden="true"></span>` : '';
   const status = loading ? html`<span class="vf-visually-hidden">${msg('common.loading', p.loadingText)}</span>` : '';
-  return html`<button ${attrs({
+  const map = {
     type: oneOf('vsButton type', p.type, TYPES),
     class: 'vf-button' + (p.className ? ' ' + p.className : ''),
     id: p.id,
@@ -50,5 +52,9 @@ export function vsButton(props) {
     'aria-describedby': p.describedBy,
     'aria-busy': loading || null,
     disabled: !!p.disabled || loading
-  })}>${spinner}<span class="vf-button__label">${p.label}</span>${status}</button>`;
+  };
+  if (p.aria) {
+    for (const key in p.aria) if (Object.prototype.hasOwnProperty.call(p.aria, key)) map['aria-' + key] = p.aria[key];
+  }
+  return html`<button ${attrs(map)}>${spinner}<span class="vf-button__label">${p.label}</span>${status}</button>`;
 }

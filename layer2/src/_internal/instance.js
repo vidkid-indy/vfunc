@@ -38,6 +38,7 @@ export function instance(spec) {
     render: spec.render,
     delegates: spec.delegates || [],
     events: spec.events,
+    childs: spec.childs,
     methods: methods,
     onMount: spec.onMount,
     onUpdate: spec.onUpdate,
