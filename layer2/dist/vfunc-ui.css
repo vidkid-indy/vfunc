@@ -1,0 +1,105 @@
+/*! vfunc-ui (vfunc.js layer 2) v1.0.0-rc.8 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
+@layer vf.base, vf.components;
+
+@layer vf.base {
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Shared rules of the layer 2 components. Built into dist/vfunc-ui.css inside @layer vf.base.
+   Only var(--vf-*) tokens (from vfunc.tokens.css) and logical properties (rule 21, RTL ready). */
+
+.vf-visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes vf-spin {
+  to { transform: rotate(360deg); }
+}
+}
+
+@layer vf.components {
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsButton. State and variants come from attributes: data-variant, data-size, disabled, aria-busy. */
+
+.vf-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--vf-space-2);
+  padding-block: var(--vf-space-2);
+  padding-inline: var(--vf-space-4);
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-md);
+  font-weight: var(--vf-font-weight-strong);
+  line-height: var(--vf-line-height);
+  color: var(--vf-color-text);
+  background: var(--vf-color-surface);
+  border: 1px solid var(--vf-color-border-strong);
+  border-radius: var(--vf-radius-md);
+  cursor: pointer;
+  transition: background-color var(--vf-duration-fast) var(--vf-easing), border-color var(--vf-duration-fast) var(--vf-easing);
+}
+
+.vf-button:hover { background: var(--vf-color-surface-muted); }
+.vf-button:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); }
+
+.vf-button[data-size="sm"] {
+  padding-block: var(--vf-space-1);
+  padding-inline: var(--vf-space-3);
+  font-size: var(--vf-font-size-sm);
+}
+
+.vf-button[data-size="lg"] {
+  padding-block: var(--vf-space-3);
+  padding-inline: var(--vf-space-5);
+  font-size: var(--vf-font-size-lg);
+}
+
+.vf-button[data-variant="primary"] {
+  color: var(--vf-color-on-primary);
+  background: var(--vf-color-primary);
+  border-color: var(--vf-color-primary);
+}
+.vf-button[data-variant="primary"]:hover { background: var(--vf-color-primary-hover); border-color: var(--vf-color-primary-hover); }
+
+.vf-button[data-variant="danger"] {
+  color: var(--vf-color-text-inverse);
+  background: var(--vf-color-danger);
+  border-color: var(--vf-color-danger);
+}
+.vf-button[data-variant="danger"]:hover { background: var(--vf-color-danger-text); border-color: var(--vf-color-danger-text); }
+
+.vf-button[data-variant="ghost"] {
+  background: transparent;
+  border-color: transparent;
+}
+.vf-button[data-variant="ghost"]:hover { background: var(--vf-color-surface-muted); }
+
+.vf-button:disabled {
+  color: var(--vf-color-text-disabled);
+  background: var(--vf-color-surface-muted);
+  border-color: var(--vf-color-border);
+  cursor: not-allowed;
+}
+
+.vf-button[aria-busy="true"] { cursor: progress; }
+
+.vf-button__spinner {
+  inline-size: 1em;
+  block-size: 1em;
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: var(--vf-radius-full);
+  animation: vf-spin 0.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vf-button__spinner { animation-duration: 2.4s; }
+}
+}

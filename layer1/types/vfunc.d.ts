@@ -115,11 +115,17 @@ export interface VfuncOptions<S extends object = Record<string, any>, M extends 
   onEvent?: (e: VfEvent<VfuncInstance<S, M>>) => void;
   /** Called when render, a handler or a lifecycle hook throws. The engine does not recover. */
   onError?: (error: unknown) => void;
-  /** After mount() or vf.attach() put the element in the page. Create third-party widgets here. */
+  /**
+   * After mount() or vf.attach() put the element in the page. Instances in `childs` get it too,
+   * once, before their parent. Create third-party widgets here.
+   */
   onMount?: (instance: VfuncInstance<S, M>) => void;
   /** After every refresh. Without `render` nothing is drawn again, but it still runs after each state change. */
   onUpdate?: (instance: VfuncInstance<S, M>) => void;
-  /** At the start of destroy(), while the element is still in the page. Release widgets and timers here. */
+  /**
+   * In destroy(), after the instances in `childs` are destroyed, while the element is still in the
+   * page. Release widgets and timers here.
+   */
   onDestroy?: (instance: VfuncInstance<S, M>) => void;
 }
 
@@ -131,9 +137,9 @@ export interface VfuncBase<S extends object = Record<string, any>, M extends obj
   state: S;
   /** The bound methods. */
   methods: M;
-  /** Descendant elements with an id (the root excluded). Updated on every refresh. */
+  /** Descendant elements with an id, inside the root only (use vf.$ for the rest of the page). Updated on every refresh. */
   ids: Record<string, HTMLElement>;
-  /** Descendant elements with `data-ref`. Updated on every refresh. */
+  /** Descendant elements with `data-ref`, inside the root only. Updated on every refresh. */
   refs: Record<string, HTMLElement>;
   readonly isvfunc: true;
   /**
@@ -145,10 +151,11 @@ export interface VfuncBase<S extends object = Record<string, any>, M extends obj
   scheduleRefresh(): void;
   /** Render again now. */
   refresh(): void;
-  /** Append to an element or selector and call onMount. */
+  /** Append to an element or selector and call onMount (instances in `childs` first). */
   mount(parent: Element | string): Promise<this>;
   /**
-   * Call onDestroy, release listeners, remove the root, clear ids and refs. Safe to call twice.
+   * Destroy the instances in `childs`, call onDestroy, release listeners, remove the root, clear
+   * ids and refs. Safe to call twice.
    * A vf.attach root stays in the page: only what render or innerHTML drew inside it is removed.
    */
   destroy(): void;
@@ -300,8 +307,12 @@ export interface VfI18n {
   /** Changes the locale, updates `<html lang>` and notifies subscribers. Resolves with the locale in use. */
   set(locale: string): Promise<string>;
   locale(): string;
-  /** Adds messages (deep merge; dangerous keys are ignored). */
-  add(locale: string, messages: I18nMessages): void;
+  /**
+   * Adds messages (deep merge; dangerous keys are ignored). With `{ defaults: true }` they are
+   * built-in defaults (e.g. of layer 2 components): the app's messages win in any order, and the
+   * locale does not count as loaded, so `load(locale)` still runs.
+   */
+  add(locale: string, messages: I18nMessages, options?: { defaults?: boolean }): void;
   /** Returns an unsubscribe function. */
   subscribe(listener: (locale: string) => void): () => void;
   /** Translates `data-i18n` (text only) and `data-i18n-attr` (allowed attributes only). */

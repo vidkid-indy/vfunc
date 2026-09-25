@@ -1,11 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
-// Release build of layer 1 (CLAUDE.md rule 15: users never build; we ship dist/).
+// Release build of layers 1 and 2 (CLAUDE.md rule 15: users never build; we ship dist/).
 //
-//   node build/build.mjs           build layer1/dist, license files and the npm package folder
+//   node build/build.mjs           build layer1/dist, layer2/dist, license files and the npm package folder
 //   node build/build.mjs --check   build in memory and fail when committed files are out of date
 //
-// Outputs (layer1/dist/):
+// Layer 2 outputs (layer2/dist/, D-029): vfunc-ui.{js,min.js,esm.js,esm.min.js,legacy.min.js}
+// (budgets 24 KB / 30 KB gzip), vfunc-ui.locale.ko.*, vfunc-all.{js,min.js,legacy.min.js}
+// (layers 1 + 2), vfunc-ui.css (12 KB) and vfunc-ui.legacy.css (build/ui-css.mjs).
+//
+// Layer 1 outputs (layer1/dist/):
 //   vfunc.js         <script>, joins window.vf, development warnings
 //   vfunc.min.js     <script>, joins window.vf, minified, no warnings   (budget: 10 KB gzip)
 //   vfunc.esm.js     ES module, development warnings
@@ -27,11 +31,15 @@ import { spawnSync } from 'node:child_process';
 import { gzipSync } from 'node:zlib';
 import { ROOT, readThirdParty, checkBundledInputs, writeLicenses, OUTPUTS } from './licenses.mjs';
 import { writeLlms, generateLlmsFull, LLMS_FULL } from './llms.mjs';
+import { buildUiCss } from './ui-css.mjs';
 
 const SOURCE = 'layer1/src/vfunc.js';
 const IIFE_ENTRY = 'build/iife-entry.js';
 const LEGACY_ENTRY = 'build/legacy-entry.js';
 const DIST = 'layer1/dist';
+const UI_SOURCE = 'layer2/src/index.js';
+const UI_KO_SOURCE = 'layer2/src/locale.ko.js';
+const UI_DIST = 'layer2/dist';
 const NPM_OUT = 'build/out/npm';
 const TMP = 'build/out/tmp';
 
@@ -67,6 +75,43 @@ function pluginBanner(name) {
   return '/*! vfunc.js ' + name + ' plugin (vfunc v' + version + ') | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */';
 }
 
+const uiBanner = '/*! vfunc-ui (vfunc.js layer 2) v' + version + ' | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */';
+
+function bannerOf(target) {
+  if (target.plugin) return pluginBanner(target.plugin);
+  return target.ui === undefined ? banner : uiBanner;
+}
+
+/**
+ * How layer 2 reaches the engine (D-029): layer2/src/_internal/vf.js is replaced per output.
+ * - 'global': <script> files read window.vf, put there by vfunc.js.
+ * - 'esm' / 'esm.min': ES modules import the engine file next to them. In the repository that is
+ *   ../../layer1/dist/; the npm package puts both in dist/ and rewrites the path (assembleNpmPackage).
+ * - 'bundle' (vfunc-all): the engine source is bundled; no replacement.
+ */
+const UI_ENGINE_ESM = { esm: '../../layer1/dist/vfunc.esm.js', 'esm.min': '../../layer1/dist/vfunc.esm.min.js' };
+
+function uiEngine(mode) {
+  return {
+    name: 'vfunc-ui-engine',
+    setup(build) {
+      if (mode === 'bundle') return;
+      build.onLoad({ filter: /[\\/]layer2[\\/]src[\\/]_internal[\\/]vf\.js$/ }, () => {
+        if (mode === 'global') {
+          return {
+            loader: 'js',
+            contents: 'var vf = typeof window !== "undefined" ? window.vf : undefined;\n' +
+              'if (!vf || typeof vf.vfunc !== "function") throw new Error("[vfunc-ui] load vfunc.js before this file.");\n' +
+              'export default vf;\n'
+          };
+        }
+        return { loader: 'js', contents: 'export { default } from "vfunc-engine";\n' };
+      });
+      build.onResolve({ filter: /^vfunc-engine$/ }, () => ({ path: UI_ENGINE_ESM[mode], external: true }));
+    }
+  };
+}
+
 /** The source keeps its own header for readers; the build replaces it with the stamped banner. */
 const stripSourceHeader = {
   name: 'vfunc-source-header',
@@ -88,8 +133,27 @@ const TARGETS = [
   // Official plugins (D-013): outside the engine budget. The <script> file goes through the
   // legacy pipeline so it runs in IE11 and keeps names (esbuild refuses keep_names for es5).
   { file: 'plugins/update.esm.js', entry: 'layer1/plugins/update.js', format: 'esm', minify: false, plugin: 'update' },
-  { file: 'plugins/update.min.js', entry: 'build/plugin-update-entry.js', format: 'iife', minify: true, plugin: 'update', legacy: true }
+  { file: 'plugins/update.min.js', entry: 'build/plugin-update-entry.js', format: 'iife', minify: true, plugin: 'update', legacy: true },
+  // Layer 2 (D-029). `ui` says how it reaches the engine (see uiEngine).
+  { dist: UI_DIST, file: 'vfunc-ui.js', entry: UI_SOURCE, format: 'iife', minify: false, ui: 'global' },
+  { dist: UI_DIST, file: 'vfunc-ui.min.js', entry: UI_SOURCE, format: 'iife', minify: true, ui: 'global', budget: 24 * 1024 },
+  { dist: UI_DIST, file: 'vfunc-ui.esm.js', entry: UI_SOURCE, format: 'esm', minify: false, ui: 'esm' },
+  { dist: UI_DIST, file: 'vfunc-ui.esm.min.js', entry: UI_SOURCE, format: 'esm', minify: true, ui: 'esm.min' },
+  { dist: UI_DIST, file: 'vfunc-ui.legacy.min.js', entry: UI_SOURCE, format: 'iife', minify: true, legacy: true, ui: 'global', budget: 30 * 1024 },
+  { dist: UI_DIST, file: 'vfunc-ui.locale.ko.js', entry: UI_KO_SOURCE, format: 'iife', minify: true, legacy: true, ui: 'global' },
+  { dist: UI_DIST, file: 'vfunc-ui.locale.ko.esm.js', entry: UI_KO_SOURCE, format: 'esm', minify: false, ui: 'esm' },
+  { dist: UI_DIST, file: 'vfunc-ui.locale.ko.esm.min.js', entry: UI_KO_SOURCE, format: 'esm', minify: true, ui: 'esm.min' },
+  { dist: UI_DIST, file: 'vfunc-all.js', entry: 'build/all-entry.js', format: 'iife', minify: false, ui: 'bundle' },
+  { dist: UI_DIST, file: 'vfunc-all.min.js', entry: 'build/all-entry.js', format: 'iife', minify: true, ui: 'bundle' },
+  { dist: UI_DIST, file: 'vfunc-all.legacy.min.js', entry: 'build/all-legacy-entry.js', format: 'iife', minify: true, legacy: true, ui: 'bundle' }
 ];
+
+const distOf = (target) => target.dist || DIST;
+
+/** esbuild plugins for a target: the engine header, and for layer 2 how it reaches the engine. */
+function pluginsOf(target) {
+  return target.ui === undefined ? [stripSourceHeader] : [stripSourceHeader, uiEngine(target.ui)];
+}
 
 /** Returns { files: [{ path, text }], inputs: [path] } without writing anything. */
 async function buildTarget(target) {
@@ -97,7 +161,7 @@ async function buildTarget(target) {
   const result = await esbuild.build({
     absWorkingDir: ROOT,
     entryPoints: [target.entry],
-    outfile: join(DIST, target.file),
+    outfile: join(distOf(target), target.file),
     bundle: true,
     format: target.format,
     platform: 'browser',
@@ -108,12 +172,12 @@ async function buildTarget(target) {
     charset: 'utf8',
     sourcemap: 'linked',
     sourcesContent: true,
-    banner: { js: target.plugin ? pluginBanner(target.plugin) : banner },
+    banner: { js: bannerOf(target) },
     define: {
       __VFUNC_VERSION__: JSON.stringify(version),
       __VFUNC_DEV__: target.minify ? 'false' : 'true'
     },
-    plugins: [stripSourceHeader],
+    plugins: pluginsOf(target),
     metafile: true,
     write: false,
     logLevel: 'warning'
@@ -122,7 +186,7 @@ async function buildTarget(target) {
 }
 
 async function buildLegacy(target) {
-  const outfile = join(ROOT, DIST, target.file);
+  const outfile = join(ROOT, distOf(target), target.file);
   // 1. Bundle as modern code with names pinned and warnings removed.
   const bundled = await esbuild.build({
     absWorkingDir: ROOT,
@@ -134,11 +198,14 @@ async function buildLegacy(target) {
     target: ['es2017'],
     keepNames: true, // rule 15: names are fixed here and survive the later steps
     minifySyntax: true, // folds DEV=false so `if (DEV) warn(...)` and its message are removed
+    // Layer 2 uses vf.html tagged templates: esbuild lowers them here, inside the IIFE, because
+    // Babel would put its _taggedTemplateLiteral helper outside it as a global.
+    supported: target.ui === undefined ? {} : { 'template-literal': false },
     charset: 'utf8',
     sourcemap: 'external',
     sourcesContent: true,
     define: { __VFUNC_VERSION__: JSON.stringify(version), __VFUNC_DEV__: 'false' },
-    plugins: [stripSourceHeader],
+    plugins: pluginsOf(target),
     metafile: true,
     write: false,
     logLevel: 'warning'
@@ -164,7 +231,7 @@ async function buildLegacy(target) {
     Buffer.from(JSON.stringify(es5.map)).toString('base64');
   const minified = await esbuild.build({
     absWorkingDir: ROOT,
-    stdin: { contents: withMap, sourcefile: join(DIST, target.file.replace(/\.min\.js$/, '.js')), resolveDir: join(ROOT, DIST), loader: 'js' },
+    stdin: { contents: withMap, sourcefile: join(distOf(target), target.file.replace(/\.min\.js$/, '.js')), resolveDir: join(ROOT, distOf(target)), loader: 'js' },
     outfile: outfile,
     bundle: false,
     minify: true,
@@ -173,7 +240,7 @@ async function buildLegacy(target) {
     charset: 'utf8',
     sourcemap: 'linked',
     sourcesContent: true,
-    banner: { js: target.plugin ? pluginBanner(target.plugin) : banner },
+    banner: { js: bannerOf(target) },
     write: false,
     logLevel: 'warning'
   });
@@ -223,19 +290,28 @@ async function main() {
   failures.push(...checkBundledInputs(Object.keys(inputs), thirdParty));
 
   // D-003: size budgets.
+  const outputOf = (target) => outputs[distOf(target) + '/' + target.file];
   const sizes = TARGETS.map((target) => {
-    const text = outputs[DIST + '/' + target.file];
+    const text = outputOf(target);
     return { file: target.file, raw: Buffer.byteLength(text), gzip: gzipSize(text), budget: target.budget };
   });
+
+  // Layer 2 CSS (D-029): the modern file with @layer, and the IE11 file converted from it.
+  const css = buildUiCss(ROOT, uiBanner);
+  failures.push(...css.problems);
+  outputs[UI_DIST + '/vfunc-ui.css'] = css.modern;
+  outputs[UI_DIST + '/vfunc-ui.legacy.css'] = css.legacy;
+  sizes.push({ file: 'vfunc-ui.css', raw: Buffer.byteLength(css.modern), gzip: gzipSize(css.modern), budget: 12 * 1024 });
+  sizes.push({ file: 'vfunc-ui.legacy.css', raw: Buffer.byteLength(css.legacy), gzip: gzipSize(css.legacy) });
   for (const s of sizes) {
     if (s.budget && s.gzip > s.budget) {
-      failures.push(s.file + ' is ' + kb(s.gzip) + ' gzip; the budget is ' + kb(s.budget) + ' (D-003).');
+      failures.push(s.file + ' is ' + kb(s.gzip) + ' gzip; the budget is ' + kb(s.budget) + ' (D-003, D-029).');
     }
   }
 
   // Minified builds must not carry development warnings (D-003, round 14).
   for (const target of TARGETS.filter((t) => t.minify)) {
-    if (/is a reserved name|must be a function; string handlers/.test(outputs[DIST + '/' + target.file])) {
+    if (/is a reserved name|must be a function; string handlers|is not one of|is not allowed in component markup/.test(outputOf(target))) {
       failures.push(target.file + ' still contains development warnings; guard them with `if (DEV)`.');
     }
   }
@@ -243,7 +319,7 @@ async function main() {
   // The legacy file and the ES5 plugin files must be ES5 and use no post-ES5 built-in except the
   // polyfilled ones, and keep everything inside one IIFE.
   for (const target of TARGETS.filter((t) => t.legacy)) {
-    const text = outputs[DIST + '/' + target.file];
+    const text = outputOf(target);
     failures.push(...esCheck(target.file, text));
     // Everything must stay inside one IIFE: transpiler helpers must not become globals.
     const body = text.slice(text.indexOf('*/') + 2).replace(/^\s+/, '');
@@ -278,7 +354,7 @@ async function main() {
 
   console.log('vfunc.js v' + version + (check ? ' (check)' : ''));
   for (const s of sizes) {
-    console.log('  ' + s.file.padEnd(20) + kb(s.raw).padStart(10) + '   gzip ' + kb(s.gzip).padStart(9) +
+    console.log('  ' + s.file.padEnd(30) + kb(s.raw).padStart(10) + '   gzip ' + kb(s.gzip).padStart(9) +
       (s.budget ? '  (budget ' + kb(s.budget) + ')' : ''));
   }
 
@@ -300,9 +376,21 @@ function assembleNpmPackage() {
     mkdirSync(dirname(to), { recursive: true });
     copyFileSync(from, to);
   };
+  // Layer 2 files sit next to the engine in dist/ (D-029): their paths to layer 1 become ./
+  const flatten = (text) => text.split('../../layer1/dist/').join('./').split('../../layer1/types/').join('./');
+  const copyFlat = (from, to) => {
+    mkdirSync(dirname(to), { recursive: true });
+    writeFileSync(to, flatten(readFileSync(from, 'utf8')));
+  };
   for (const target of TARGETS) {
-    for (const file of [target.file, target.file + '.map']) copy(join(ROOT, DIST, file), join(out, 'dist', file));
+    for (const file of [target.file, target.file + '.map']) {
+      const from = join(ROOT, distOf(target), file);
+      if (target.ui === undefined) copy(from, join(out, 'dist', file));
+      else copyFlat(from, join(out, 'dist', file));
+    }
   }
+  for (const file of ['vfunc-ui.d.ts']) copyFlat(join(ROOT, 'layer2/types', file), join(out, 'types', file));
+  for (const file of ['vfunc-ui.css', 'vfunc-ui.legacy.css']) copy(join(ROOT, UI_DIST, file), join(out, 'css', file));
   for (const file of ['vfunc.d.ts', 'global.d.ts', 'plugins/update.d.ts']) copy(join(ROOT, 'layer1/types', file), join(out, 'types', file));
   // Optional design tokens (D-011). Not generated: the file in layer1/css is the source.
   copy(join(ROOT, 'layer1/css/vfunc.tokens.css'), join(out, 'css', 'vfunc.tokens.css'));
@@ -342,6 +430,15 @@ function assembleNpmPackage() {
         production: './dist/vfunc.esm.min.js',
         default: './dist/vfunc.esm.js'
       },
+      './ui': {
+        types: './types/vfunc-ui.d.ts',
+        production: './dist/vfunc-ui.esm.min.js',
+        default: './dist/vfunc-ui.esm.js'
+      },
+      './ui/locale/ko': {
+        production: './dist/vfunc-ui.locale.ko.esm.min.js',
+        default: './dist/vfunc-ui.locale.ko.esm.js'
+      },
       './plugins/update': {
         types: './types/plugins/update.d.ts',
         default: './dist/plugins/update.esm.js'
@@ -352,8 +449,10 @@ function assembleNpmPackage() {
       './types/*': './types/*',
       './package.json': './package.json'
     },
-    // The <script> builds write window.vf / window.vfUpdate; the ES modules have no side effects.
-    sideEffects: ['./dist/vfunc.js', './dist/vfunc.min.js', './dist/vfunc.legacy.min.js', './dist/plugins/update.min.js', './css/*.css'],
+    // The <script> builds write window.vf / window.vfUpdate. The engine module has no side effects;
+    // the layer 2 modules add their members to the engine's vf object when imported.
+    sideEffects: ['./dist/vfunc.js', './dist/vfunc.min.js', './dist/vfunc.legacy.min.js', './dist/plugins/update.min.js',
+      './dist/vfunc-ui*.js', './dist/vfunc-all*.js', './css/*.css'],
     files: ['dist/', 'types/', 'css/', 'ai/', 'README.md', 'README.ko.md', 'LICENSE', 'NOTICE', 'CHANGELOG.md', OUTPUTS.text]
   };
   writeFileSync(join(out, 'package.json'), JSON.stringify(manifest, null, 2) + '\n');

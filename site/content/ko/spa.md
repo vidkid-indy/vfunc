@@ -67,3 +67,5 @@ vf.i18n.apply();                         // 퍼블리싱 HTML의 data-i18n / dat
 - `vf.t`의 결과는 평문이고 `vf.html`이 이스케이프합니다. `data-i18n`도 텍스트로만 넣습니다.
 - **컴포넌트는 만들 때 렌더합니다.** `vf.t`를 쓰는 컴포넌트는 `setup()`이 끝난 뒤에 만드세요.
 - 로케일이 바뀌면 `vf.i18n.subscribe(() => …)`에서 다시 그리고 `apply()`를 다시 부릅니다. `<html lang>`은 자동으로 바뀝니다.
+- `vf.i18n.set(locale)`은 Promise입니다. 메시지를 먼저 불러온 뒤 구독자를 부르므로, `set()` 바로 뒤에서 다시 그리지 말고 `subscribe`에서 그립니다.
+- `persist: true`면 고른 로케일을 `localStorage`(키 `vf.locale`, 문자열을 주면 그 키)에 저장하고 다음 `setup()`이 읽습니다. 직접 저장하지 않습니다.

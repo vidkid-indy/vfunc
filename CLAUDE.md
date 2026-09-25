@@ -27,7 +27,8 @@
 | 경로 | 용도 |
 |---|---|
 | `layer1/` | `src/vfunc.js`(단일 소스), `types/`, `dist/`(생성물), `examples/`, `ai/`(LLM 레퍼런스와 프롬프트), `css/`, `starter/`, `plugins/`, `test/` |
-| `layer2/`, `layer3/` | 각 단계에서 채웁니다 |
+| `layer2/` | `src/`(단일 진입 `index.js`, `components/`, `locales/`, `_internal/`은 비공개), `css/`, `types/vfunc-ui.d.ts`, `catalog.json`(컴포넌트 목록 단일 원본), `dist/`(생성물), `test/` |
+| `layer3/` | 3단계에서 채웁니다 |
 | `site/` | 홈페이지와 문서(정적 페이지 + vfunc 섬, GitHub Pages). **사용자용 API 레퍼런스는 `site/content/*/api.md`** |
 | `build/` | 배포 전용 빌드 스크립트 |
 | `third-party.json` | 서드파티 라이선스 단일 원본 |
@@ -52,7 +53,7 @@
 ### 17. 네임스페이스
 - 단일 전역 `vf`. 이름의 모양으로 레이어와 반환 타입을 구분합니다.
   - layer1: 소문자 (`vf.vfunc`, `vf.attach`, `vf.html`, `vf.router`)
-  - layer2: `vs*` = **항상 문자열**, `vf*` = **항상 인스턴스** (`vf.vsButton`, `vf.vfButton`)
+  - layer2: `vs*` = **항상 문자열**(`SafeHtml`: 문자열처럼 쓰이고 `vf.html`에 넣어도 이중 이스케이프되지 않음), `vf*` = **항상 인스턴스** (`vf.vsButton`, `vf.vfTabs`)
   - layer2 어댑터: `vf` + 종류 + 벤더 (`vf.vfGridAg`, `vf.vfChartEcharts`)
   - layer3: PascalCase 클래스 (`vf.VClass`)
 - props에 따라 반환 타입이 바뀌는 **auto-sensing 함수는 금지**입니다.
@@ -63,7 +64,7 @@
 - 공개 API(`d.ts`, CSS 토큰 이름 포함)는 semver를 따릅니다.
 - 변경 시 `CHANGELOG.md`, `types/vfunc.d.ts`, `layer1/ai/llms.txt`(두 언어), `EXTENDING.md`, 사이트 문서(두 언어의 `api.md`와 관련 가이드)를 **함께** 갱신합니다.
 - 제거는 최소 한 번의 MINOR 동안 deprecated 경고를 거친 뒤 MAJOR에서만 합니다.
-- 크기 예산: `vfunc.min.js` gzip 10KB 이하, `vfunc.legacy.min.js` 14KB 이하.
+- 크기 예산: `vfunc.min.js` gzip 10KB 이하, `vfunc.legacy.min.js` 14KB 이하. layer2는 `vfunc-ui.min.js` 24KB, `vfunc-ui.legacy.min.js` 30KB, `vfunc-ui.css` 12KB 이하.
 
 ### 19. IE 호환
 - 엔진 소스는 하나이고 배포 파일만 나눕니다(`vfunc.min.js` / `vfunc.legacy.min.js`).
@@ -119,8 +120,8 @@ python -m http.server 8080
 
 ```bash
 npm install        # devDependencies (빌드용 esbuild, 테스트용 happy-dom)
-npm test           # layer1 단위·dist·타입 테스트 + 빌드 스크립트 테스트 (node --test + happy-dom)
-npm run build      # layer1/dist + 소스맵, 라이선스 파일, llms-full, 스타터 사본, npm 패키지 조립(build/out/npm/)
+npm test           # layer1·layer2 단위·dist·타입 테스트 + 빌드 스크립트 테스트 (node --test + happy-dom)
+npm run build      # layer1/dist·layer2/dist + 소스맵, 라이선스 파일, llms-full, 스타터 사본, npm 패키지 조립(build/out/npm/)
 npm run build:check  # 메모리에서 빌드해 커밋된 생성 파일이 최신인지 검사 (CI용)
 npm run licenses   # third-party.json → THIRD_PARTY_LICENSES.txt, NOTICE 서드파티 절, site/data/licenses.json
 npm run pack:dry   # 게시될 npm 패키지 내용 확인 (실제 publish는 메인테이너만)
@@ -143,6 +144,7 @@ node layer1/ai/eval/tools/grade.mjs <결과 폴더>    # 저장한 답 채점 �
 - LLM 평가 세트(`layer1/ai/eval`)는 npm 패키지와 사이트 `/ai/`에 넣지 않습니다. 과제의 검사를 바꾸면 기준 답안이 세 엔진에서 통과해야 합니다(`eval.e2e.js`). `results/`의 답과 결과는 고치지 않고, 킷이 바뀌면 새 폴더로 다시 실행합니다.
 - 사이트의 동작은 `site/assets/site.js`의 `vf.attach` 섬으로만 붙입니다. 배포는 `.github/workflows/pages.yml`(수동 실행, Actions는 SHA 고정)입니다.
 - 엔진 소스(`layer1/src/`)를 고치면 `npm run build`로 `dist/`를 다시 만들어 함께 커밋합니다. `dist/` 테스트는 커밋된 파일을 검사합니다.
+- layer2 컴포넌트를 추가하면 `layer2/src/index.js`, `layer2/catalog.json`, `layer2/types/vfunc-ui.d.ts`, 메시지(`locales/en.js`·`ko.js`)를 함께 고칩니다(`catalog.test.js`). 선택 속성은 `_internal/attrs.js`로만 만들고, `rules.test.js`가 클래스 셀렉터·JS 속 디자인 값·토큰 밖 CSS·물리 방향 속성을 막습니다. legacy CSS는 `build/ui-css.mjs`가 변환합니다.
 - 빌드는 `vfunc.min.js` gzip 10KB 초과, min 파일에 남은 개발 경고, `third-party.json`에 없는 번들 모듈이 있으면 실패합니다.
 - npm 패키지는 `build/out/npm/`에서 조립합니다. 루트 `package.json`은 개발용이라 `"private": true`를 유지합니다.
 - 개발용 경고는 `if (DEV) warn(...)`으로 씁니다. 운영 빌드에서 문구까지 제거됩니다. 보안 차단 로직을 `DEV`에 의존시키지 않습니다.

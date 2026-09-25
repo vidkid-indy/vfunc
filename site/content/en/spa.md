@@ -67,3 +67,5 @@ vf.i18n.apply();                         // translates data-i18n / data-i18n-att
 - `vf.t` returns plain text that `vf.html` escapes; `data-i18n` also inserts text only.
 - **A component renders when it is created.** Create components that use `vf.t` after `setup()` resolves.
 - On a locale change, re-render in `vf.i18n.subscribe(() => …)` and call `apply()` again. `<html lang>` follows automatically.
+- `vf.i18n.set(locale)` returns a Promise. It loads the messages first and then calls the subscribers, so do not re-render right after `set()`: re-render in `subscribe`.
+- `persist: true` stores the chosen locale in `localStorage` (key `vf.locale`, or the string you pass) and the next `setup()` reads it. Do not store it yourself.

@@ -1,0 +1,20 @@
+{
+  "$comment": "Single source for the layer 2 component list (D-027): the website gallery and layer2/ai/*/components.md are built from it. Every entry matches an export of layer2/src/index.js and a declaration in layer2/types/vfunc-ui.d.ts (layer2/test/catalog.test.js). tier: S = vs* only, P = vs* + vf* (vf* renders with vs*), F = vf* only.",
+  "categories": ["input", "display", "navigation", "overlay", "data"],
+  "components": [
+    {
+      "id": "button",
+      "tier": "S",
+      "category": "display",
+      "names": ["vsButton"],
+      "source": "layer2/src/components/button.js",
+      "css": "layer2/css/components/button.css",
+      "messages": ["common.loading"],
+      "summary": {
+        "en": "A button with variant, size, loading state and data-action / data-ref hooks.",
+        "ko": "변형·크기·로딩 상태와 data-action / data-ref 훅을 가진 버튼."
+      },
+      "example": "vf.vsButton({ label: 'Save', variant: 'primary', action: 'save' })"
+    }
+  ]
+}

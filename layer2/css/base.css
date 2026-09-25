@@ -1,0 +1,19 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Shared rules of the layer 2 components. Built into dist/vfunc-ui.css inside @layer vf.base.
+   Only var(--vf-*) tokens (from vfunc.tokens.css) and logical properties (rule 21, RTL ready). */
+
+.vf-visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes vf-spin {
+  to { transform: rotate(360deg); }
+}

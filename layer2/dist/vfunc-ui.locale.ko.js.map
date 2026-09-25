@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["layer2/src/_internal/vf.js", "layer2/src/locales/ko.js", "layer2/src/locale.ko.js"],
+  "sourcesContent": ["var vf = typeof window !== \"undefined\" ? window.vf : undefined;\nif (!vf || typeof vf.vfunc !== \"function\") throw new Error(\"[vfunc-ui] load vfunc.js before this file.\");\nexport default vf;\n", "// SPDX-License-Identifier: Apache-2.0\n//\n// 레이어 2 컴포넌트의 한국어 메시지. 키는 en.js와 같습니다.\n// Korean messages of the layer 2 components; the same keys as en.js.\n\nexport default {\n  common: {\n    loading: '불러오는 중'\n  }\n};\n", "// SPDX-License-Identifier: Apache-2.0\n//\n// Korean messages for the layer 2 components (dist/vfunc-ui.locale.ko.js). Load it after\n// vfunc-ui.js. The messages are defaults: the app's own messages still win (D-028).\n\nimport vf from './_internal/vf.js';\nimport ko from './locales/ko.js';\n\nvf.i18n.add('ko', ko, { defaults: true });\n\nexport default ko;\n"],
+  "mappings": ";YAAA,IAAIA,EAAK,OAAO,QAAW,YAAc,OAAO,GAAK,OACrD,GAAI,CAACA,GAAM,OAAOA,EAAG,OAAU,WAAY,MAAM,IAAI,MAAM,4CAA4C,EACvG,IAAOC,EAAQD,ECGRE,EAAQ,CACb,OAAQ,CACN,QAAS,QACX,CACF,ECDAD,EAAG,KAAK,IAAI,KAAMC,EAAI,CAAE,SAAU,EAAK,CAAC,EAExC,IAAOC,EAAQD",
+  "names": ["vf", "vf_default", "ko_default", "locale_ko_default"]
+}

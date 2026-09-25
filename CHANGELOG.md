@@ -41,6 +41,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - The README described the planned API of the first draft; it now shows the release candidate, installation with SRI, the files in the package and supported browsers.
 - Delegated events and router link interception did nothing in browsers without `Element.closest` (IE11). The engine now falls back to `msMatchesSelector` without patching `Element.prototype`.
 
+### Changed (since 1.0.0-rc.7)
+Needed by the layer 2 components (grid, chart, overlays, adapters), which live inside other components and bring their own messages.
+- Instances in `childs` get `onMount` once, before their parent, when the parent is put in the page by `mount()` or `vf.attach()`; a refresh does not call it again. `destroy()` destroys the instances in `childs` first. Before, children got neither, and had to be mounted and destroyed by hand.
+- `vf.i18n.add(locale, messages, { defaults: true })` adds built-in defaults below the app's messages: the app's messages win whatever the order they are added in, and a locale that has only defaults still calls `load(locale)`. Lookup order: current locale (app, defaults), then the fallback locale (app, defaults), then the key.
+- Docs and AI kit: `ids` and `refs` hold elements inside the root only; `vf.i18n.set` returns a Promise and subscribers are the place to re-render; what `persist` stores.
+
 ### Changed (since 1.0.0-rc.6)
 - AI kit only (no engine change), after the evaluation set showed two mistakes in every run: `llms.txt`, `AGENTS.template.md` and `prompt-html-to-vfunc.md` (both languages) now say that CSS in a page written from scratch uses only `var(--vf-*)` tokens, and that `render` is attached to the smallest element whose content changes, not to a panel with static text or controls.
 

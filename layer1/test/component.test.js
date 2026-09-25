@@ -33,6 +33,41 @@ test('onUpdate runs after every refresh; onDestroy runs before removal', async (
   assert.deepEqual(log, ['update:1', 'destroy:true']);
 });
 
+test('instances in childs get onMount once, before their parent, and are destroyed with it', async () => {
+  const log = [];
+  const hook = (name) => ({
+    onMount: () => log.push('mount:' + name),
+    onDestroy: (inst) => log.push('destroy:' + name + ':' + document.body.contains(inst.$node))
+  });
+  const grandchild = vf.vfunc(Object.assign({ innerHTML: 'g' }, hook('g')));
+  const child = vf.vfunc(Object.assign({ innerHTML: '<i id="slot"></i>', childs: [{ targetId: 'slot', component: grandchild }] }, hook('c')));
+  const plain = document.createElement('span');
+  const parent = vf.vfunc(Object.assign({ state: { n: 0 }, render: (s) => html`<p>${s.n}</p>`, childs: [child, plain] }, hook('p')));
+  await parent.mount(document.body);
+  assert.deepEqual(log, ['mount:g', 'mount:c', 'mount:p']);
+  parent.n = 1;
+  await flush();
+  assert.equal(log.length, 3, 'a refresh re-appends children without onMount');
+  parent.destroy();
+  assert.deepEqual(log.slice(3), ['destroy:g:true', 'destroy:c:true', 'destroy:p:true'],
+    'children first; each onDestroy runs while its own element is still in place');
+  assert.equal(document.body.contains(parent.$node), false);
+});
+
+test('a child that was mounted on its own, or destroyed before, is not called again', async () => {
+  const log = [];
+  const early = vf.vfunc({ innerHTML: 'e', onMount: () => log.push('mount:e'), onDestroy: () => log.push('destroy:e') });
+  await early.mount(document.createElement('div'));
+  const gone = vf.vfunc({ innerHTML: 'x', onMount: () => log.push('mount:x'), onDestroy: () => log.push('destroy:x') });
+  gone.destroy();
+  const parent = vf.vfunc({ innerHTML: '', childs: [early, gone] });
+  const host = document.createElement('div');
+  vf.attach(host, { childs: [parent] });
+  assert.deepEqual(log, ['mount:e', 'destroy:x'], 'vf.attach mounts children too, once');
+  parent.destroy();
+  assert.deepEqual(log, ['mount:e', 'destroy:x', 'destroy:e']);
+});
+
 test('a throwing hook goes to onError and does not break the engine', () => {
   const errors = [];
   const original = console.error;

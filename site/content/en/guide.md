@@ -20,7 +20,7 @@ box.mount('#app');
 
 - **State**: `box.open` is `box.state.open`. Assigning it or calling `setState({…})` schedules a render; changes in the same tick render once.
 - **Methods** are bound to the instance: call `box.close()`, or pass it around as a callback.
-- **Elements**: `data-ref="body"` → `box.refs.body`, `id="save"` → `box.ids.save`.
+- **Elements**: `data-ref="body"` → `box.refs.body`, `id="save"` → `box.ids.save`. Only inside the component's root; find elements outside it with `vf.$('#id')`.
 
 ## Events
 
@@ -65,15 +65,15 @@ const results = vf.attach('#results', { state: { items: [] }, render: (s) => vf.
 
 | Hook | When | Do |
 |---|---|---|
-| `onMount` | right after `mount()` / `vf.attach()` put it in the page | create charts and editors, load data, subscribe |
+| `onMount` | right after `mount()` / `vf.attach()` put it in the page (instances in `childs`: once, before their parent) | create charts and editors, load data, subscribe |
 | `onUpdate` | after every render (without `render`, after every state change) | push the new state into widgets or adopted markup |
-| `onDestroy` | at the start of `destroy()` | release widgets, timers, subscriptions |
+| `onDestroy` | in `destroy()`, after the instances in `childs` are destroyed | release widgets, timers, subscriptions |
 
 Mark elements that must survive renders (a chart canvas) with `data-vf-keep="chart"`: the element is moved, not rebuilt. See [example 15](examples.md).
 
 ## Children and slots
 
-`childs: [{ targetId: 'main', component: child }]` puts a child into the element with `id="main"`, and moves it back after every parent render so its state survives. The engine does not destroy children for you: call `child.destroy()` in the parent's `onDestroy`.
+`childs: [{ targetId: 'main', component: child }]` puts a child into the element with `id="main"`, and moves it back after every parent render so its state survives. Child instances get `onMount` when the parent enters the page and are destroyed with the parent. Instances you create and attach yourself, outside `childs`, are yours to `destroy()` in the parent's `onDestroy`.
 
 ## Forms
 

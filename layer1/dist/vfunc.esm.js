@@ -1,9 +1,9 @@
-/*! vfunc.js v1.0.0-rc.7 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
+/*! vfunc.js v1.0.0-rc.8 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
 // layer1/src/vfunc.js
-var VERSION = false ? "0.0.0-dev" : "1.0.0-rc.7";
+var VERSION = false ? "0.0.0-dev" : "1.0.0-rc.8";
 var DEV = false ? true : true;
 var hasOwn = Object.prototype.hasOwnProperty;
 function ownValue(obj, key) {
@@ -568,6 +568,7 @@ function vfunc(options) {
   this._accessors = /* @__PURE__ */ Object.create(null);
   this._scheduled = false;
   this._destroyed = false;
+  this._mounted = false;
   this._adopted = !!o._adopt;
   this.isvfunc = true;
   this.state = o.state || {};
@@ -954,18 +955,37 @@ proto._appendChilds = function() {
     else if (component.nodeType) target.appendChild(component);
   }
 };
+proto._childInstances = function() {
+  const out = [];
+  const childs = this._cfg.childs;
+  for (let i = 0; i < childs.length; i++) {
+    const child = childs[i];
+    const component = child && child.targetId && child.component ? child.component : child;
+    if (component && component.isvfunc) out.push(component);
+  }
+  return out;
+};
+proto._mountHook = function(own) {
+  if (this._destroyed || this._mounted && !own) return;
+  const children = this._childInstances();
+  for (let i = 0; i < children.length; i++) children[i]._mountHook(false);
+  this._mounted = true;
+  this._hook("onMount");
+};
 proto.mount = function(parent) {
   const target = resolveElement(parent);
   if (!target) {
     if (DEV) warn("mount: parent element not found.");
   } else if (this.$node && this.$node.parentNode !== target) {
     target.appendChild(this.$node);
-    this._hook("onMount");
+    this._mountHook(true);
   }
   return Promise.resolve(this);
 };
 proto.destroy = function() {
   if (this._destroyed) return;
+  const children = this._childInstances();
+  for (let i = 0; i < children.length; i++) children[i].destroy();
   this._hook("onDestroy");
   this._destroyed = true;
   this._releaseListeners(null);
@@ -1000,7 +1020,7 @@ function attach(target, options) {
     o._adopt = element;
     instance = new vfunc(o);
   }
-  instance._hook("onMount");
+  instance._mountHook(true);
   return instance;
 }
 __name(attach, "attach");
@@ -1214,7 +1234,9 @@ var i18nState = {
   allowed: null,
   // array of allowed locales, or null = any locale with messages
   messages: {},
-  // { locale: { ... } }
+  // { locale: { ... } } — the app's messages
+  defaults: {},
+  // { locale: { ... } } — built-in messages of components (below the app's)
   load: null,
   // async (locale) => messages
   persistKey: "",
@@ -1224,7 +1246,7 @@ var i18nState = {
 function isAllowedLocale(locale) {
   if (typeof locale !== "string" || !LOCALE_PATTERN.test(locale)) return false;
   if (i18nState.allowed) return i18nState.allowed.indexOf(locale) >= 0;
-  return hasOwn.call(i18nState.messages, locale) || !!i18nState.load || locale === i18nState.fallback;
+  return hasOwn.call(i18nState.messages, locale) || hasOwn.call(i18nState.defaults, locale) || !!i18nState.load || locale === i18nState.fallback;
 }
 __name(isAllowedLocale, "isAllowedLocale");
 function pickLocale(requested) {
@@ -1251,10 +1273,11 @@ function writePersisted(locale) {
   }
 }
 __name(writePersisted, "writePersisted");
-function addMessages(locale, messages) {
+function addMessages(locale, messages, options) {
   if (!LOCALE_PATTERN.test(locale) || !messages || typeof messages !== "object") return;
-  const current = hasOwn.call(i18nState.messages, locale) ? i18nState.messages[locale] : {};
-  i18nState.messages[locale] = safeMerge(current, messages, true);
+  const store2 = options && options.defaults ? i18nState.defaults : i18nState.messages;
+  const current = hasOwn.call(store2, locale) ? store2[locale] : {};
+  store2[locale] = safeMerge(current, messages, true);
 }
 __name(addMessages, "addMessages");
 function setLocale(locale) {
@@ -1282,12 +1305,17 @@ function setLocale(locale) {
 }
 __name(setLocale, "setLocale");
 function lookupMessage(locale, key) {
-  const table = ownValue(i18nState.messages, locale);
+  const found = lookupIn(i18nState.messages, locale, key);
+  return found !== void 0 ? found : lookupIn(i18nState.defaults, locale, key);
+}
+__name(lookupMessage, "lookupMessage");
+function lookupIn(store2, locale, key) {
+  const table = ownValue(store2, locale);
   if (!table) return void 0;
   const whole = isDangerousKey(key) ? void 0 : ownValue(table, key);
   return whole !== void 0 ? whole : lookupPath(table, key);
 }
-__name(lookupMessage, "lookupMessage");
+__name(lookupIn, "lookupIn");
 function pluralCategory(count) {
   try {
     if (typeof Intl !== "undefined" && Intl.PluralRules) return new Intl.PluralRules(i18nState.locale).select(count);

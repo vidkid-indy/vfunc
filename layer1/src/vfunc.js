@@ -728,10 +728,10 @@ function isReserved(key) {
  * @property {function(Error)} [onError] - Called when render, a handler or a lifecycle hook throws.
  *   The engine does not recover.
  * @property {function(vfunc)} [onMount] - After mount() or vf.attach() put the element in the page.
- *   The place to create third-party widgets.
+ *   Instances in `childs` get it too, once, before their parent. The place to create third-party widgets.
  * @property {function(vfunc)} [onUpdate] - After every refresh.
- * @property {function(vfunc)} [onDestroy] - At the start of destroy(), while the element is still in
- *   the page. Release third-party widgets, timers and outside listeners here.
+ * @property {function(vfunc)} [onDestroy] - In destroy(), after the instances in `childs` are destroyed,
+ *   while the element is still in the page. Release third-party widgets, timers and outside listeners here.
  */
 
 /**
@@ -762,6 +762,7 @@ function vfunc(options) {
   this._accessors = Object.create(null); // instance key -> 'state' | 'method' | 'id' (no inherited keys)
   this._scheduled = false;
   this._destroyed = false;
+  this._mounted = false; // onMount ran (children get it once, with their parent)
   this._adopted = !!o._adopt; // vf.attach: the root belongs to the page (kept on destroy)
 
   this.isvfunc = true;
@@ -1178,11 +1179,35 @@ proto._appendChilds = function () {
   }
 };
 
+/** The vfunc instances among `childs` (plain nodes have no lifecycle). */
+proto._childInstances = function () {
+  const out = [];
+  const childs = this._cfg.childs;
+  for (let i = 0; i < childs.length; i++) {
+    const child = childs[i];
+    const component = child && child.targetId && child.component ? child.component : child;
+    if (component && component.isvfunc) out.push(component);
+  }
+  return out;
+};
+
+/**
+ * Runs onMount for the instances in `childs` that have not had it yet, then for this instance.
+ * `own` forces this instance's hook: mount() to a new parent calls onMount again, as before.
+ */
+proto._mountHook = function (own) {
+  if (this._destroyed || (this._mounted && !own)) return;
+  const children = this._childInstances();
+  for (let i = 0; i < children.length; i++) children[i]._mountHook(false);
+  this._mounted = true;
+  this._hook('onMount');
+};
+
 // --- mounting ---------------------------------------------------------------------------------
 
 /**
- * Appends the root element to a parent and calls `onMount`. Calling it again with the same
- * parent does nothing.
+ * Appends the root element to a parent and calls `onMount` (first for the instances in `childs`
+ * that have not had it). Calling it again with the same parent does nothing.
  * @param {Element|string} parent - An element or a selector.
  * @returns {Promise<vfunc>} Resolves with the instance (same signature as layer 3's VClass.mount).
  */
@@ -1194,18 +1219,21 @@ proto.mount = function (parent) {
     // Compare with the target parent, not just "has a parent": with replaceRoot the initial root
     // still points at the detached wrapper it was parsed in (pilot decision #13).
     target.appendChild(this.$node);
-    this._hook('onMount');
+    this._mountHook(true);
   }
   return Promise.resolve(this);
 };
 
 /**
- * Calls `onDestroy`, releases every listener, removes the root element and clears ids and refs.
+ * Destroys the instances in `childs`, calls `onDestroy`, releases every listener, removes the root
+ * element and clears ids and refs.
  * A root adopted by vf.attach belongs to the page: it stays, and only what the component drew
  * inside it (render or innerHTML) is removed, so the element can be attached again.
  */
 proto.destroy = function () {
   if (this._destroyed) return;
+  const children = this._childInstances();
+  for (let i = 0; i < children.length; i++) children[i].destroy();
   this._hook('onDestroy');
   this._destroyed = true;
   this._releaseListeners(null);
@@ -1260,7 +1288,7 @@ function attach(target, options) {
     o._adopt = element;
     instance = new vfunc(o);
   }
-  instance._hook('onMount');
+  instance._mountHook(true);
   return instance;
 }
 
@@ -1505,7 +1533,8 @@ const i18nState = {
   locale: 'en',
   fallback: 'en',
   allowed: null,        // array of allowed locales, or null = any locale with messages
-  messages: {},         // { locale: { ... } }
+  messages: {},         // { locale: { ... } } — the app's messages
+  defaults: {},         // { locale: { ... } } — built-in messages of components (below the app's)
   load: null,           // async (locale) => messages
   persistKey: '',       // localStorage key, or '' for no persistence
   listeners: []
@@ -1514,7 +1543,8 @@ const i18nState = {
 function isAllowedLocale(locale) {
   if (typeof locale !== 'string' || !LOCALE_PATTERN.test(locale)) return false;
   if (i18nState.allowed) return i18nState.allowed.indexOf(locale) >= 0;
-  return hasOwn.call(i18nState.messages, locale) || !!i18nState.load || locale === i18nState.fallback;
+  return hasOwn.call(i18nState.messages, locale) || hasOwn.call(i18nState.defaults, locale) ||
+    !!i18nState.load || locale === i18nState.fallback;
 }
 
 /** Picks the best allowed locale for a requested tag: exact match first, then its base language. */
@@ -1535,10 +1565,16 @@ function writePersisted(locale) {
   try { window.localStorage.setItem(i18nState.persistKey, locale); } catch (e) { /* storage unavailable */ }
 }
 
-function addMessages(locale, messages) {
+/**
+ * Merges messages for a locale. With `{ defaults: true }` they go to a lower layer that the app's
+ * messages override, whatever the order they are added in, and they do not count as loaded, so
+ * `load(locale)` still runs for that locale.
+ */
+function addMessages(locale, messages, options) {
   if (!LOCALE_PATTERN.test(locale) || !messages || typeof messages !== 'object') return;
-  const current = hasOwn.call(i18nState.messages, locale) ? i18nState.messages[locale] : {};
-  i18nState.messages[locale] = safeMerge(current, messages, true);
+  const store = options && options.defaults ? i18nState.defaults : i18nState.messages;
+  const current = hasOwn.call(store, locale) ? store[locale] : {};
+  store[locale] = safeMerge(current, messages, true);
 }
 
 function setLocale(locale) {
@@ -1563,7 +1599,12 @@ function setLocale(locale) {
 
 /** A message by its whole key ("nav.home": "…"), else by nested path ({ nav: { home: "…" } }). */
 function lookupMessage(locale, key) {
-  const table = ownValue(i18nState.messages, locale);
+  const found = lookupIn(i18nState.messages, locale, key);
+  return found !== undefined ? found : lookupIn(i18nState.defaults, locale, key);
+}
+
+function lookupIn(store, locale, key) {
+  const table = ownValue(store, locale);
   if (!table) return undefined;
   const whole = isDangerousKey(key) ? undefined : ownValue(table, key);
   return whole !== undefined ? whole : lookupPath(table, key);
@@ -1645,7 +1686,7 @@ function applyI18n(root) {
  *   `locales` is the allow-list (recommended); `load(locale)` returns messages (e.g. fetched JSON);
  *   `persist: true` (or a key string) remembers the choice in localStorage.
  * - `set(locale)` → Promise<locale>; updates `<html lang>` and notifies subscribers.
- * - `locale()`, `add(locale, messages)`, `subscribe(fn)` → unsubscribe, `apply(root?)`.
+ * - `locale()`, `add(locale, messages, { defaults }?)`, `subscribe(fn)` → unsubscribe, `apply(root?)`.
  */
 const i18n = protect({}, {
   setup: function (options) {

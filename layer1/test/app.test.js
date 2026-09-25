@@ -186,6 +186,27 @@ test('i18n loads messages on demand, persists and notifies subscribers', async (
   assert.equal(await vf.i18n.setup({ locales: ['en', 'ja'], persist: true, messages: { en: {}, ja: {} } }), 'ja');
 });
 
+test('i18n defaults sit below the app messages in any order and do not stop load', async () => {
+  const requested = [];
+  // Built-in defaults (as layer 2 adds them) before and after the app's messages.
+  vf.i18n.add('de', { grid: { empty: 'Keine Daten', next: 'Weiter' } }, { defaults: true });
+  vf.i18n.add('en', { grid: { empty: 'No data', next: 'Next', prev: 'Previous' } }, { defaults: true });
+  await vf.i18n.setup({
+    locale: 'en', locales: ['en', 'de'],
+    messages: { en: { grid: { empty: 'Nothing here' } } },
+    load: async (loc) => { requested.push(loc); return { grid: { next: 'Nächste' } }; }
+  });
+  vf.i18n.add('en', { grid: { empty: 'late default' } }, { defaults: true });
+  assert.equal(vf.t('grid.empty'), 'Nothing here', 'the app wins even over defaults added later');
+  assert.equal(vf.t('grid.next'), 'Next', 'a default fills what the app does not define');
+  await vf.i18n.set('de');
+  assert.deepEqual(requested, ['de'], 'defaults for a locale do not count as loaded');
+  assert.equal(vf.t('grid.next'), 'Nächste', 'loaded app messages win');
+  assert.equal(vf.t('grid.empty'), 'Keine Daten', 'then the locale defaults');
+  assert.equal(vf.t('grid.prev'), 'Previous', 'then the fallback locale (app, then defaults)');
+  await vf.i18n.set('en');
+});
+
 test('i18n messages cannot pollute prototypes', async () => {
   await vf.i18n.setup({ locale: 'en', messages: { en: JSON.parse('{"__proto__": {"polluted": 1}, "a": {"__proto__": {"x": 1}}}') } });
   assert.equal({}.polluted, undefined);

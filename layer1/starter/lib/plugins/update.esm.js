@@ -1,4 +1,4 @@
-/*! vfunc.js update plugin (vfunc v1.0.0-rc.7) | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
+/*! vfunc.js update plugin (vfunc v1.0.0-rc.8) | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 

@@ -20,7 +20,7 @@ box.mount('#app');
 
 - **상태**: `box.open`은 `box.state.open`과 같습니다. 대입하거나 `setState({…})`를 부르면 다시 그리기가 예약되고, 같은 tick의 변경은 한 번만 그립니다.
 - **메서드**: 인스턴스에 바인딩되어 `box.close()`로 부르고, 콜백으로 떼어 넘겨도 동작합니다.
-- **요소 찾기**: `data-ref="body"` → `box.refs.body`, `id="save"` → `box.ids.save`.
+- **요소 찾기**: `data-ref="body"` → `box.refs.body`, `id="save"` → `box.ids.save`. 컴포넌트 루트 안쪽만 찾습니다. 루트 밖 요소는 `vf.$('#id')`로 찾습니다.
 
 ## 이벤트
 
@@ -65,15 +65,15 @@ const results = vf.attach('#results', { state: { items: [] }, render: (s) => vf.
 
 | 훅 | 시점 | 할 일 |
 |---|---|---|
-| `onMount` | `mount()`·`vf.attach()`로 페이지에 들어간 직후 | 차트·에디터 만들기, 데이터 불러오기, 구독 |
+| `onMount` | `mount()`·`vf.attach()`로 페이지에 들어간 직후(`childs`의 인스턴스는 부모보다 먼저 한 번) | 차트·에디터 만들기, 데이터 불러오기, 구독 |
 | `onUpdate` | 다시 그릴 때마다(`render`가 없으면 상태가 바뀔 때마다) | 위젯이나 채택한 마크업에 새 상태 반영 |
-| `onDestroy` | `destroy()` 시작 시 | 위젯·타이머·구독 정리 |
+| `onDestroy` | `destroy()` 때, `childs`의 인스턴스를 정리한 뒤 | 위젯·타이머·구독 정리 |
 
 다시 그려도 사라지면 안 되는 요소(차트 캔버스 등)는 `data-vf-keep="chart"`로 표시합니다. 새로 만들지 않고 그 요소를 옮깁니다. 자세한 예는 [예제 15](examples.md)입니다.
 
 ## 자식과 슬롯
 
-`childs: [{ targetId: 'main', component: child }]`는 자식을 `id="main"` 요소에 붙이고, 부모가 다시 그려도 자식을 옮겨 붙여 상태를 유지합니다. 엔진은 자식을 자동으로 정리하지 않으므로 부모의 `onDestroy`에서 `child.destroy()`를 부르세요.
+`childs: [{ targetId: 'main', component: child }]`는 자식을 `id="main"` 요소에 붙이고, 부모가 다시 그려도 자식을 옮겨 붙여 상태를 유지합니다. 자식 인스턴스는 부모가 페이지에 들어갈 때 `onMount`를 받고, 부모를 `destroy()`하면 함께 정리됩니다. `childs`에 넣지 않고 직접 만들어 붙인 인스턴스는 부모의 `onDestroy`에서 `destroy()`하세요.
 
 ## 폼
 

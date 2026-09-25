@@ -19,9 +19,9 @@
 | `delegates` | `[{ selector, eventType, onEvent? }]` 위임 리스너 |
 | `childs` | 자식 인스턴스·노드, `{ targetId, component }` 슬롯 |
 | `onEvent`, `onError` | 기본 핸들러, 오류 알림(엔진은 복구하지 않음) |
-| `onMount`, `onUpdate`, `onDestroy` | 라이프사이클 |
+| `onMount`, `onUpdate`, `onDestroy` | 라이프사이클. `childs`의 인스턴스도 부모보다 먼저 `onMount`를 한 번 받습니다 |
 
-인스턴스: `$node`, `state`, `methods`, `ids`, `refs`, `setState(patch | (state) => patch)`(얕은 병합, 한 tick에 한 번 렌더), `scheduleRefresh()`, `refresh()`, `mount(parent)` → `Promise`, `destroy()`, `toString()`. 예약어(`state`, `refresh`, `mount` 등과 `_`로 시작하는 이름)는 상태 키·메서드·id의 바로 접근 이름으로 쓸 수 없습니다. 인스턴스에 직접 속성을 붙이지 말고, 리스너 함수와 타이머는 클로저에 둡니다.
+인스턴스: `$node`, `state`, `methods`, `ids`, `refs`, `setState(patch | (state) => patch)`(얕은 병합, 한 tick에 한 번 렌더), `scheduleRefresh()`, `refresh()`, `mount(parent)` → `Promise`, `destroy()`, `toString()`. `ids`·`refs`는 루트 안쪽 요소만 담습니다(루트 밖은 `vf.$`). `destroy()`는 `childs`의 인스턴스를 먼저 destroy합니다. 예약어(`state`, `refresh`, `mount` 등과 `_`로 시작하는 이름)는 상태 키·메서드·id의 바로 접근 이름으로 쓸 수 없습니다. 인스턴스에 직접 속성을 붙이지 말고, 리스너 함수와 타이머는 클로저에 둡니다.
 
 ### `vf.attach(target, options)`
 이미 페이지에 있는 요소를 컴포넌트로 만듭니다. 옵션은 `vf.vfunc`와 같습니다. 그 요소가 루트가 되고 속성과 리스너가 유지됩니다. `render`가 없으면 마크업과 입력값도 그대로입니다. `render`가 있으면 요소의 **안쪽만** 돌려줍니다. 요소 자신의 태그 안으로 파싱하므로 `<tbody>`에 바로 행을 그릴 수 있습니다. 상태에 따라 바뀌는 루트 속성은 `onMount`/`onUpdate`에서 설정합니다. `replaceRoot: true`면 마크업의 첫 요소가 요소를 대체합니다. 대상이 없으면 `null`. `destroy()`는 요소를 페이지에 남기고 리스너를 해제하며, `render`/`innerHTML`로 그린 안쪽만 지웁니다. 같은 요소에 다시 attach할 수 있습니다.
@@ -86,7 +86,7 @@
 ## 다국어
 
 ### `vf.i18n`
-`setup({ locale, fallback, locales, messages, load, persist })` → `Promise<locale>`, `set(locale)`, `locale()`, `add(locale, messages)`, `subscribe(fn)`, `apply(root?)`.
+`setup({ locale, fallback, locales, messages, load, persist })` → `Promise<locale>`, `set(locale)`, `locale()`, `add(locale, messages, { defaults }?)`, `subscribe(fn)`, `apply(root?)`. `set`은 메시지를 불러온 뒤 구독자를 부르고 로케일로 resolve합니다. `add(…, { defaults: true })`는 컴포넌트의 내장 기본 메시지를 넣습니다. 넣는 순서와 관계없이 앱 메시지가 이기고, 그 로케일을 "불러옴"으로 세지 않아 `load`가 그대로 호출됩니다.
 
 ### `vf.t(key, params?)`
 메시지를 평문으로. `{name}` 치환, `params.count`로 복수형 선택. `vf.t('nav.home')`은 `{ "nav": { "home": "…" } }`와 `{ "nav.home": "…" }`를 모두 찾습니다.

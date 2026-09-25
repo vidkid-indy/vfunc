@@ -44,7 +44,8 @@ vfunc 소스를 고치지 말고 **공개 API만으로** 확장하세요. 그래
 1. **Names / 이름** — The `vf.*` root is reserved for official APIs. Put plugins under `vf.ext.<name>` and app code in your own modules. Follow the `vs*` = string / `vf*` = instance rule; no functions whose return type depends on props. Adapters: `vf` + kind + vendor. npm names: `vfunc-plugin-*`, `vfunc-adapter-*`.
 2. **Public API only / 공개 API만** — The public API is what `types/vfunc.d.ts` and the docs describe. Members starting with `_` are internal. Do not monkeypatch vfunc or native prototypes.
 3. **Compatibility / 호환성** — Declare the supported vfunc range in `requires` (e.g. `'^1.0.0'`). Semver applies to the public API only.
-4. **Lifecycle / 라이프사이클** — Use `onMount` / `onUpdate` / `onDestroy`, and release your listeners and timers in `onDestroy`.
+4. **Lifecycle / 라이프사이클** — Use `onMount` / `onUpdate` / `onDestroy`, and release your listeners and timers in `onDestroy`. Instances in `childs` get `onMount` with their parent and are destroyed with it; instances you create outside `childs` are yours to destroy. / `childs`의 인스턴스는 부모와 함께 `onMount`를 받고 함께 정리됩니다. `childs` 밖에서 만든 인스턴스는 직접 정리합니다.
+   Components that ship messages add them with `vf.i18n.add(locale, messages, { defaults: true })` so the app can override them. / 메시지를 가진 컴포넌트는 `vf.i18n.add(locale, messages, { defaults: true })`로 넣어 앱이 덮어쓸 수 있게 합니다.
 5. **Security / 보안** — HTML containing user data must go through `vf.html`, `vf.tpl` or `vf.esc`. URLs go through `vf.safeUrl`.
 6. **i18n and theme / 다국어와 테마** — Use `vf.t` keys for visible text and `--vf-*` tokens for colors and spacing.
 7. **IE** — If your extension supports IE, write ES5 or transpile it yourself, and state support in your README.
