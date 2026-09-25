@@ -176,7 +176,9 @@ export const CHECKS = {
       const heading = () => text(page, '#view [data-ref="heading"]');
       assert.equal(await heading(), 'Home');
       await page.click('#tabs [href="#/users/2?tab=posts"]');
-      await page.waitForFunction(() => location.hash === '#/users/2?tab=posts');
+      // The page renders on hashchange, which fires after location.hash changes: wait for the page.
+      await page.waitForFunction(() => location.hash === '#/users/2?tab=posts' &&
+        document.querySelector('#view [data-ref="heading"]').textContent === 'Lee Jiwoo');
       assert.equal(await heading(), 'Lee Jiwoo');
       assert.equal(await page.locator('#view [data-ref="posts"] li').count(), 1);
       assert.equal(await page.getAttribute('#tabs [href="#/users/2?tab=posts"]', 'aria-current'), 'page');
@@ -184,8 +186,8 @@ export const CHECKS = {
       await page.click('#tabs [href="#/nowhere"]');
       await page.waitForFunction(() => /Not found/.test(document.querySelector('#view [data-ref="heading"]').textContent));
       await page.goBack();
-      await page.waitForFunction(() => location.hash === '#/users/2?tab=posts');
-      assert.equal(await heading(), 'Lee Jiwoo');
+      await page.waitForFunction(() => location.hash === '#/users/2?tab=posts' &&
+        document.querySelector('#view [data-ref="heading"]').textContent === 'Lee Jiwoo');
       await page.click('#tabs [href="#/about"]');
       await page.waitForFunction(() => document.querySelector('#route').textContent === '/about');
     }
