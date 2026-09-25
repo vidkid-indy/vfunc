@@ -25,7 +25,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test \"layer1/test/*.test.js\" \"layer2/test/*.test.js\" \"build/*.test.js\"",
-    "test:examples": "node --test --test-concurrency=1 \"layer1/test/e2e/*.e2e.js\"",
+    "test:examples": "node --test --test-concurrency=1 \"layer1/test/e2e/*.e2e.js\" \"layer2/test/e2e/*.e2e.js\"",
     "build": "node build/build.mjs",
     "build:check": "node build/build.mjs --check",
     "licenses": "node build/licenses.mjs",

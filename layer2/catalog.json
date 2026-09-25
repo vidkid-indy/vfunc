@@ -1,20 +1,718 @@
 {
   "$comment": "Single source for the layer 2 component list (D-027): the website gallery and layer2/ai/*/components.md are built from it. Every entry matches an export of layer2/src/index.js and a declaration in layer2/types/vfunc-ui.d.ts (layer2/test/catalog.test.js). tier: S = vs* only, P = vs* + vf* (vf* renders with vs*), F = vf* only.",
-  "categories": ["input", "display", "navigation", "overlay", "data"],
+  "categories": [
+    "input",
+    "display",
+    "navigation",
+    "overlay",
+    "data"
+  ],
   "components": [
     {
       "id": "button",
       "tier": "S",
       "category": "display",
-      "names": ["vsButton"],
+      "names": [
+        "vsButton"
+      ],
       "source": "layer2/src/components/button.js",
       "css": "layer2/css/components/button.css",
-      "messages": ["common.loading"],
+      "messages": [
+        "common.loading"
+      ],
       "summary": {
         "en": "A button with variant, size, loading state and data-action / data-ref hooks.",
         "ko": "변형·크기·로딩 상태와 data-action / data-ref 훅을 가진 버튼."
       },
       "example": "vf.vsButton({ label: 'Save', variant: 'primary', action: 'save' })"
+    },
+    {
+      "id": "field",
+      "tier": "S",
+      "category": "input",
+      "names": [
+        "vsField"
+      ],
+      "source": "layer2/src/components/field.js",
+      "css": "layer2/css/components/field.css",
+      "messages": [],
+      "summary": {
+        "en": "Label, hint and error around a control you build yourself; gives it the id and aria-describedby.",
+        "ko": "직접 만든 컨트롤을 라벨·힌트·오류로 감싸고 id와 aria-describedby를 넘겨 줍니다."
+      },
+      "example": "vf.vsField({ label: 'Color', control: (a) => vf.html`<input type=\"color\" id=\"${a.id}\" aria-describedby=\"${a.describedBy}\">` })"
+    },
+    {
+      "id": "input",
+      "tier": "S",
+      "category": "input",
+      "names": [
+        "vsInput"
+      ],
+      "source": "layer2/src/components/input.js",
+      "css": "layer2/css/components/input.css",
+      "messages": [],
+      "summary": {
+        "en": "A text-like <input>; label, hint and error make it a linked field.",
+        "ko": "텍스트형 <input>. label·hint·error를 주면 연결된 필드가 됩니다."
+      },
+      "example": "vf.vsInput({ name: 'email', type: 'email', label: 'Email', error: errors.email })"
+    },
+    {
+      "id": "textarea",
+      "tier": "S",
+      "category": "input",
+      "names": [
+        "vsTextarea"
+      ],
+      "source": "layer2/src/components/textarea.js",
+      "css": "layer2/css/components/input.css",
+      "messages": [],
+      "summary": {
+        "en": "A <textarea> with the same field props as vsInput.",
+        "ko": "vsInput과 같은 필드 props를 받는 <textarea>."
+      },
+      "example": "vf.vsTextarea({ name: 'memo', label: 'Memo', rows: 4 })"
+    },
+    {
+      "id": "select",
+      "tier": "S",
+      "category": "input",
+      "names": [
+        "vsSelect"
+      ],
+      "source": "layer2/src/components/select.js",
+      "css": "layer2/css/components/input.css",
+      "messages": [],
+      "summary": {
+        "en": "A native <select> from an options list, with groups, placeholder and multiple.",
+        "ko": "옵션 목록으로 만드는 네이티브 <select>. 그룹, placeholder, multiple 지원."
+      },
+      "example": "vf.vsSelect({ name: 'role', label: 'Role', options: ['admin', 'user'], value: 'user' })"
+    },
+    {
+      "id": "checkbox",
+      "tier": "S",
+      "category": "input",
+      "names": [
+        "vsCheckbox"
+      ],
+      "source": "layer2/src/components/checkbox.js",
+      "css": "layer2/css/components/checkbox.css",
+      "messages": [],
+      "summary": {
+        "en": "A native checkbox with its label.",
+        "ko": "라벨이 붙은 네이티브 체크박스."
+      },
+      "example": "vf.vsCheckbox({ name: 'agree', label: 'I agree', checked: true })"
+    },
+    {
+      "id": "radio-group",
+      "tier": "S",
+      "category": "input",
+      "names": [
+        "vsRadioGroup"
+      ],
+      "source": "layer2/src/components/radio-group.js",
+      "css": "layer2/css/components/field.css",
+      "messages": [],
+      "summary": {
+        "en": "Radio buttons in a fieldset with a legend.",
+        "ko": "fieldset과 legend로 묶은 라디오 버튼."
+      },
+      "example": "vf.vsRadioGroup({ name: 'plan', label: 'Plan', options: ['free', 'pro'], value: 'free' })"
+    },
+    {
+      "id": "switch",
+      "tier": "S",
+      "category": "input",
+      "names": [
+        "vsSwitch"
+      ],
+      "source": "layer2/src/components/switch.js",
+      "css": "layer2/css/components/switch.css",
+      "messages": [],
+      "summary": {
+        "en": "An on/off switch: a native checkbox with role=\"switch\".",
+        "ko": "켜기/끄기 스위치. role=\"switch\"인 네이티브 체크박스."
+      },
+      "example": "vf.vsSwitch({ name: 'notify', label: 'Notifications', checked: true })"
+    },
+    {
+      "id": "slider",
+      "tier": "S",
+      "category": "input",
+      "names": [
+        "vsSlider"
+      ],
+      "source": "layer2/src/components/slider.js",
+      "css": "layer2/css/components/slider.css",
+      "messages": [],
+      "summary": {
+        "en": "A native range slider.",
+        "ko": "네이티브 범위 슬라이더."
+      },
+      "example": "vf.vsSlider({ name: 'volume', label: 'Volume', value: 30 })"
+    },
+    {
+      "id": "progress",
+      "tier": "S",
+      "category": "input",
+      "names": [
+        "vsProgress"
+      ],
+      "source": "layer2/src/components/progress.js",
+      "css": "layer2/css/components/progress.css",
+      "messages": [],
+      "summary": {
+        "en": "A native progress bar; no value shows the indeterminate state.",
+        "ko": "네이티브 진행 막대. value가 없으면 진행 중 표시."
+      },
+      "example": "vf.vsProgress({ label: 'Upload', value: 42, showValue: true })"
+    },
+    {
+      "id": "button-group",
+      "tier": "S",
+      "category": "display",
+      "names": [
+        "vsButtonGroup"
+      ],
+      "source": "layer2/src/components/button-group.js",
+      "css": "layer2/css/components/button-group.css",
+      "messages": [],
+      "summary": {
+        "en": "Buttons side by side in a role=\"group\".",
+        "ko": "role=\"group\"로 묶은 나란한 버튼."
+      },
+      "example": "vf.vsButtonGroup({ label: 'View', attached: true, buttons: [{ label: 'List', action: 'list' }, { label: 'Grid', action: 'grid' }] })"
+    },
+    {
+      "id": "badge",
+      "tier": "S",
+      "category": "display",
+      "names": [
+        "vsBadge"
+      ],
+      "source": "layer2/src/components/badge.js",
+      "css": "layer2/css/components/badge.css",
+      "messages": [],
+      "summary": {
+        "en": "A small status label or count.",
+        "ko": "작은 상태 표시나 개수."
+      },
+      "example": "vf.vsBadge({ label: 'Active', variant: 'success', dot: true })"
+    },
+    {
+      "id": "tag",
+      "tier": "S",
+      "category": "display",
+      "names": [
+        "vsTag"
+      ],
+      "source": "layer2/src/components/tag.js",
+      "css": "layer2/css/components/tag.css",
+      "messages": [
+        "tag.remove"
+      ],
+      "summary": {
+        "en": "A label, optionally with a remove button (data-action, data-value).",
+        "ko": "라벨. 삭제 버튼(data-action, data-value)을 붙일 수 있습니다."
+      },
+      "example": "vf.vsTag({ label: 'urgent', value: 'urgent', removable: true, removeAction: 'remove-tag' })"
+    },
+    {
+      "id": "avatar",
+      "tier": "S",
+      "category": "display",
+      "names": [
+        "vsAvatar"
+      ],
+      "source": "layer2/src/components/avatar.js",
+      "css": "layer2/css/components/avatar.css",
+      "messages": [],
+      "summary": {
+        "en": "A user picture, or the initials of the name.",
+        "ko": "사용자 사진, 또는 이름의 머리글자."
+      },
+      "example": "vf.vsAvatar({ name: 'Ada Lovelace', src: user.photo })"
+    },
+    {
+      "id": "alert",
+      "tier": "S",
+      "category": "display",
+      "names": [
+        "vsAlert"
+      ],
+      "source": "layer2/src/components/alert.js",
+      "css": "layer2/css/components/alert.css",
+      "messages": [
+        "alert.dismiss"
+      ],
+      "summary": {
+        "en": "A message box: info, success, warning, danger; optionally dismissible.",
+        "ko": "정보·성공·경고·위험 메시지 상자. 닫기 버튼 선택."
+      },
+      "example": "vf.vsAlert({ variant: 'warning', title: 'Check', message: 'Unsaved changes', dismissible: true })"
+    },
+    {
+      "id": "card",
+      "tier": "S",
+      "category": "display",
+      "names": [
+        "vsCard"
+      ],
+      "source": "layer2/src/components/card.js",
+      "css": "layer2/css/components/card.css",
+      "messages": [],
+      "summary": {
+        "en": "A surface with header (title, subtitle, actions), body and footer.",
+        "ko": "머리(제목·부제·동작)·본문·바닥을 가진 카드."
+      },
+      "example": "vf.vsCard({ title: 'Sales', body: vf.html`<p>${text}</p>`, footer: vf.vsButton({ label: 'More', action: 'more' }) })"
+    },
+    {
+      "id": "descriptions",
+      "tier": "S",
+      "category": "display",
+      "names": [
+        "vsDescriptions"
+      ],
+      "source": "layer2/src/components/descriptions.js",
+      "css": "layer2/css/components/descriptions.css",
+      "messages": [],
+      "summary": {
+        "en": "Label/value pairs as a <dl>, in 1–4 columns.",
+        "ko": "라벨/값 쌍을 1~4열의 <dl>로."
+      },
+      "example": "vf.vsDescriptions({ columns: 2, items: [{ label: 'Name', value: user.name }, { label: 'Email', value: user.email }] })"
+    },
+    {
+      "id": "stat-card",
+      "tier": "S",
+      "category": "display",
+      "names": [
+        "vsStatCard"
+      ],
+      "source": "layer2/src/components/stat-card.js",
+      "css": "layer2/css/components/stat-card.css",
+      "messages": [
+        "statCard.down",
+        "statCard.up"
+      ],
+      "summary": {
+        "en": "A key figure formatted with vf.fmt, with an optional change (+12.5%).",
+        "ko": "vf.fmt로 서식한 핵심 수치와 증감(+12.5%)."
+      },
+      "example": "vf.vsStatCard({ label: 'Revenue', value: 1250000, format: { style: 'currency', currency: 'KRW' }, delta: 0.125, deltaLabel: 'vs last month' })"
+    },
+    {
+      "id": "timeline",
+      "tier": "S",
+      "category": "display",
+      "names": [
+        "vsTimeline"
+      ],
+      "source": "layer2/src/components/timeline.js",
+      "css": "layer2/css/components/timeline.css",
+      "messages": [],
+      "summary": {
+        "en": "Events in order, with times formatted by vf.fmt.date.",
+        "ko": "시간 순서의 이벤트. 시간은 vf.fmt.date로 서식."
+      },
+      "example": "vf.vsTimeline({ items: [{ title: 'Order placed', time: order.createdAt, variant: 'success' }] })"
+    },
+    {
+      "id": "empty-state",
+      "tier": "S",
+      "category": "display",
+      "names": [
+        "vsEmptyState"
+      ],
+      "source": "layer2/src/components/empty-state.js",
+      "css": "layer2/css/components/empty-state.css",
+      "messages": [
+        "emptyState.title"
+      ],
+      "summary": {
+        "en": "What to show when a list or search has nothing.",
+        "ko": "목록이나 검색 결과가 없을 때의 화면."
+      },
+      "example": "vf.vsEmptyState({ description: 'Try another keyword', action: vf.vsButton({ label: 'Reset', action: 'reset' }) })"
+    },
+    {
+      "id": "skeleton",
+      "tier": "S",
+      "category": "display",
+      "names": [
+        "vsSkeleton"
+      ],
+      "source": "layer2/src/components/skeleton.js",
+      "css": "layer2/css/components/skeleton.css",
+      "messages": [],
+      "summary": {
+        "en": "Loading placeholders (text lines, rectangle, circle), hidden from screen readers.",
+        "ko": "로딩 자리 표시(텍스트 줄·사각형·원). 스크린리더에서는 숨김."
+      },
+      "example": "vf.vsSkeleton({ lines: 3 })"
+    },
+    {
+      "id": "spinner",
+      "tier": "S",
+      "category": "display",
+      "names": [
+        "vsSpinner"
+      ],
+      "source": "layer2/src/components/spinner.js",
+      "css": "layer2/css/components/spinner.css",
+      "messages": [
+        "common.loading"
+      ],
+      "summary": {
+        "en": "A loading indicator with a hidden status text.",
+        "ko": "숨은 상태 문구가 있는 로딩 표시."
+      },
+      "example": "vf.vsSpinner({ size: 'sm' })"
+    },
+    {
+      "id": "tooltip",
+      "tier": "S",
+      "category": "display",
+      "names": [
+        "vsTooltip"
+      ],
+      "source": "layer2/src/components/tooltip.js",
+      "css": "layer2/css/components/tooltip.css",
+      "messages": [],
+      "summary": {
+        "en": "A short text on hover and focus, linked with aria-describedby; CSS only.",
+        "ko": "hover·focus 때 보이는 짧은 글. aria-describedby로 연결, CSS만 사용."
+      },
+      "example": "vf.vsTooltip({ text: 'Copy link', trigger: (a) => vf.vsButton({ label: 'Copy', action: 'copy', describedBy: a.describedBy }) })"
+    },
+    {
+      "id": "number-input",
+      "tier": "P",
+      "category": "input",
+      "names": [
+        "vsNumberInput",
+        "vfNumberInput"
+      ],
+      "source": "layer2/src/components/number-input.js",
+      "css": "layer2/css/components/number-input.css",
+      "messages": [
+        "numberInput.decrement",
+        "numberInput.increment"
+      ],
+      "summary": {
+        "en": "A number input with decrease/increase buttons; vf* steps, clamps to min/max and rounds to the step.",
+        "ko": "감소/증가 버튼이 있는 숫자 입력. vf*는 증감, min/max 보정, step 자릿수 반올림."
+      },
+      "example": "vf.vfNumberInput({ name: 'qty', label: 'Quantity', value: 1, min: 1, max: 99, onChange: (e) => setQty(e.data.value) })"
+    },
+    {
+      "id": "search-input",
+      "tier": "P",
+      "category": "input",
+      "names": [
+        "vsSearchInput",
+        "vfSearchInput"
+      ],
+      "source": "layer2/src/components/search-input.js",
+      "css": "layer2/css/components/number-input.css",
+      "messages": [
+        "searchInput.clear",
+        "searchInput.label",
+        "searchInput.placeholder"
+      ],
+      "summary": {
+        "en": "A search box with a clear button; vf* debounces onSearch (IME-aware), searches at once on Enter.",
+        "ko": "지우기 버튼이 있는 검색 상자. vf*는 onSearch 디바운스(IME 조합 중 제외), Enter로 즉시 검색."
+      },
+      "example": "vf.vfSearchInput({ debounce: 300, onSearch: (e) => load(e.data.value) })"
+    },
+    {
+      "id": "password-input",
+      "tier": "P",
+      "category": "input",
+      "names": [
+        "vsPasswordInput",
+        "vfPasswordInput"
+      ],
+      "source": "layer2/src/components/password-input.js",
+      "css": "layer2/css/components/number-input.css",
+      "messages": [
+        "passwordInput.hide",
+        "passwordInput.show"
+      ],
+      "summary": {
+        "en": "A password input with a show/hide button (aria-pressed).",
+        "ko": "보기/숨기기 버튼(aria-pressed)이 있는 비밀번호 입력."
+      },
+      "example": "vf.vfPasswordInput({ name: 'password', label: 'Password', autocomplete: 'new-password' })"
+    },
+    {
+      "id": "chips-input",
+      "tier": "P",
+      "category": "input",
+      "names": [
+        "vsChipsInput",
+        "vfChipsInput"
+      ],
+      "source": "layer2/src/components/chips-input.js",
+      "css": "layer2/css/components/chips-input.css",
+      "messages": [],
+      "summary": {
+        "en": "Chips (vsTag) and a text input; Enter or comma adds, Backspace removes; hidden inputs for forms.",
+        "ko": "칩(vsTag)과 텍스트 입력. Enter·쉼표로 추가, Backspace로 삭제, 폼 전송용 hidden input."
+      },
+      "example": "vf.vfChipsInput({ name: 'tags', label: 'Tags', value: ['ui'], max: 5, onChange: (e) => save(e.data.value) })"
+    },
+    {
+      "id": "rating",
+      "tier": "P",
+      "category": "input",
+      "names": [
+        "vsRating",
+        "vfRating"
+      ],
+      "source": "layer2/src/components/rating.js",
+      "css": "layer2/css/components/rating.css",
+      "messages": [
+        "rating.label",
+        "rating.value"
+      ],
+      "summary": {
+        "en": "Stars on native radios (keyboard works); readonly shows an image with a text alternative.",
+        "ko": "네이티브 라디오 기반 별점(키보드 동작). readonly는 대체 텍스트가 있는 이미지."
+      },
+      "example": "vf.vfRating({ name: 'score', value: 3, onChange: (e) => rate(e.data.value) })"
+    },
+    {
+      "id": "select-button",
+      "tier": "P",
+      "category": "input",
+      "names": [
+        "vsSelectButton",
+        "vfSelectButton"
+      ],
+      "source": "layer2/src/components/select-button.js",
+      "css": "layer2/css/components/select-button.css",
+      "messages": [],
+      "summary": {
+        "en": "Options as aria-pressed toggle buttons; one choice or several with multiple.",
+        "ko": "aria-pressed 토글 버튼으로 고르는 옵션. 하나 또는 multiple로 여럿."
+      },
+      "example": "vf.vfSelectButton({ ariaLabel: 'Period', options: ['day', 'week', 'month'], value: 'week', onChange: (e) => setPeriod(e.data.value) })"
+    },
+    {
+      "id": "masked-input",
+      "tier": "P",
+      "category": "input",
+      "names": [
+        "vsMaskedInput",
+        "vfMaskedInput"
+      ],
+      "source": "layer2/src/components/masked-input.js",
+      "css": "layer2/css/components/input.css",
+      "messages": [],
+      "summary": {
+        "en": "A text input formatted by a mask (0 digit, a letter, * either); vf* keeps the caret and gives the raw value.",
+        "ko": "마스크로 서식하는 텍스트 입력(0 숫자, a 문자, * 둘 다). vf*는 커서를 유지하고 원래 값도 줍니다."
+      },
+      "example": "vf.vfMaskedInput({ name: 'phone', label: 'Phone', mask: '000-0000-0000', onChange: (e) => save(e.data.raw) })"
+    },
+    {
+      "id": "date-picker",
+      "tier": "P",
+      "category": "input",
+      "names": [
+        "vsDatePicker",
+        "vfDatePicker"
+      ],
+      "source": "layer2/src/components/date-picker.js",
+      "css": "layer2/css/components/input.css",
+      "messages": [
+        "datePicker.placeholder"
+      ],
+      "summary": {
+        "en": "A native date input with 'YYYY-MM-DD' values; vf* normalizes typed text (IE11) and gives a Date.",
+        "ko": "'YYYY-MM-DD' 값의 네이티브 날짜 입력. vf*는 입력한 글을 정규화(IE11)하고 Date를 줍니다."
+      },
+      "example": "vf.vfDatePicker({ name: 'due', label: 'Due date', min: new Date(), onChange: (e) => setDue(e.data.date) })"
+    },
+    {
+      "id": "time-picker",
+      "tier": "P",
+      "category": "input",
+      "names": [
+        "vsTimePicker",
+        "vfTimePicker"
+      ],
+      "source": "layer2/src/components/time-picker.js",
+      "css": "layer2/css/components/input.css",
+      "messages": [
+        "timePicker.placeholder"
+      ],
+      "summary": {
+        "en": "A native time input with 'HH:mm' values; vf* normalizes typed text (IE11).",
+        "ko": "'HH:mm' 값의 네이티브 시간 입력. vf*는 입력한 글을 정규화(IE11)."
+      },
+      "example": "vf.vfTimePicker({ name: 'at', label: 'Time', step: 900 })"
+    },
+    {
+      "id": "date-range-picker",
+      "tier": "F",
+      "category": "input",
+      "names": [
+        "vfDateRangePicker"
+      ],
+      "source": "layer2/src/components/date-range-picker.js",
+      "css": "layer2/css/components/date-range-picker.css",
+      "messages": [
+        "datePicker.placeholder",
+        "dateRangePicker.end",
+        "dateRangePicker.start"
+      ],
+      "summary": {
+        "en": "Start and end dates on two native inputs; the end never goes before the start.",
+        "ko": "두 네이티브 입력의 시작일·종료일. 종료일이 시작일보다 앞서지 않습니다."
+      },
+      "example": "vf.vfDateRangePicker({ label: 'Period', names: ['from', 'to'], onChange: (e) => search(e.data.start, e.data.end) })"
+    },
+    {
+      "id": "list-view",
+      "tier": "P",
+      "category": "display",
+      "names": [
+        "vsListView",
+        "vfListView"
+      ],
+      "source": "layer2/src/components/list-view.js",
+      "css": "layer2/css/components/list-view.css",
+      "messages": [],
+      "summary": {
+        "en": "A list of items; with selectable, a listbox with roving focus (arrows, Space, Enter).",
+        "ko": "항목 목록. selectable이면 로빙 포커스 listbox(화살표, Space, Enter)."
+      },
+      "example": "vf.vfListView({ label: 'Users', items: users, selectable: 'single', onSelect: (e) => open(e.data.value) })"
+    },
+    {
+      "id": "carousel",
+      "tier": "F",
+      "category": "display",
+      "names": [
+        "vfCarousel"
+      ],
+      "source": "layer2/src/components/carousel.js",
+      "css": "layer2/css/components/carousel.css",
+      "messages": [
+        "carousel.carousel",
+        "carousel.goTo",
+        "carousel.next",
+        "carousel.pause",
+        "carousel.play",
+        "carousel.position",
+        "carousel.prev",
+        "carousel.slide"
+      ],
+      "summary": {
+        "en": "Slides one at a time with previous/next, dots and optional autoplay that pauses on hover, focus and reduced motion.",
+        "ko": "이전/다음·점 버튼과 선택적 자동 넘김(hover·focus·reduced-motion에서 멈춤)의 슬라이드."
+      },
+      "example": "vf.vfCarousel({ label: 'News', items: [{ src: '/a.jpg', alt: 'Launch' }, { content: vf.html`<p>${text}</p>` }], autoplay: 5000 })"
+    },
+    {
+      "id": "breadcrumb",
+      "tier": "S",
+      "category": "navigation",
+      "names": [
+        "vsBreadcrumb"
+      ],
+      "source": "layer2/src/components/breadcrumb.js",
+      "css": "layer2/css/components/breadcrumb.css",
+      "messages": [
+        "breadcrumb.label"
+      ],
+      "summary": {
+        "en": "The path to the current page; the last item has aria-current=\"page\".",
+        "ko": "현재 페이지까지의 경로. 마지막 항목에 aria-current=\"page\"."
+      },
+      "example": "vf.vsBreadcrumb({ items: [{ label: 'Home', href: '#/' }, { label: 'Users', href: '#/users' }, { label: user.name }] })"
+    },
+    {
+      "id": "pagination",
+      "tier": "P",
+      "category": "navigation",
+      "names": [
+        "vsPagination",
+        "vfPagination"
+      ],
+      "source": "layer2/src/components/pagination.js",
+      "css": "layer2/css/components/pagination.css",
+      "messages": [
+        "pagination.label",
+        "pagination.next",
+        "pagination.page",
+        "pagination.previous"
+      ],
+      "summary": {
+        "en": "Page buttons with previous/next and gaps; vf* changes the page and calls onChange.",
+        "ko": "이전/다음과 생략 표시가 있는 페이지 버튼. vf*는 페이지를 바꾸고 onChange 호출."
+      },
+      "example": "vf.vfPagination({ total: 230, pageSize: 20, onChange: (e) => load(e.data.page) })"
+    },
+    {
+      "id": "tabs",
+      "tier": "P",
+      "category": "navigation",
+      "names": [
+        "vsTabs",
+        "vfTabs"
+      ],
+      "source": "layer2/src/components/tabs.js",
+      "css": "layer2/css/components/tabs.css",
+      "messages": [],
+      "summary": {
+        "en": "Tabs and panels (WAI-ARIA): roving tabindex; vf* adds arrow keys (RTL aware), Home and End.",
+        "ko": "탭과 패널(WAI-ARIA). 로빙 tabindex, vf*는 화살표(RTL 반영)·Home·End."
+      },
+      "example": "vf.vfTabs({ label: 'Settings', tabs: [{ id: 'profile', label: 'Profile', content: profileHtml }, { id: 'security', label: 'Security', content: securityHtml }] })"
+    },
+    {
+      "id": "accordion",
+      "tier": "P",
+      "category": "navigation",
+      "names": [
+        "vsAccordion",
+        "vfAccordion"
+      ],
+      "source": "layer2/src/components/accordion.js",
+      "css": "layer2/css/components/accordion.css",
+      "messages": [],
+      "summary": {
+        "en": "Sections with heading buttons (aria-expanded) and region panels; one or multiple open.",
+        "ko": "제목 버튼(aria-expanded)과 region 패널의 접이식 섹션. 하나 또는 여럿 열기."
+      },
+      "example": "vf.vfAccordion({ items: faq.map((q) => ({ id: q.id, title: q.question, content: q.answer })) })"
+    },
+    {
+      "id": "stepper",
+      "tier": "P",
+      "category": "navigation",
+      "names": [
+        "vsStepper",
+        "vfStepper"
+      ],
+      "source": "layer2/src/components/stepper.js",
+      "css": "layer2/css/components/stepper.css",
+      "messages": [
+        "stepper.complete"
+      ],
+      "summary": {
+        "en": "The steps of a process: complete, current (aria-current=\"step\"), upcoming.",
+        "ko": "진행 단계: 완료, 현재(aria-current=\"step\"), 예정."
+      },
+      "example": "vf.vfStepper({ steps: ['Cart', 'Shipping', 'Payment'], active: 1 })"
     }
   ]
 }

@@ -1,0 +1,26 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsEmptyState. */
+
+.vf-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--vf-space-2);
+  padding-block: var(--vf-space-7);
+  padding-inline: var(--vf-space-5);
+  font-family: var(--vf-font-body);
+  text-align: center;
+  color: var(--vf-color-text-muted);
+}
+
+.vf-empty-state__icon { font-size: var(--vf-font-size-2xl); }
+
+.vf-empty-state__title {
+  margin: 0;
+  font-size: var(--vf-font-size-lg);
+  font-weight: var(--vf-font-weight-strong);
+  color: var(--vf-color-text);
+}
+
+.vf-empty-state__description { margin: 0; }
+.vf-empty-state__action { margin-block-start: var(--vf-space-3); }

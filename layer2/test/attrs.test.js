@@ -16,10 +16,16 @@ test('values are escaped; absent values leave the attribute out; booleans follow
 test('names outside the allow-list are dropped whatever the value, with a warning', () => {
   let out;
   const warnings = captureWarnings(() => {
-    out = String(attrs({ onclick: 'alert(1)', href: 'javascript:x', 'data-x onclick': false, 'aria-x" y': true, style: 'color:red' }));
+    out = String(attrs({ onclick: 'alert(1)', formaction: 'javascript:x', 'data-x onclick': false, 'aria-x" y': true, style: 'color:red' }));
   });
   assert.equal(out, '');
   assert.equal(warnings.length, 5);
+});
+
+test('href and src go through vf.safeUrl (rule 20)', () => {
+  assert.equal(String(attrs({ href: 'javascript:alert(1)', src: ' JaVaScRiPt:x' })), 'href="#" src="#"');
+  assert.equal(String(attrs({ href: '/a?b=1&c="2"', src: 'https://x.test/a.png' })),
+    'href="/a?b=1&amp;c=&quot;2&quot;" src="https://x.test/a.png"');
 });
 
 test('the result is inserted inside a tag by vf.html', () => {

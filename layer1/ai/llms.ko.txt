@@ -73,6 +73,10 @@ refresh: 루트 안쪽을 교체하고, `childs`는 다시 옮겨 붙이며(상�
 
 `vf.use(vfUpdate, { url: './version.json', current: APP_VERSION, policy: 'next-navigation' | 'prompt' | 'immediate', interval: 10, onAvailable })` → `vf.ext.update`(`check`, `status`, `navigated`, `apply`, `stop`). version.json은 `{ "version": "1.0.3" }`이고 index.html과 함께 no-cache로 서빙합니다. 플러그인은 UI를 그리지 않고, 안내는 앱이 그립니다.
 
+## shortcut 플러그인 (dist/plugins/shortcut.min.js → 전역 vfShortcut, ESM은 `import vfShortcut from 'vfunc/plugins/shortcut'`)
+
+`const keys = vf.use(vfShortcut)` → `vf.ext.shortcut`: `const off = keys.add('mod+k', handler, { label, allowInInput: false, preventDefault: true })`, `keys.remove(combo, handler?)`, `keys.list()` → `[{ combo, label }]`(도움말 화면은 앱이 그림), `keys.destroy()`. `mod`는 Apple 기기에서 ⌘, 그 밖에서 Ctrl입니다. 키 이름은 KeyboardEvent.key를 따릅니다(`escape`, `enter`, `arrowup`, `?`). 입력칸 안의 키와 IME 조합 중인 키는 무시하고, 같은 조합은 가장 나중 것이 실행됩니다. 단축키용 document keydown 리스너를 직접 만들지 마세요.
+
 ## 흔한 실수
 
 - 컴포넌트는 만드는 순간 렌더합니다. vf.t를 쓰는 컴포넌트는 `vf.i18n.setup()` 이후에 만드세요.

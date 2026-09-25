@@ -29,6 +29,7 @@ const TYPES = ['button', 'submit', 'reset'];
  * @param {boolean} [props.loading] - disabled, `aria-busy`, a spinner and a hidden "Loading" text
  * @param {string} [props.loadingText] - replaces the `common.loading` message
  * @param {string} [props.ariaLabel] - for icon-only buttons
+ * @param {string} [props.describedBy] - `aria-describedby`, e.g. the id vsTooltip passes to `trigger`
  * @param {string} [props.className] - extra classes, for your own CSS
  * @returns {SafeHtml}
  */
@@ -46,6 +47,7 @@ export function vsButton(props) {
     'data-variant': oneOf('vsButton variant', p.variant, VARIANTS),
     'data-size': oneOf('vsButton size', p.size, SIZES),
     'aria-label': p.ariaLabel,
+    'aria-describedby': p.describedBy,
     'aria-busy': loading || null,
     disabled: !!p.disabled || loading
   })}>${spinner}<span class="vf-button__label">${p.label}</span>${status}</button>`;

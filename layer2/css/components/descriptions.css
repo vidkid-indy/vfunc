@@ -1,0 +1,39 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsDescriptions. Columns from data-columns (1–4); one column on narrow screens. */
+
+.vf-descriptions {
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-md);
+  line-height: var(--vf-line-height);
+  color: var(--vf-color-text);
+}
+
+.vf-descriptions__title {
+  margin-block: 0 var(--vf-space-2);
+  font-weight: var(--vf-font-weight-strong);
+}
+
+.vf-descriptions__list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--vf-space-3) var(--vf-space-5);
+  margin: 0;
+}
+
+.vf-descriptions__item { min-inline-size: 0; }
+
+.vf-descriptions__label {
+  font-size: var(--vf-font-size-sm);
+  color: var(--vf-color-text-muted);
+}
+
+.vf-descriptions__value {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 40em) {
+  .vf-descriptions[data-columns="2"] .vf-descriptions__list { grid-template-columns: repeat(2, 1fr); }
+  .vf-descriptions[data-columns="3"] .vf-descriptions__list { grid-template-columns: repeat(3, 1fr); }
+  .vf-descriptions[data-columns="4"] .vf-descriptions__list { grid-template-columns: repeat(4, 1fr); }
+}

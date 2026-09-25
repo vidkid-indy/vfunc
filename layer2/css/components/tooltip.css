@@ -1,0 +1,58 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsTooltip: shown on hover and on keyboard focus inside the wrapper. Side from data-placement. */
+
+.vf-tooltip {
+  position: relative;
+  display: inline-flex;
+}
+
+.vf-tooltip__bubble {
+  position: absolute;
+  z-index: var(--vf-z-popover);
+  inset-block-end: 100%;
+  inset-inline-start: 50%;
+  margin-block-end: var(--vf-space-1);
+  padding-block: var(--vf-space-1);
+  padding-inline: var(--vf-space-2);
+  max-inline-size: 20em;
+  inline-size: max-content;
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-xs);
+  line-height: var(--vf-line-height);
+  color: var(--vf-color-text-inverse);
+  background: var(--vf-color-text);
+  border-radius: var(--vf-radius-sm);
+  box-shadow: var(--vf-shadow-2);
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity var(--vf-duration-fast) var(--vf-easing);
+}
+
+[dir="rtl"] .vf-tooltip__bubble { transform: translateX(50%); }
+
+.vf-tooltip:hover .vf-tooltip__bubble,
+.vf-tooltip:focus-within .vf-tooltip__bubble {
+  visibility: visible;
+  opacity: 1;
+}
+
+.vf-tooltip[data-placement="bottom"] .vf-tooltip__bubble {
+  inset-block: 100% auto;
+  margin-block: var(--vf-space-1) 0;
+}
+
+.vf-tooltip[data-placement="start"] .vf-tooltip__bubble,
+.vf-tooltip[data-placement="end"] .vf-tooltip__bubble {
+  inset-block: 50% auto;
+  margin: 0;
+  transform: translateY(-50%);
+}
+
+.vf-tooltip[data-placement="start"] .vf-tooltip__bubble { inset-inline: auto 100%; margin-inline-end: var(--vf-space-1); }
+.vf-tooltip[data-placement="end"] .vf-tooltip__bubble { inset-inline: 100% auto; margin-inline-start: var(--vf-space-1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .vf-tooltip__bubble { transition: none; }
+}

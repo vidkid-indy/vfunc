@@ -134,6 +134,8 @@ const TARGETS = [
   // legacy pipeline so it runs in IE11 and keeps names (esbuild refuses keep_names for es5).
   { file: 'plugins/update.esm.js', entry: 'layer1/plugins/update.js', format: 'esm', minify: false, plugin: 'update' },
   { file: 'plugins/update.min.js', entry: 'build/plugin-update-entry.js', format: 'iife', minify: true, plugin: 'update', legacy: true },
+  { file: 'plugins/shortcut.esm.js', entry: 'layer1/plugins/shortcut.js', format: 'esm', minify: false, plugin: 'shortcut' },
+  { file: 'plugins/shortcut.min.js', entry: 'build/plugin-shortcut-entry.js', format: 'iife', minify: true, plugin: 'shortcut', legacy: true },
   // Layer 2 (D-029). `ui` says how it reaches the engine (see uiEngine).
   { dist: UI_DIST, file: 'vfunc-ui.js', entry: UI_SOURCE, format: 'iife', minify: false, ui: 'global' },
   { dist: UI_DIST, file: 'vfunc-ui.min.js', entry: UI_SOURCE, format: 'iife', minify: true, ui: 'global', budget: 24 * 1024 },
@@ -391,7 +393,7 @@ function assembleNpmPackage() {
   }
   for (const file of ['vfunc-ui.d.ts']) copyFlat(join(ROOT, 'layer2/types', file), join(out, 'types', file));
   for (const file of ['vfunc-ui.css', 'vfunc-ui.legacy.css']) copy(join(ROOT, UI_DIST, file), join(out, 'css', file));
-  for (const file of ['vfunc.d.ts', 'global.d.ts', 'plugins/update.d.ts']) copy(join(ROOT, 'layer1/types', file), join(out, 'types', file));
+  for (const file of ['vfunc.d.ts', 'global.d.ts', 'plugins/update.d.ts', 'plugins/shortcut.d.ts']) copy(join(ROOT, 'layer1/types', file), join(out, 'types', file));
   // Optional design tokens (D-011). Not generated: the file in layer1/css is the source.
   copy(join(ROOT, 'layer1/css/vfunc.tokens.css'), join(out, 'css', 'vfunc.tokens.css'));
   // The AI kit (D-019): llms*.txt, AGENTS templates, prompts and design kit in en/ and ko/.
@@ -443,16 +445,20 @@ function assembleNpmPackage() {
         types: './types/plugins/update.d.ts',
         default: './dist/plugins/update.esm.js'
       },
+      './plugins/shortcut': {
+        types: './types/plugins/shortcut.d.ts',
+        default: './dist/plugins/shortcut.esm.js'
+      },
       './css/*': './css/*',
       './ai/*': './ai/*',
       './dist/*': './dist/*',
       './types/*': './types/*',
       './package.json': './package.json'
     },
-    // The <script> builds write window.vf / window.vfUpdate. The engine module has no side effects;
+    // The <script> builds write window.vf / window.vfUpdate / window.vfShortcut. The engine module has no side effects;
     // the layer 2 modules add their members to the engine's vf object when imported.
     sideEffects: ['./dist/vfunc.js', './dist/vfunc.min.js', './dist/vfunc.legacy.min.js', './dist/plugins/update.min.js',
-      './dist/vfunc-ui*.js', './dist/vfunc-all*.js', './css/*.css'],
+      './dist/plugins/shortcut.min.js', './dist/vfunc-ui*.js', './dist/vfunc-all*.js', './css/*.css'],
     files: ['dist/', 'types/', 'css/', 'ai/', 'README.md', 'README.ko.md', 'LICENSE', 'NOTICE', 'CHANGELOG.md', OUTPUTS.text]
   };
   writeFileSync(join(out, 'package.json'), JSON.stringify(manifest, null, 2) + '\n');

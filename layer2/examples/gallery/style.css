@@ -1,0 +1,66 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Layout of the gallery page only; the components are styled by vfunc-ui.css. Tokens only. */
+
+body {
+  margin: 0;
+  font-family: var(--vf-font-body);
+  color: var(--vf-color-text);
+  background: var(--vf-color-bg);
+}
+
+.gallery {
+  box-sizing: border-box;
+  max-inline-size: 72em;
+  margin-inline: auto;
+  padding: var(--vf-space-5);
+}
+
+.gallery__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--vf-space-4);
+}
+
+.gallery__title { margin: 0; font-size: var(--vf-font-size-2xl); }
+.gallery__lead { margin-block: var(--vf-space-2) 0; color: var(--vf-color-text-muted); }
+
+.gallery__log {
+  min-block-size: 1.5em;
+  margin-block: var(--vf-space-4);
+  padding: var(--vf-space-2) var(--vf-space-3);
+  font-family: var(--vf-font-mono);
+  font-size: var(--vf-font-size-sm);
+  background: var(--vf-color-surface-muted);
+  border-radius: var(--vf-radius-md);
+}
+
+.gallery__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vf-space-4);
+  margin-block-end: var(--vf-space-7);
+}
+
+.gallery__heading {
+  margin: 0;
+  padding-block-end: var(--vf-space-2);
+  font-size: var(--vf-font-size-xl);
+  border-block-end: 1px solid var(--vf-color-border);
+}
+
+.gallery__form,
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18em, 1fr));
+  gap: var(--vf-space-4);
+  align-items: start;
+}
+
+.gallery__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--vf-space-3);
+}

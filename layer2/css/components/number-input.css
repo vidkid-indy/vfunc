@@ -1,0 +1,99 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsNumberInput and the other boxed inputs (search, password): one border around input and buttons. */
+
+.vf-number-input,
+.vf-search-input,
+.vf-password-input {
+  box-sizing: border-box;
+  display: flex;
+  align-items: stretch;
+  inline-size: 100%;
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-md);
+  line-height: var(--vf-line-height);
+  color: var(--vf-color-text);
+  background: var(--vf-color-surface);
+  border: 1px solid var(--vf-color-border-strong);
+  border-radius: var(--vf-radius-md);
+  transition: border-color var(--vf-duration-fast) var(--vf-easing), box-shadow var(--vf-duration-fast) var(--vf-easing);
+}
+
+.vf-number-input:focus-within,
+.vf-search-input:focus-within,
+.vf-password-input:focus-within {
+  border-color: var(--vf-color-focus);
+  box-shadow: var(--vf-focus-ring);
+}
+
+.vf-number-input[data-size="sm"],
+.vf-search-input[data-size="sm"],
+.vf-password-input[data-size="sm"] { font-size: var(--vf-font-size-sm); }
+
+.vf-number-input[data-size="lg"],
+.vf-search-input[data-size="lg"],
+.vf-password-input[data-size="lg"] { font-size: var(--vf-font-size-lg); }
+
+.vf-number-input__input,
+.vf-search-input__input,
+.vf-password-input__input {
+  flex: 1;
+  min-inline-size: 0;
+  padding-block: var(--vf-space-2);
+  padding-inline: var(--vf-space-3);
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  outline: none;
+}
+
+.vf-number-input__input { text-align: center; -moz-appearance: textfield; }
+.vf-number-input__input::-webkit-inner-spin-button,
+.vf-number-input__input::-webkit-outer-spin-button { margin: 0; -webkit-appearance: none; }
+.vf-search-input__input::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+.vf-number-input__input[aria-invalid="true"],
+.vf-search-input__input[aria-invalid="true"],
+.vf-password-input__input[aria-invalid="true"] { color: var(--vf-color-danger-text); }
+
+.vf-number-input__step,
+.vf-search-input__clear,
+.vf-password-input__toggle {
+  flex: none;
+  padding-block: 0;
+  padding-inline: var(--vf-space-3);
+  font: inherit;
+  color: var(--vf-color-text-muted);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.vf-number-input__step:hover,
+.vf-search-input__clear:hover,
+.vf-password-input__toggle:hover { color: var(--vf-color-text); background: var(--vf-color-surface-muted); }
+
+.vf-number-input__step:focus-visible,
+.vf-search-input__clear:focus-visible,
+.vf-password-input__toggle:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); }
+
+.vf-number-input__step:disabled,
+.vf-password-input__toggle:disabled {
+  color: var(--vf-color-text-disabled);
+  background: transparent;
+  cursor: not-allowed;
+}
+
+.vf-number-input__step:first-child { border-inline-end: 1px solid var(--vf-color-border); }
+.vf-number-input__step:last-child { border-inline-start: 1px solid var(--vf-color-border); }
+
+.vf-password-input__toggle {
+  font-size: var(--vf-font-size-sm);
+  font-weight: var(--vf-font-weight-strong);
+}
+
+.vf-search-input__clear[hidden] { display: none; }
+
+.vf-number-input:has(:disabled),
+.vf-search-input:has(:disabled),
+.vf-password-input:has(:disabled) { background: var(--vf-color-surface-muted); }

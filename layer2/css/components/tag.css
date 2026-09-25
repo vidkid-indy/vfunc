@@ -1,0 +1,28 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsTag: the box and tones are in badge.css; here the tag's own parts. */
+
+.vf-tag {
+  font-weight: var(--vf-font-weight-normal);
+  border-radius: var(--vf-radius-sm);
+}
+
+.vf-tag__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-inline-end: calc(var(--vf-space-1) * -1);
+  inline-size: 1.25em;
+  block-size: 1.25em;
+  font: inherit;
+  line-height: 1;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: var(--vf-radius-full);
+  cursor: pointer;
+}
+
+.vf-tag__remove:hover { background: var(--vf-color-border); }
+.vf-tag__remove:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); }
+.vf-tag__remove:disabled { cursor: not-allowed; opacity: 0.5; }

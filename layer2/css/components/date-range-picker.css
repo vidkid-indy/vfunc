@@ -1,0 +1,27 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vfDateRangePicker: two labelled date inputs side by side (stacked on narrow screens). */
+
+.vf-date-range__inputs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--vf-space-2);
+}
+
+.vf-date-range__part {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--vf-space-1);
+  min-inline-size: 10em;
+}
+
+.vf-date-range__label {
+  font-size: var(--vf-font-size-xs);
+  color: var(--vf-color-text-muted);
+}
+
+.vf-date-range__separator {
+  padding-block-end: var(--vf-space-2);
+  color: var(--vf-color-text-muted);
+}

@@ -1,0 +1,40 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsTabs. The active tab has aria-selected="true"; inactive panels are [hidden]. */
+
+.vf-tabs { font-family: var(--vf-font-body); color: var(--vf-color-text); }
+
+.vf-tabs__list {
+  display: flex;
+  gap: var(--vf-space-1);
+  overflow-x: auto;
+  border-block-end: 1px solid var(--vf-color-border);
+}
+
+.vf-tabs__tab {
+  flex: none;
+  margin-block-end: -1px;
+  padding-block: var(--vf-space-2);
+  padding-inline: var(--vf-space-4);
+  font: inherit;
+  font-size: var(--vf-font-size-md);
+  color: var(--vf-color-text-muted);
+  background: transparent;
+  border: 0;
+  border-block-end: 2px solid transparent;
+  cursor: pointer;
+}
+
+.vf-tabs__tab:hover { color: var(--vf-color-text); }
+.vf-tabs__tab:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); border-radius: var(--vf-radius-sm); }
+
+.vf-tabs__tab[aria-selected="true"] {
+  color: var(--vf-color-primary);
+  font-weight: var(--vf-font-weight-strong);
+  border-block-end-color: var(--vf-color-primary);
+}
+
+.vf-tabs__tab:disabled { color: var(--vf-color-text-disabled); cursor: not-allowed; }
+
+.vf-tabs__panel { padding-block: var(--vf-space-4); }
+.vf-tabs__panel:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); border-radius: var(--vf-radius-sm); }
+.vf-tabs__panel[hidden] { display: none; }

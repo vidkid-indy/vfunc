@@ -1,0 +1,21 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsButtonGroup. data-attached joins the edges of the buttons. */
+
+.vf-button-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--vf-space-2);
+}
+
+.vf-button-group[data-attached="true"] { gap: 0; flex-wrap: nowrap; }
+.vf-button-group[data-attached="true"] > .vf-button { border-radius: 0; }
+.vf-button-group[data-attached="true"] > .vf-button + .vf-button { margin-inline-start: -1px; }
+.vf-button-group[data-attached="true"] > .vf-button:first-child {
+  border-start-start-radius: var(--vf-radius-md);
+  border-end-start-radius: var(--vf-radius-md);
+}
+.vf-button-group[data-attached="true"] > .vf-button:last-child {
+  border-start-end-radius: var(--vf-radius-md);
+  border-end-end-radius: var(--vf-radius-md);
+}
+.vf-button-group[data-attached="true"] > .vf-button:focus-visible { position: relative; }

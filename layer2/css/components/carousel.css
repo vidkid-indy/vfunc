@@ -1,0 +1,76 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vfCarousel. One slide shown at a time; the others are [hidden]. */
+
+.vf-carousel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vf-space-2);
+  font-family: var(--vf-font-body);
+  color: var(--vf-color-text);
+}
+
+.vf-carousel__slides {
+  overflow: hidden;
+  background: var(--vf-color-surface-muted);
+  border-radius: var(--vf-radius-lg);
+}
+
+.vf-carousel__slide[hidden] { display: none; }
+.vf-carousel__image { display: block; inline-size: 100%; block-size: auto; }
+
+.vf-carousel__controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--vf-space-1);
+  order: 2;
+}
+
+.vf-carousel__prev,
+.vf-carousel__next,
+.vf-carousel__rotation {
+  min-inline-size: 2.25em;
+  block-size: 2.25em;
+  padding-block: 0;
+  padding-inline: var(--vf-space-2);
+  font: inherit;
+  font-size: var(--vf-font-size-sm);
+  color: var(--vf-color-text);
+  background: var(--vf-color-surface);
+  border: 1px solid var(--vf-color-border);
+  border-radius: var(--vf-radius-md);
+  cursor: pointer;
+}
+
+.vf-carousel__rotation { margin-inline-end: auto; }
+
+.vf-carousel__prev:hover,
+.vf-carousel__next:hover,
+.vf-carousel__rotation:hover { background: var(--vf-color-surface-muted); }
+
+.vf-carousel__prev:focus-visible,
+.vf-carousel__next:focus-visible,
+.vf-carousel__rotation:focus-visible,
+.vf-carousel__dot:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); }
+
+.vf-carousel__prev:disabled,
+.vf-carousel__next:disabled { color: var(--vf-color-text-disabled); cursor: not-allowed; }
+
+.vf-carousel__dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--vf-space-2);
+  order: 1;
+}
+
+.vf-carousel__dot {
+  inline-size: 0.625em;
+  block-size: 0.625em;
+  padding: 0;
+  background: var(--vf-color-border-strong);
+  border: 0;
+  border-radius: var(--vf-radius-full);
+  cursor: pointer;
+}
+
+.vf-carousel__dot[aria-current="true"] { background: var(--vf-color-primary); }

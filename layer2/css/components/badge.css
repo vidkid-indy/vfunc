@@ -1,0 +1,38 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsBadge and vsTag share the tone colors: data-variant neutral, primary, success, warning, danger, info. */
+
+.vf-badge,
+.vf-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vf-space-1);
+  padding-block: 0;
+  padding-inline: var(--vf-space-2);
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-xs);
+  font-weight: var(--vf-font-weight-strong);
+  line-height: var(--vf-line-height);
+  white-space: nowrap;
+  color: var(--vf-color-text);
+  background: var(--vf-color-surface-muted);
+  border: 1px solid var(--vf-color-border);
+  border-radius: var(--vf-radius-full);
+}
+
+.vf-badge__dot {
+  inline-size: 0.5em;
+  block-size: 0.5em;
+  background: currentColor;
+  border-radius: var(--vf-radius-full);
+}
+
+.vf-badge[data-variant="primary"],
+.vf-tag[data-variant="primary"] { color: var(--vf-color-primary); background: var(--vf-color-primary-soft); border-color: transparent; }
+.vf-badge[data-variant="success"],
+.vf-tag[data-variant="success"] { color: var(--vf-color-success-text); background: var(--vf-color-success-soft); border-color: transparent; }
+.vf-badge[data-variant="warning"],
+.vf-tag[data-variant="warning"] { color: var(--vf-color-warning-text); background: var(--vf-color-warning-soft); border-color: transparent; }
+.vf-badge[data-variant="danger"],
+.vf-tag[data-variant="danger"] { color: var(--vf-color-danger-text); background: var(--vf-color-danger-soft); border-color: transparent; }
+.vf-badge[data-variant="info"],
+.vf-tag[data-variant="info"] { color: var(--vf-color-info-text); background: var(--vf-color-info-soft); border-color: transparent; }

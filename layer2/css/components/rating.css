@@ -1,0 +1,28 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsRating: stars filled from data-state="on"; the radios are visually hidden but focusable. */
+
+.vf-rating__stars,
+.vf-rating[data-readonly="true"] {
+  display: inline-flex;
+  gap: var(--vf-space-1);
+}
+
+.vf-rating__item {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.vf-rating__star {
+  font-size: var(--vf-font-size-xl);
+  line-height: 1;
+  color: var(--vf-color-border-strong);
+  transition: color var(--vf-duration-fast) var(--vf-easing);
+}
+
+.vf-rating[data-readonly="true"] .vf-rating__star { font-size: var(--vf-font-size-md); }
+.vf-rating__star[data-state="on"] { color: var(--vf-color-warning); }
+.vf-rating__item:hover .vf-rating__star { color: var(--vf-color-warning); }
+.vf-rating__input:focus-visible + .vf-rating__star { border-radius: var(--vf-radius-sm); box-shadow: var(--vf-focus-ring); }
+.vf-rating__input:disabled + .vf-rating__star { opacity: 0.5; }
+.vf-rating__item:has(:disabled) { cursor: not-allowed; }

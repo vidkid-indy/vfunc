@@ -42,6 +42,21 @@ vf.use(vfUpdate, { url: './version.json', current: APP_VERSION, policy: 'next-na
 
 자세한 배포 방법은 [배포와 캐시](deploy.md)에 있습니다.
 
+## 공식 플러그인 — `vf.ext.shortcut`
+
+페이지 전체의 키보드 단축키입니다. 입력칸에서 누른 키는 허용하지 않으면 무시하고, IME 조합 중인 키도 무시합니다. 그래서 한글·일본어·중국어를 입력하는 동안에는 단축키가 실행되지 않습니다.
+
+```js
+import vfShortcut from 'vfunc/plugins/shortcut';   // <script>는 dist/plugins/shortcut.min.js → 전역 vfShortcut
+const keys = vf.use(vfShortcut);
+const off = keys.add('mod+k', () => search.focus(), { label: '검색' });   // mod는 Apple 기기에서 ⌘, 그 밖에서는 Ctrl
+keys.add('escape', closeDialog, { allowInInput: true });
+keys.list();   // [{ combo: 'ctrl+k', label: '검색' }, …] 도움말 화면은 앱이 그립니다
+off();         // 단축키 하나 해제. keys.destroy()는 모두 해제
+```
+
+같은 조합은 가장 나중에 등록한 단축키가 실행됩니다. 대화상자가 열려 있는 동안 `escape`를 가져갔다가 `off()`로 돌려줄 수 있습니다. 플러그인은 화면을 그리지 않습니다.
+
 ## IE11·Edge IE 모드
 
 엔진은 하나이고 배포 파일만 다릅니다. `vfunc.legacy.min.js`는 ES5로 변환되고 Promise 폴리필 하나를 담습니다(gzip 약 10KB).

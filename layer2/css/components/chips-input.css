@@ -1,0 +1,48 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsChipsInput: vsTag chips and a text input inside one box. */
+
+.vf-chips-input {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--vf-space-1);
+  inline-size: 100%;
+  padding-block: var(--vf-space-1);
+  padding-inline: var(--vf-space-2);
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-md);
+  line-height: var(--vf-line-height);
+  color: var(--vf-color-text);
+  background: var(--vf-color-surface);
+  border: 1px solid var(--vf-color-border-strong);
+  border-radius: var(--vf-radius-md);
+}
+
+.vf-chips-input:focus-within { border-color: var(--vf-color-focus); box-shadow: var(--vf-focus-ring); }
+.vf-chips-input[data-state="disabled"] { background: var(--vf-color-surface-muted); }
+
+.vf-chips-input__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vf-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vf-chips-input__chip { display: inline-flex; }
+
+.vf-chips-input__input {
+  flex: 1;
+  min-inline-size: 6em;
+  padding-block: var(--vf-space-1);
+  padding-inline: var(--vf-space-1);
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  outline: none;
+}
+
+.vf-chips-input__input[aria-invalid="true"] { color: var(--vf-color-danger-text); }

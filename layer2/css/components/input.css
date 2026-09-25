@@ -1,0 +1,64 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsInput, vsTextarea, vsSelect. State from attributes: data-size, aria-invalid, disabled, readonly. */
+
+.vf-input,
+.vf-textarea,
+.vf-select {
+  box-sizing: border-box;
+  inline-size: 100%;
+  padding-block: var(--vf-space-2);
+  padding-inline: var(--vf-space-3);
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-md);
+  line-height: var(--vf-line-height);
+  color: var(--vf-color-text);
+  background: var(--vf-color-surface);
+  border: 1px solid var(--vf-color-border-strong);
+  border-radius: var(--vf-radius-md);
+  transition: border-color var(--vf-duration-fast) var(--vf-easing), box-shadow var(--vf-duration-fast) var(--vf-easing);
+}
+
+.vf-textarea { resize: vertical; }
+.vf-select[multiple] { padding-block: var(--vf-space-1); }
+
+.vf-input::placeholder,
+.vf-textarea::placeholder { color: var(--vf-color-text-muted); }
+
+.vf-input:focus,
+.vf-textarea:focus,
+.vf-select:focus {
+  outline: none;
+  border-color: var(--vf-color-focus);
+  box-shadow: var(--vf-focus-ring);
+}
+
+.vf-input[data-size="sm"],
+.vf-textarea[data-size="sm"],
+.vf-select[data-size="sm"] {
+  padding-block: var(--vf-space-1);
+  padding-inline: var(--vf-space-2);
+  font-size: var(--vf-font-size-sm);
+}
+
+.vf-input[data-size="lg"],
+.vf-textarea[data-size="lg"],
+.vf-select[data-size="lg"] {
+  padding-block: var(--vf-space-3);
+  padding-inline: var(--vf-space-4);
+  font-size: var(--vf-font-size-lg);
+}
+
+.vf-input[aria-invalid="true"],
+.vf-textarea[aria-invalid="true"],
+.vf-select[aria-invalid="true"] { border-color: var(--vf-color-danger); }
+
+.vf-input:disabled,
+.vf-textarea:disabled,
+.vf-select:disabled {
+  color: var(--vf-color-text-disabled);
+  background: var(--vf-color-surface-muted);
+  cursor: not-allowed;
+}
+
+.vf-input[readonly],
+.vf-textarea[readonly] { background: var(--vf-color-surface-muted); }

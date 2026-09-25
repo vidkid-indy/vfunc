@@ -1,0 +1,50 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsTimeline. Marker color from data-variant. */
+
+.vf-timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-md);
+  line-height: var(--vf-line-height);
+  color: var(--vf-color-text);
+}
+
+.vf-timeline__item {
+  position: relative;
+  display: flex;
+  gap: var(--vf-space-3);
+  padding-block-end: var(--vf-space-4);
+}
+
+.vf-timeline__item::before {
+  content: "";
+  position: absolute;
+  inset-block: 1.25em 0;
+  inset-inline-start: calc(0.375em - 1px);
+  border-inline-start: 2px solid var(--vf-color-border);
+}
+
+.vf-timeline__item:last-child::before { display: none; }
+
+.vf-timeline__marker {
+  position: relative;
+  flex: none;
+  inline-size: 0.75em;
+  block-size: 0.75em;
+  margin-block-start: 0.375em;
+  background: var(--vf-color-text-muted);
+  border-radius: var(--vf-radius-full);
+}
+
+.vf-timeline__item[data-variant="primary"] .vf-timeline__marker { background: var(--vf-color-primary); }
+.vf-timeline__item[data-variant="success"] .vf-timeline__marker { background: var(--vf-color-success); }
+.vf-timeline__item[data-variant="warning"] .vf-timeline__marker { background: var(--vf-color-warning); }
+.vf-timeline__item[data-variant="danger"] .vf-timeline__marker { background: var(--vf-color-danger); }
+.vf-timeline__item[data-variant="info"] .vf-timeline__marker { background: var(--vf-color-info); }
+
+.vf-timeline__content { min-inline-size: 0; }
+.vf-timeline__title { margin: 0; font-weight: var(--vf-font-weight-strong); }
+.vf-timeline__time { display: block; font-size: var(--vf-font-size-sm); color: var(--vf-color-text-muted); }
+.vf-timeline__description { margin: 0; margin-block-start: var(--vf-space-1); }

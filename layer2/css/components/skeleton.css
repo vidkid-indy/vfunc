@@ -1,0 +1,29 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsSkeleton. Shape from data-variant: text, rect, circle. Size the rect and circle from your CSS. */
+
+.vf-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vf-space-2);
+}
+
+.vf-skeleton__line {
+  display: block;
+  block-size: 1em;
+  background: var(--vf-color-surface-muted);
+  border-radius: var(--vf-radius-sm);
+  animation: vf-skeleton-pulse 1.5s var(--vf-easing) infinite;
+}
+
+.vf-skeleton[data-variant="text"] .vf-skeleton__line:last-child:not(:first-child) { inline-size: 60%; }
+.vf-skeleton[data-variant="rect"] .vf-skeleton__line { block-size: 8em; border-radius: var(--vf-radius-md); }
+.vf-skeleton[data-variant="circle"] { display: inline-flex; }
+.vf-skeleton[data-variant="circle"] .vf-skeleton__line { inline-size: 2.5em; block-size: 2.5em; border-radius: var(--vf-radius-full); }
+
+@keyframes vf-skeleton-pulse {
+  50% { opacity: 0.5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vf-skeleton__line { animation: none; }
+}

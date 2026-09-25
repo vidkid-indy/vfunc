@@ -1,0 +1,40 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsBreadcrumb. The separator is drawn by CSS, so screen readers read only the path. */
+
+.vf-breadcrumb {
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-sm);
+  line-height: var(--vf-line-height);
+}
+
+.vf-breadcrumb__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--vf-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vf-breadcrumb__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vf-space-1);
+  color: var(--vf-color-text-muted);
+}
+
+.vf-breadcrumb__item + .vf-breadcrumb__item::before {
+  content: "/";
+  color: var(--vf-color-border-strong);
+}
+
+.vf-breadcrumb__link {
+  color: var(--vf-color-primary);
+  text-decoration: none;
+  border-radius: var(--vf-radius-sm);
+}
+
+.vf-breadcrumb__link:hover { text-decoration: underline; }
+.vf-breadcrumb__link:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); }
+.vf-breadcrumb__current[aria-current="page"] { color: var(--vf-color-text); font-weight: var(--vf-font-weight-strong); }

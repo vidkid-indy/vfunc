@@ -99,6 +99,10 @@ Token names are public API: `--vf-color-primary|-hover|-active|-soft`, `--vf-col
 
 `const update = vf.use(vfUpdate, { url: './version.json', current: APP_VERSION, policy: 'next-navigation' | 'prompt' | 'immediate', interval: 10, onAvailable: (info, apply) => {} })` → `vf.ext.update` with `check(force)`, `status()`, `navigated()`, `apply()`, `stop()`. version.json is `{ "version": "1.0.3" }`; serve it and index.html with `Cache-Control: no-cache`. The plugin draws no UI; the app shows the prompt.
 
+## Shortcut plugin (dist/plugins/shortcut.min.js → global vfShortcut; ESM `import vfShortcut from 'vfunc/plugins/shortcut'`)
+
+`const keys = vf.use(vfShortcut)` → `vf.ext.shortcut`: `const off = keys.add('mod+k', handler, { label, allowInInput: false, preventDefault: true })`, `keys.remove(combo, handler?)`, `keys.list()` → `[{ combo, label }]` for your own help screen, `keys.destroy()`. `mod` is ⌘ on Apple devices and Ctrl elsewhere; key names follow KeyboardEvent.key (`escape`, `enter`, `arrowup`, `?`). Keys typed in inputs and during IME composition are ignored; the newest shortcut of a combo wins. Do not write your own document keydown listener for shortcuts.
+
 ## Common mistakes
 
 - A component renders when created: create components that use vf.t after `vf.i18n.setup()` resolves.

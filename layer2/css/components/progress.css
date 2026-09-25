@@ -1,0 +1,33 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsProgress: a native <progress>. Each engine styles its own pseudo-elements. */
+
+.vf-progress {
+  display: block;
+  inline-size: 100%;
+  block-size: 0.5em;
+  overflow: hidden;
+  color: var(--vf-color-primary);
+  background: var(--vf-color-surface-muted);
+  border: 0;
+  border-radius: var(--vf-radius-full);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.vf-progress::-webkit-progress-bar { background: var(--vf-color-surface-muted); }
+.vf-progress::-webkit-progress-value { background: var(--vf-color-primary); border-radius: var(--vf-radius-full); }
+.vf-progress::-moz-progress-bar { background: var(--vf-color-primary); border-radius: var(--vf-radius-full); }
+
+.vf-progress__row {
+  display: flex;
+  align-items: center;
+  gap: var(--vf-space-2);
+}
+
+.vf-progress__value {
+  flex: none;
+  font-size: var(--vf-font-size-sm);
+  color: var(--vf-color-text-muted);
+  font-variant-numeric: tabular-nums;
+}

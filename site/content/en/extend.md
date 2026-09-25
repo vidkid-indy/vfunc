@@ -42,6 +42,21 @@ vf.use(vfUpdate, { url: './version.json', current: APP_VERSION, policy: 'next-na
 
 See [Deployment and cache](deploy.md) for the rest.
 
+## Official plugin — `vf.ext.shortcut`
+
+Keyboard shortcuts for the whole page. Keys typed into inputs are ignored unless you allow them, and so are keys that belong to an IME composition, so typing Korean, Japanese or Chinese never fires a shortcut.
+
+```js
+import vfShortcut from 'vfunc/plugins/shortcut';   // <script>: dist/plugins/shortcut.min.js → global vfShortcut
+const keys = vf.use(vfShortcut);
+const off = keys.add('mod+k', () => search.focus(), { label: 'Search' });   // mod = ⌘ on Apple devices, Ctrl elsewhere
+keys.add('escape', closeDialog, { allowInInput: true });
+keys.list();   // [{ combo: 'ctrl+k', label: 'Search' }, …] for your own help screen
+off();         // remove one shortcut; keys.destroy() removes all
+```
+
+The newest shortcut of a combo wins, so a dialog can take `escape` while it is open and give it back with `off()`. The plugin draws no UI.
+
 ## IE11 / Edge IE mode
 
 One engine, several files. `vfunc.legacy.min.js` is transpiled to ES5 with a single Promise polyfill (about 10 KB gzip).

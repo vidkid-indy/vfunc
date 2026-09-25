@@ -1,0 +1,12 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsSlider: a native range input in the theme color. */
+
+.vf-slider {
+  inline-size: 100%;
+  margin: 0;
+  accent-color: var(--vf-color-primary);
+  cursor: pointer;
+}
+
+.vf-slider:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); border-radius: var(--vf-radius-sm); }
+.vf-slider:disabled { cursor: not-allowed; opacity: 0.5; }

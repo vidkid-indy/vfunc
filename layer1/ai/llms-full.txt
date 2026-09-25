@@ -107,6 +107,10 @@ Token names are public API: `--vf-color-primary|-hover|-active|-soft`, `--vf-col
 
 `const update = vf.use(vfUpdate, { url: './version.json', current: APP_VERSION, policy: 'next-navigation' | 'prompt' | 'immediate', interval: 10, onAvailable: (info, apply) => {} })` → `vf.ext.update` with `check(force)`, `status()`, `navigated()`, `apply()`, `stop()`. version.json is `{ "version": "1.0.3" }`; serve it and index.html with `Cache-Control: no-cache`. The plugin draws no UI; the app shows the prompt.
 
+## Shortcut plugin (dist/plugins/shortcut.min.js → global vfShortcut; ESM `import vfShortcut from 'vfunc/plugins/shortcut'`)
+
+`const keys = vf.use(vfShortcut)` → `vf.ext.shortcut`: `const off = keys.add('mod+k', handler, { label, allowInInput: false, preventDefault: true })`, `keys.remove(combo, handler?)`, `keys.list()` → `[{ combo, label }]` for your own help screen, `keys.destroy()`. `mod` is ⌘ on Apple devices and Ctrl elsewhere; key names follow KeyboardEvent.key (`escape`, `enter`, `arrowup`, `?`). Keys typed in inputs and during IME composition are ignored; the newest shortcut of a combo wins. Do not write your own document keydown listener for shortcuts.
+
 ## Common mistakes
 
 - A component renders when created: create components that use vf.t after `vf.i18n.setup()` resolves.
@@ -456,6 +460,21 @@ vf.use(vfUpdate, { url: './version.json', current: APP_VERSION, policy: 'next-na
 
 See [Deployment and cache](deploy.md) for the rest.
 
+### Official plugin — `vf.ext.shortcut`
+
+Keyboard shortcuts for the whole page. Keys typed into inputs are ignored unless you allow them, and so are keys that belong to an IME composition, so typing Korean, Japanese or Chinese never fires a shortcut.
+
+```js
+import vfShortcut from 'vfunc/plugins/shortcut';   // <script>: dist/plugins/shortcut.min.js → global vfShortcut
+const keys = vf.use(vfShortcut);
+const off = keys.add('mod+k', () => search.focus(), { label: 'Search' });   // mod = ⌘ on Apple devices, Ctrl elsewhere
+keys.add('escape', closeDialog, { allowInInput: true });
+keys.list();   // [{ combo: 'ctrl+k', label: 'Search' }, …] for your own help screen
+off();         // remove one shortcut; keys.destroy() removes all
+```
+
+The newest shortcut of a combo wins, so a dialog can take `escape` while it is open and give it back with `off()`. The plugin draws no UI.
+
 ### IE11 / Edge IE mode
 
 One engine, several files. `vfunc.legacy.min.js` is transpiled to ES5 with a single Promise polyfill (about 10 KB gzip).
@@ -624,6 +643,8 @@ The build version (for example `1.0.0-rc.8`); `0.0.0-dev` when the source is imp
 ### Official plugin
 
 `vfunc/plugins/update` (`dist/plugins/update.min.js` → global `vfUpdate`): `vf.use(vfUpdate, { url, current, policy, interval, minGap, onAvailable, onError })` → `check(force)`, `status()`, `navigated()`, `apply()`, `stop()`. See [Extensions](extend.md#official-plugin-vfextupdate).
+
+`vfunc/plugins/shortcut` (`dist/plugins/shortcut.min.js` → global `vfShortcut`): `vf.use(vfShortcut, { target, apple })` → `add(combo, handler, { label, allowInInput, preventDefault })` (returns a remover), `remove(combo, handler?)`, `list()`, `parse(combo)`, `destroy()`. See [Extensions](extend.md#official-plugin-vfextshortcut).
 
 ## FAQ
 
@@ -1151,4 +1172,54 @@ export interface UpdateApi {
 
 declare const vfUpdate: VfPlugin<UpdateApi, UpdateOptions>;
 export default vfUpdate;
+```
+
+## types/plugins/shortcut.d.ts
+
+```ts
+// SPDX-License-Identifier: Apache-2.0
+//
+// Types of the official keyboard shortcut plugin (layer1/plugins/shortcut.js, D-030).
+//   import vfShortcut from 'vfunc/plugins/shortcut';
+//   const keys = vf.use(vfShortcut);
+//   const off = keys.add('mod+k', () => openSearch(), { label: 'Search' });
+
+import type { VfPlugin } from '../vfunc';
+
+export interface ShortcutOptions {
+  /** Where keydown is listened to. Default document. */
+  target?: EventTarget;
+  /** Treat `mod` as meta (true) or ctrl (false). Default: detected from the platform. */
+  apple?: boolean;
+}
+
+export interface ShortcutAddOptions {
+  /** Shown by list(), for a help screen. */
+  label?: string;
+  /** Also run while typing in inputs, textareas, selects and editable elements. Default false. */
+  allowInInput?: boolean;
+  /** Default true. */
+  preventDefault?: boolean;
+}
+
+export interface ShortcutApi {
+  /**
+   * `combo`: modifiers ctrl, alt, shift, meta, mod (meta on Apple devices, ctrl elsewhere) and one
+   * key as KeyboardEvent.key names it ('k', 'enter', 'escape', 'arrowup', 'f2', '?', 'space').
+   * Keys of an IME composition never match. The newest shortcut of a combo wins.
+   * Returns a function that removes the shortcut.
+   */
+  add(combo: string, handler: (event: KeyboardEvent, info: { combo: string; label: string }) => void, options?: ShortcutAddOptions): () => void;
+  /** Removes the shortcuts of a combo, or only the one with this handler. */
+  remove(combo: string, handler?: (...args: any[]) => void): void;
+  /** One row per combo in canonical form ('ctrl+shift+k'), sorted. */
+  list(): Array<{ combo: string; label: string }>;
+  /** The canonical form of a combo, or '' when it is not valid. */
+  parse(combo: string): string;
+  /** Removes the listener and every shortcut. */
+  destroy(): void;
+}
+
+declare const vfShortcut: VfPlugin<ShortcutApi, ShortcutOptions>;
+export default vfShortcut;
 ```

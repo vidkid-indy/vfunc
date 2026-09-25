@@ -19,7 +19,7 @@ const SOURCES = {
   summary: 'layer1/ai/llms.txt',
   // Website pages in reading order (site/content/en, the translation of the Korean original).
   pages: ['getting-started', 'guide', 'spa', 'design', 'extend', 'deploy', 'api', 'faq'],
-  types: ['layer1/types/vfunc.d.ts', 'layer1/types/global.d.ts', 'layer1/types/plugins/update.d.ts']
+  types: ['layer1/types/vfunc.d.ts', 'layer1/types/global.d.ts', 'layer1/types/plugins/update.d.ts', 'layer1/types/plugins/shortcut.d.ts']
 };
 
 function read(path) {

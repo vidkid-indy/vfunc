@@ -1,0 +1,26 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsSpinner. Size from data-size; the vf-spin keyframes are in base.css. */
+
+.vf-spinner {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--vf-font-size-lg);
+  color: var(--vf-color-primary);
+}
+
+.vf-spinner[data-size="sm"] { font-size: var(--vf-font-size-sm); }
+.vf-spinner[data-size="lg"] { font-size: var(--vf-font-size-2xl); }
+
+.vf-spinner__circle {
+  display: block;
+  inline-size: 1em;
+  block-size: 1em;
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: var(--vf-radius-full);
+  animation: vf-spin 0.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vf-spinner__circle { animation-duration: 2.4s; }
+}

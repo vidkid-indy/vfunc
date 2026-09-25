@@ -108,3 +108,5 @@ The build version (for example `@VERSION@`); `0.0.0-dev` when the source is impo
 ## Official plugin
 
 `vfunc/plugins/update` (`dist/plugins/update.min.js` → global `vfUpdate`): `vf.use(vfUpdate, { url, current, policy, interval, minGap, onAvailable, onError })` → `check(force)`, `status()`, `navigated()`, `apply()`, `stop()`. See [Extensions](extend.md#official-plugin-vfextupdate).
+
+`vfunc/plugins/shortcut` (`dist/plugins/shortcut.min.js` → global `vfShortcut`): `vf.use(vfShortcut, { target, apple })` → `add(combo, handler, { label, allowInInput, preventDefault })` (returns a remover), `remove(combo, handler?)`, `list()`, `parse(combo)`, `destroy()`. See [Extensions](extend.md#official-plugin-vfextshortcut).
