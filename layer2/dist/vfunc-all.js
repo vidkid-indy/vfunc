@@ -65,10 +65,10 @@
   var nextTick = /* @__PURE__ */ __name(function(fn) {
     Promise.resolve().then(fn);
   }, "nextTick");
-  function protect(target, members2) {
-    for (const key in members2) {
-      if (hasOwn.call(members2, key)) {
-        Object.defineProperty(target, key, { value: members2[key], enumerable: true, writable: false, configurable: false });
+  function protect(target, members3) {
+    for (const key in members3) {
+      if (hasOwn.call(members3, key)) {
+        Object.defineProperty(target, key, { value: members3[key], enumerable: true, writable: false, configurable: false });
       }
     }
     return target;
@@ -1554,18 +1554,18 @@
     } else if (typeof existing.vfunc === "function" && existing.vfunc !== vfunc_default.vfunc) {
       if (true) devWarn("vfunc " + existing.version + " is already loaded; this copy (" + vfunc_default.version + ") was ignored.");
     } else {
-      const hasOwn4 = Object.prototype.hasOwnProperty;
-      const conflicts2 = [];
+      const hasOwn5 = Object.prototype.hasOwnProperty;
+      const conflicts3 = [];
       const keys = Object.keys(vfunc_default);
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
-        if (hasOwn4.call(existing, key)) {
-          if (existing[key] !== vfunc_default[key]) conflicts2.push(key);
+        if (hasOwn5.call(existing, key)) {
+          if (existing[key] !== vfunc_default[key]) conflicts3.push(key);
         } else {
           Object.defineProperty(existing, key, Object.getOwnPropertyDescriptor(vfunc_default, key));
         }
       }
-      if (conflicts2.length) devWarn("window.vf already has " + conflicts2.join(", ") + "; the existing members were kept.");
+      if (conflicts3.length) devWarn("window.vf already has " + conflicts3.join(", ") + "; the existing members were kept.");
     }
   }
 
@@ -1575,30 +1575,6 @@
     if (typeof console !== "undefined" && console.warn) console.warn("[vfunc-ui] " + message);
   }
   __name(warn2, "warn");
-
-  // layer2/src/_internal/attrs.js
-  var ATTR_NAME = /^(?:id|name|class|title|role|type|value|for|form|href|src|alt|label|datetime|placeholder|autocomplete|inputmode|pattern|min|max|step|minlength|maxlength|rows|cols|tabindex|disabled|readonly|required|checked|selected|multiple|hidden|lang|dir|aria-[a-z]+|data-[a-z0-9]+(?:-[a-z0-9]+)*)$/;
-  var URL_ATTR = /^(?:href|src)$/;
-  var hasOwn2 = Object.prototype.hasOwnProperty;
-  function attrs(map) {
-    const out = [];
-    for (const name in map) {
-      if (!hasOwn2.call(map, name)) continue;
-      if (!ATTR_NAME.test(name)) {
-        if (DEV2) warn2('attribute "' + name + '" is not allowed in component markup.');
-        continue;
-      }
-      const value = map[name];
-      if (value == null || value === false || value === "") {
-        if (value === false && /^(aria|data)-/.test(name)) out.push(name + '="false"');
-        continue;
-      }
-      if (value === true) out.push(/^(aria|data)-/.test(name) ? name + '="true"' : name);
-      else out.push(name + '="' + vfunc_default.esc(URL_ATTR.test(name) ? vfunc_default.safeUrl(value) : value) + '"');
-    }
-    return vfunc_default.unsafeHtml(out.join(" "));
-  }
-  __name(attrs, "attrs");
 
   // layer2/src/locales/en.js
   var en_default = {
@@ -1621,6 +1597,11 @@
       pause: "Pause",
       play: "Play"
     },
+    chart: {
+      label: "Chart",
+      legend: "Legend",
+      point: "{series}, {label}: {value}"
+    },
     confirm: {
       ok: "OK",
       cancel: "Cancel"
@@ -1634,6 +1615,12 @@
     },
     emptyState: {
       title: "No data"
+    },
+    grid: {
+      select: "Select",
+      selectAll: "Select all rows on this page",
+      selectRow: "Select row {index}",
+      range: "{from}–{to} of {total}"
     },
     modal: {
       close: "Close"
@@ -1661,6 +1648,10 @@
       placeholder: "Search",
       clear: "Clear search"
     },
+    sparkline: {
+      summary: "From {first} to {last}, low {min}, high {max}",
+      empty: "No data"
+    },
     splitButton: {
       more: "More options"
     },
@@ -1683,8 +1674,31 @@
     }
   };
 
+  // layer2/src/_internal/attrs.js
+  var ATTR_NAME = /^(?:id|name|class|title|role|type|value|for|form|href|src|alt|label|datetime|scope|placeholder|autocomplete|inputmode|pattern|min|max|step|minlength|maxlength|rows|cols|tabindex|disabled|readonly|required|checked|selected|multiple|hidden|lang|dir|aria-[a-z]+|data-[a-z0-9]+(?:-[a-z0-9]+)*)$/;
+  var URL_ATTR = /^(?:href|src)$/;
+  var hasOwn2 = Object.prototype.hasOwnProperty;
+  function attrs(map) {
+    const out = [];
+    for (const name in map) {
+      if (!hasOwn2.call(map, name)) continue;
+      if (!ATTR_NAME.test(name)) {
+        if (DEV2) warn2('attribute "' + name + '" is not allowed in component markup.');
+        continue;
+      }
+      const value = map[name];
+      if (value == null || value === false || value === "") {
+        if (value === false && /^(aria|data)-/.test(name)) out.push(name + '="false"');
+        continue;
+      }
+      if (value === true) out.push(/^(aria|data)-/.test(name) ? name + '="true"' : name);
+      else out.push(name + '="' + vfunc_default.esc(URL_ATTR.test(name) ? vfunc_default.safeUrl(value) : value) + '"');
+    }
+    return vfunc_default.unsafeHtml(out.join(" "));
+  }
+  __name(attrs, "attrs");
+
   // layer2/src/_internal/messages.js
-  vfunc_default.i18n.add("en", en_default, { defaults: true });
   function msg(key, override, params) {
     if (override != null && override !== "") return override;
     return vfunc_default.t(key, params);
@@ -1840,8 +1854,8 @@
     return html3`<div ${attrs(wrapperAttrs("vf-field", p, a))}>${label}${control2}${fieldTexts(p, a)}</div>`;
   }
   __name(field, "field");
-  function fieldset(block, p, a, legend, inner, extra) {
-    const head = present(legend) ? html3`<legend class="vf-field__label">${legend}${requiredMark(a)}</legend>` : "";
+  function fieldset(block, p, a, legend2, inner, extra) {
+    const head = present(legend2) ? html3`<legend class="vf-field__label">${legend2}${requiredMark(a)}</legend>` : "";
     return html3`<fieldset ${attrs(wrapperAttrs(block, p, a, extend({ id: a.id, "data-ref": p.ref, "aria-describedby": a.describedBy }, extra)))}>${head}${inner}${fieldTexts(p, a)}</fieldset>`;
   }
   __name(fieldset, "fieldset");
@@ -3211,7 +3225,7 @@
     }
     const mode = oneOf("vsListView selectable", p.selectable, SELECTABLE);
     const itemKey = p.itemKey || "id";
-    const render6 = typeof p.render === "function" ? p.render : defaultItem;
+    const render7 = typeof p.render === "function" ? p.render : defaultItem;
     const base = present(p.id) ? String(p.id) : uid("list");
     let focusIndex = 0;
     if (mode !== "none") {
@@ -3225,7 +3239,7 @@
     const rows = [];
     for (let i = 0; i < items.length; i++) {
       const key = keyOf(items[i], i, itemKey);
-      rows.push(mode === "none" ? html32`<li class="vf-list-view__item">${render6(items[i], i)}</li>` : html32`<li ${attrs({
+      rows.push(mode === "none" ? html32`<li class="vf-list-view__item">${render7(items[i], i)}</li>` : html32`<li ${attrs({
         class: "vf-list-view__item",
         role: "option",
         id: base + "-option-" + i,
@@ -3234,7 +3248,7 @@
         "data-action": "select",
         "data-value": key,
         "data-index": i
-      })}>${render6(items[i], i)}</li>`);
+      })}>${render7(items[i], i)}</li>`);
     }
     return html32`<ul ${attrs({
       class: cls("vf-list-view", p.className),
@@ -4762,7 +4776,120 @@
   }
   __name(vfSplitButton, "vfSplitButton");
 
+  // layer2/src/components/table.js
+  var html46 = vfunc_default.html;
+  var ALIGNS = { start: 1, center: 1, end: 1 };
+  function cellOf(column, row, index) {
+    if (typeof column.render === "function") return column.render(row, index);
+    return row == null ? "" : row[column.key];
+  }
+  __name(cellOf, "cellOf");
+  function rowKeyOf(row, index, rowKey) {
+    const k = rowKey || "id";
+    return row != null && typeof row === "object" && row[k] != null ? String(row[k]) : String(index);
+  }
+  __name(rowKeyOf, "rowKeyOf");
+  function vsTable(props) {
+    const p = props || {};
+    const columns = p.columns || [];
+    const rows = p.data || [];
+    const sort = p.sort || {};
+    const base = Number(p.indexBase) || 0;
+    const head = [];
+    for (let c = 0; c < columns.length; c++) {
+      const col = columns[c];
+      const align = ALIGNS[col.align] ? col.align : null;
+      const sorted = col.sortable && sort.key === col.key ? sort.dir === "desc" ? "descending" : "ascending" : col.sortable ? "none" : null;
+      const label = col.sortable ? html46`<button ${attrs({ type: "button", class: "vf-table__sort", "data-action": "sort", "data-value": col.key })}>${col.label}<span class="vf-table__sort-icon" aria-hidden="true"></span></button>` : col.label;
+      head.push(html46`<th ${attrs({ class: "vf-table__head", scope: "col", "data-align": align, "aria-sort": sorted })}>${label}</th>`);
+    }
+    const body = [];
+    for (let r = 0; r < rows.length; r++) {
+      const key = rowKeyOf(rows[r], base + r, p.rowKey);
+      const cells = [];
+      for (let c = 0; c < columns.length; c++) {
+        cells.push(html46`<td ${attrs({ class: "vf-table__cell", "data-align": ALIGNS[columns[c].align] ? columns[c].align : null })}>${cellOf(columns[c], rows[r], base + r)}</td>`);
+      }
+      body.push(html46`<tr ${attrs({
+        class: "vf-table__row",
+        "data-value": key,
+        "data-index": base + r,
+        "data-action": p.rowAction,
+        "data-state": hasValue(p.selected, key) ? "selected" : null
+      })}>${cells}</tr>`);
+    }
+    if (!rows.length) {
+      body.push(html46`<tr><td class="vf-table__empty" colspan="${columns.length || 1}">${p.loading ? html46`<span class="vf-table__loading">${msg("common.loading")}</span>` : vsEmptyState({ title: p.emptyText })}</td></tr>`);
+    }
+    return html46`<div ${attrs({ class: cls("vf-table", p.className), "data-ref": p.ref, "data-state": p.loading ? "loading" : null })}><table ${attrs({
+      class: "vf-table__table",
+      id: p.id,
+      "aria-busy": p.loading ? true : null
+    })}>${present(p.caption) ? html46`<caption class="vf-table__caption">${p.caption}</caption>` : ""}<thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+  }
+  __name(vsTable, "vsTable");
+
+  // layer2/src/components/sparkline.js
+  var html47 = vfunc_default.html;
+  var TYPES3 = ["line", "bar"];
+  var W = 100;
+  var H = 24;
+  function numbers(data) {
+    const out = [];
+    const list2 = data || [];
+    for (let i = 0; i < list2.length; i++) {
+      const n = Number(list2[i]);
+      if (!isNaN(n)) out.push(n);
+    }
+    return out;
+  }
+  __name(numbers, "numbers");
+  function round(n) {
+    return Math.round(n * 100) / 100;
+  }
+  __name(round, "round");
+  function vsSparkline(props) {
+    const p = props || {};
+    const values = numbers(p.data);
+    const type = oneOf("vsSparkline type", p.type, TYPES3);
+    let low = Infinity;
+    let high = -Infinity;
+    for (let i = 0; i < values.length; i++) {
+      if (values[i] < low) low = values[i];
+      if (values[i] > high) high = values[i];
+    }
+    const min = type === "bar" ? Math.min(low, 0) : low;
+    const max = type === "bar" ? Math.max(high, 0) : high;
+    const span = max - min || 1;
+    const y = /* @__PURE__ */ __name(function(v) {
+      return round(H - (v - min) / span * H);
+    }, "y");
+    let marks = "";
+    if (values.length && type === "line") {
+      const step = values.length > 1 ? W / (values.length - 1) : 0;
+      const points = [];
+      for (let i = 0; i < values.length; i++) points.push(round(i * step) + "," + y(values[i]));
+      marks = html47`<polyline class="vf-sparkline__line" points="${points.join(" ")}"></polyline>`;
+    } else if (values.length) {
+      const band = W / values.length;
+      const bars = [];
+      for (let i = 0; i < values.length; i++) {
+        const top = Math.min(y(values[i]), y(0));
+        const height = Math.max(round(Math.abs(y(values[i]) - y(0))), 0.5);
+        bars.push(html47`<rect class="vf-sparkline__bar" x="${round(i * band + band * 0.15)}" y="${top}" width="${round(band * 0.7)}" height="${height}"></rect>`);
+      }
+      marks = html47`${bars}`;
+    }
+    const f = /* @__PURE__ */ __name(function(n) {
+      return vfunc_default.fmt.number(n, p.format);
+    }, "f");
+    const label = present(p.label) ? p.label : values.length ? msg("sparkline.summary", null, { first: f(values[0]), last: f(values[values.length - 1]), min: f(low), max: f(high) }) : msg("sparkline.empty");
+    return html47`<svg ${attrs({ class: cls("vf-sparkline", p.className), id: p.id, "data-ref": p.ref, "data-type": type, role: "img", "aria-label": label })} viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" focusable="false">${marks}</svg>`;
+  }
+  __name(vsSparkline, "vsSparkline");
+
   // layer2/src/index.js
+  vfunc_default.i18n.add("en", en_default, { defaults: true });
   var members = {
     vsButton,
     vsField,
@@ -4825,7 +4952,9 @@
     vfDropdown,
     vfPopover,
     vsSplitButton,
-    vfSplitButton
+    vfSplitButton,
+    vsTable,
+    vsSparkline
   };
   var hasOwn3 = Object.prototype.hasOwnProperty;
   var conflicts = [];
@@ -4838,5 +4967,621 @@
     Object.defineProperty(vfunc_default, key, { value: members[key], enumerable: true, writable: false, configurable: false });
   }
   if (DEV2 && conflicts.length) warn2("vf already has " + conflicts.join(", ") + "; the existing members were kept.");
+
+  // layer2/src/_internal/ui.js
+  var ui_default = vfunc_default;
+
+  // layer2/src/data/grid.js
+  var html48 = ui_default.html;
+  function keyOf2(row, index, rowKey) {
+    const k = rowKey || "id";
+    return row != null && typeof row === "object" && row[k] != null ? String(row[k]) : String(index);
+  }
+  __name(keyOf2, "keyOf");
+  function compare(a, b) {
+    if (a == null && b == null) return 0;
+    if (a == null) return -1;
+    if (b == null) return 1;
+    if (typeof a === "number" && typeof b === "number") return a - b;
+    if (a instanceof Date && b instanceof Date) return a.getTime() - b.getTime();
+    return String(a).localeCompare(String(b));
+  }
+  __name(compare, "compare");
+  function prepared(s) {
+    const out = [];
+    const data = s.data || [];
+    const q = present(s.query) ? String(s.query).toLowerCase() : "";
+    for (let i = 0; i < data.length; i++) {
+      const row = data[i];
+      if (q && s.mode !== "server") {
+        let hit = false;
+        for (let c = 0; c < s.columns.length && !hit; c++) {
+          const v = row == null ? null : row[s.columns[c].key];
+          if (v != null && String(v).toLowerCase().indexOf(q) >= 0) hit = true;
+        }
+        if (!hit) continue;
+      }
+      out.push({ row, key: keyOf2(row, i, s.rowKey), order: i });
+    }
+    if (s.sort && s.sort.key && s.mode !== "server") {
+      const k = s.sort.key;
+      const dir = s.sort.dir === "desc" ? -1 : 1;
+      out.sort(function(x, y) {
+        return dir * compare(x.row && x.row[k], y.row && y.row[k]) || x.order - y.order;
+      });
+    }
+    return out;
+  }
+  __name(prepared, "prepared");
+  function pagesOf(total, pageSize) {
+    return Math.max(1, Math.ceil(total / pageSize));
+  }
+  __name(pagesOf, "pagesOf");
+  function view(s) {
+    const all = prepared(s);
+    const size = Math.max(1, Math.floor(Number(s.pageSize) || 10));
+    const total = s.mode === "server" ? Math.max(0, Number(s.total) || 0) : all.length;
+    const page = Math.max(1, Math.min(pagesOf(total, size), Math.floor(Number(s.page) || 1)));
+    const rows = s.mode === "server" ? all : all.slice((page - 1) * size, page * size);
+    return { rows, total, page, size };
+  }
+  __name(view, "view");
+  function render6(s) {
+    const v = view(s);
+    const multiple = s.selectable === "multiple";
+    const single = s.selectable === "single";
+    const keys = [];
+    const data = [];
+    for (let i = 0; i < v.rows.length; i++) {
+      keys.push(v.rows[i].key);
+      data.push(extend({}, v.rows[i].row, { __vfKey: v.rows[i].key }));
+    }
+    let allOn = keys.length > 0;
+    for (let i = 0; i < keys.length; i++) if (!hasValue(s.selected, keys[i])) allOn = false;
+    const columns = [];
+    if (multiple || single) {
+      columns.push({
+        key: "",
+        label: multiple ? html48`<input ${attrs({ type: "checkbox", class: "vf-grid__check", "data-action": "select-all", "aria-label": msg("grid.selectAll"), checked: allOn })}>` : html48`<span class="vf-visually-hidden">${msg("grid.select")}</span>`,
+        render: /* @__PURE__ */ __name(function(row, index) {
+          const key = row.__vfKey;
+          return html48`<input ${attrs({
+            type: multiple ? "checkbox" : "radio",
+            class: "vf-grid__check",
+            name: single ? s.id + "-select" : null,
+            "data-action": "select-row",
+            "data-value": key,
+            "aria-label": msg("grid.selectRow", null, { index: index + 1 }),
+            checked: hasValue(s.selected, key)
+          })}>`;
+        }, "render")
+      });
+    }
+    for (let c = 0; c < s.columns.length; c++) columns.push(s.columns[c]);
+    const from = v.total ? (v.page - 1) * v.size + 1 : 0;
+    const to = v.rows.length ? Math.min(v.total, from + v.rows.length - 1) : from;
+    const pager = v.total > v.size ? ui_default.vsPagination({ total: v.total, page: v.page, pageSize: v.size, id: s.id + "-pages" }) : "";
+    return html48`<div ${attrs({ class: cls("vf-grid", s.className), id: s.id, "data-ref": s.ref, "data-mode": s.mode })}><div ${attrs({ class: "vf-grid__scroll", id: s.id + "-scroll", "data-height": present(s.height) ? true : null })}>${ui_default.vsTable({
+      columns,
+      data,
+      sort: s.sort,
+      rowKey: "__vfKey",
+      selected: s.selected,
+      rowAction: "row",
+      caption: s.caption,
+      emptyText: s.emptyText,
+      loading: s.loading,
+      indexBase: (v.page - 1) * v.size
+    })}</div><div class="vf-grid__footer"><p class="vf-grid__range" aria-live="polite">${msg("grid.range", null, {
+      from: ui_default.fmt.number(from),
+      to: ui_default.fmt.number(Math.max(to, 0)),
+      total: ui_default.fmt.number(v.total)
+    })}</p>${pager}</div></div>`;
+  }
+  __name(render6, "render");
+  function vfGrid(props) {
+    const p = props || {};
+    function rowsByKey(s, keys) {
+      const out = [];
+      const data = s.data || [];
+      for (let i = 0; i < data.length; i++) if (hasValue(keys, keyOf2(data[i], i, s.rowKey))) out.push(data[i]);
+      return out;
+    }
+    __name(rowsByKey, "rowsByKey");
+    function select(sender, event, keys) {
+      sender.setState({ selected: keys });
+      emit(p.onSelect, sender, event, { keys: keys.slice(), rows: rowsByKey(sender.state, keys) });
+    }
+    __name(select, "select");
+    function applyHeight(self2) {
+      const box = self2.ids[self2.state.id + "-scroll"];
+      const h = self2.state.height;
+      if (box && present(h)) box.style.maxHeight = typeof h === "number" ? h + "px" : String(h);
+    }
+    __name(applyHeight, "applyHeight");
+    const selectable = p.selectable === true ? "multiple" : p.selectable === "single" || p.selectable === "multiple" ? p.selectable : "none";
+    const state = stateOf(p, "grid", {
+      columns: (p.columns || []).slice(),
+      data: (p.data || []).slice(),
+      mode: p.mode === "server" ? "server" : "client",
+      selectable,
+      selected: [],
+      page: Math.max(1, Math.floor(Number(p.page) || 1)),
+      sort: p.sort || null,
+      instance: null
+    });
+    delete state.options;
+    delete state.lib;
+    return instance({
+      state,
+      render: render6,
+      delegates: [
+        {
+          selector: '[data-action="sort"]',
+          eventType: "click",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            const key = e.target.getAttribute("data-value");
+            const now = e.sender.state.sort;
+            const dir = now && now.key === key && now.dir === "asc" ? "desc" : "asc";
+            e.sender.setState({ sort: { key, dir }, page: 1 });
+            emit(p.onSort, e.sender, e.event, { key, dir });
+          }, "onEvent")
+        },
+        {
+          selector: '[data-action="page"]',
+          eventType: "click",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            const page = Number(e.target.getAttribute("data-page"));
+            if (page === e.sender.state.page) return;
+            e.sender.setState({ page });
+            emit(p.onPage, e.sender, e.event, { page });
+          }, "onEvent")
+        },
+        {
+          selector: '[data-action="select-row"]',
+          eventType: "change",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            const key = e.target.getAttribute("data-value");
+            const s = e.sender.state;
+            let keys;
+            if (s.selectable === "single") keys = [key];
+            else {
+              keys = [];
+              for (let i = 0; i < s.selected.length; i++) if (s.selected[i] !== key) keys.push(s.selected[i]);
+              if (e.target.checked) keys.push(key);
+            }
+            select(e.sender, e.event, keys);
+          }, "onEvent")
+        },
+        {
+          selector: '[data-action="select-all"]',
+          eventType: "change",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            const s = e.sender.state;
+            const pageKeys = [];
+            const v = view(s);
+            for (let i = 0; i < v.rows.length; i++) pageKeys.push(v.rows[i].key);
+            const keys = [];
+            for (let i = 0; i < s.selected.length; i++) if (pageKeys.indexOf(s.selected[i]) < 0) keys.push(s.selected[i]);
+            if (e.target.checked) for (let i = 0; i < pageKeys.length; i++) keys.push(pageKeys[i]);
+            select(e.sender, e.event, keys);
+          }, "onEvent")
+        },
+        {
+          selector: '[data-action="row"]',
+          eventType: "click",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            for (let node2 = e.event.target; node2 && node2 !== e.target; node2 = node2.parentNode) {
+              if (/^(A|BUTTON|INPUT|SELECT|TEXTAREA|LABEL)$/.test(node2.tagName)) return;
+            }
+            const key = e.target.getAttribute("data-value");
+            const index = Number(e.target.getAttribute("data-index"));
+            const rows = rowsByKey(e.sender.state, [key]);
+            emit(p.onRowClick, e.sender, e.event, { row: rows[0] || null, key, index });
+          }, "onEvent")
+        }
+      ],
+      methods: {
+        setData: /* @__PURE__ */ __name(function(data) {
+          const s = this.state;
+          const next = (data || []).slice();
+          const keys = [];
+          for (let i = 0; i < next.length; i++) keys.push(keyOf2(next[i], i, s.rowKey));
+          const kept = [];
+          for (let i = 0; i < s.selected.length; i++) if (keys.indexOf(s.selected[i]) >= 0) kept.push(s.selected[i]);
+          this.setState({ data: next, selected: kept, page: s.mode === "server" ? s.page : 1, loading: false });
+        }, "setData"),
+        getData: /* @__PURE__ */ __name(function() {
+          return this.state.data.slice();
+        }, "getData"),
+        setColumns: /* @__PURE__ */ __name(function(columns) {
+          this.setState({ columns: (columns || []).slice() });
+        }, "setColumns"),
+        getSelection: /* @__PURE__ */ __name(function() {
+          return rowsByKey(this.state, this.state.selected);
+        }, "getSelection"),
+        clearSelection: /* @__PURE__ */ __name(function() {
+          this.setState({ selected: [] });
+        }, "clearSelection"),
+        setPage: /* @__PURE__ */ __name(function(page) {
+          this.setState({ page: Math.max(1, Math.floor(Number(page) || 1)) });
+        }, "setPage"),
+        setQuery: /* @__PURE__ */ __name(function(query) {
+          this.setState({ query, page: 1 });
+        }, "setQuery"),
+        setLoading: /* @__PURE__ */ __name(function(loading) {
+          this.setState({ loading: !!loading });
+        }, "setLoading"),
+        setTotal: /* @__PURE__ */ __name(function(total) {
+          this.setState({ total });
+        }, "setTotal"),
+        getValue: /* @__PURE__ */ __name(function() {
+          return this.state.selected.slice();
+        }, "getValue"),
+        setValue: /* @__PURE__ */ __name(function(keys) {
+          this.setState({ selected: (keys || []).slice() });
+        }, "setValue")
+      },
+      onMount: applyHeight,
+      onUpdate: applyHeight
+    });
+  }
+  __name(vfGrid, "vfGrid");
+
+  // layer2/src/data/geometry.js
+  function r2(n) {
+    return Math.round(n * 100) / 100;
+  }
+  __name(r2, "r2");
+  function niceStep(span, count) {
+    const raw = span / Math.max(1, count);
+    const power = Math.pow(10, Math.floor(Math.log(raw) / Math.LN10));
+    const f = raw / power;
+    return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * power;
+  }
+  __name(niceStep, "niceStep");
+  function niceTicks(lo, hi, count) {
+    let min = Math.min(0, lo);
+    let max = Math.max(0, hi);
+    if (min === max) max = min + 1;
+    const step = niceStep(max - min, count || 5);
+    min = Math.floor(min / step) * step;
+    max = Math.ceil(max / step) * step;
+    const ticks = [];
+    for (let v = min; v <= max + step / 2; v += step) ticks.push(Math.round(v / step) * step);
+    return { min, max, ticks };
+  }
+  __name(niceTicks, "niceTicks");
+  function point(cx, cy, radius, angle) {
+    return r2(cx + radius * Math.sin(angle)) + " " + r2(cy - radius * Math.cos(angle));
+  }
+  __name(point, "point");
+  function arcPath(cx, cy, radius, inner, a0, a1) {
+    if (a1 - a0 >= Math.PI * 2 - 1e-6) {
+      const mid = a0 + Math.PI;
+      return arcPath(cx, cy, radius, inner, a0, mid) + " " + arcPath(cx, cy, radius, inner, mid, a0 + Math.PI * 2);
+    }
+    const large = a1 - a0 > Math.PI ? 1 : 0;
+    const outer = "M " + point(cx, cy, radius, a0) + " A " + radius + " " + radius + " 0 " + large + " 1 " + point(cx, cy, radius, a1);
+    if (!inner) return outer + " L " + r2(cx) + " " + r2(cy) + " Z";
+    return outer + " L " + point(cx, cy, inner, a1) + " A " + inner + " " + inner + " 0 " + large + " 0 " + point(cx, cy, inner, a0) + " Z";
+  }
+  __name(arcPath, "arcPath");
+
+  // layer2/src/data/chart.js
+  var html49 = ui_default.html;
+  var TYPES4 = ["bar", "line", "area", "pie", "donut", "sparkline"];
+  var COLORS = 8;
+  var PAD = { top: 12, right: 12, bottom: 28, left: 48 };
+  function normalize(data) {
+    const d = data || {};
+    const labels = d.labels || [];
+    const series = [];
+    const list2 = d.series || [];
+    for (let i = 0; i < list2.length; i++) {
+      const values = [];
+      const raw = list2[i] && list2[i].data || [];
+      for (let j = 0; j < raw.length; j++) values.push(Number(raw[j]) || 0);
+      series.push({ name: list2[i] && list2[i].name != null ? String(list2[i].name) : String(i + 1), data: values, index: i });
+    }
+    return { labels, series };
+  }
+  __name(normalize, "normalize");
+  function color(i) {
+    return String(i % COLORS);
+  }
+  __name(color, "color");
+  function markAttrs(s, series, index, label, value, className) {
+    const text = msg("chart.point", null, { series: series.name, label, value: ui_default.fmt.number(value, s.valueFormat) });
+    return {
+      class: className,
+      "data-series": color(series.index),
+      "data-s": series.index,
+      "data-index": index,
+      "data-action": s.interactive ? "mark" : null,
+      tabindex: s.interactive ? 0 : null,
+      "aria-label": s.interactive ? text : null
+    };
+  }
+  __name(markAttrs, "markAttrs");
+  function cartesian(s, d, visible, W2, H2) {
+    const plotW = W2 - PAD.left - PAD.right;
+    const plotH = H2 - PAD.top - PAD.bottom;
+    let lo = Infinity;
+    let hi = -Infinity;
+    for (let i = 0; i < visible.length; i++) {
+      for (let j = 0; j < visible[i].data.length; j++) {
+        lo = Math.min(lo, visible[i].data[j]);
+        hi = Math.max(hi, visible[i].data[j]);
+      }
+    }
+    const axis = niceTicks(lo === Infinity ? 0 : lo, hi === -Infinity ? 1 : hi, 5);
+    const y = /* @__PURE__ */ __name(function(v) {
+      return r2(PAD.top + plotH - (v - axis.min) / (axis.max - axis.min) * plotH);
+    }, "y");
+    const n = Math.max(1, d.labels.length);
+    const band = plotW / n;
+    const out = [];
+    for (let t2 = 0; t2 < axis.ticks.length; t2++) {
+      const ty = y(axis.ticks[t2]);
+      out.push(html49`<line class="vf-chart__gridline" x1="${PAD.left}" x2="${W2 - PAD.right}" y1="${ty}" y2="${ty}"></line><text class="vf-chart__tick" x="${PAD.left - 6}" y="${ty}" text-anchor="end" dominant-baseline="middle">${ui_default.fmt.number(axis.ticks[t2], s.valueFormat)}</text>`);
+    }
+    const every = Math.ceil(n / Math.max(1, Math.floor(plotW / 48)));
+    for (let i = 0; i < d.labels.length; i += every) {
+      out.push(html49`<text class="vf-chart__label" x="${r2(PAD.left + band * (i + 0.5))}" y="${H2 - 8}" text-anchor="middle">${d.labels[i]}</text>`);
+    }
+    const zero = y(Math.max(axis.min, Math.min(0, axis.max)));
+    if (s.type === "bar") {
+      const inner = band * 0.8 / Math.max(1, visible.length);
+      for (let k = 0; k < visible.length; k++) {
+        const series = visible[k];
+        for (let i = 0; i < n && i < series.data.length; i++) {
+          const v = series.data[i];
+          const top = Math.min(y(v), zero);
+          const x = r2(PAD.left + band * i + band * 0.1 + inner * k);
+          out.push(html49`<rect ${attrs(markAttrs(s, series, i, d.labels[i], v, "vf-chart__mark vf-chart__bar"))} x="${x}" y="${top}" width="${r2(Math.max(inner - 1, 1))}" height="${r2(Math.max(Math.abs(y(v) - zero), 0.5))}"></rect>`);
+        }
+      }
+    } else {
+      for (let k = 0; k < visible.length; k++) {
+        const series = visible[k];
+        const pts = [];
+        for (let i = 0; i < n && i < series.data.length; i++) pts.push([r2(PAD.left + band * (i + 0.5)), y(series.data[i])]);
+        if (!pts.length) continue;
+        let line = "M " + pts[0][0] + " " + pts[0][1];
+        for (let i = 1; i < pts.length; i++) line += " L " + pts[i][0] + " " + pts[i][1];
+        if (s.type === "area") {
+          const area = line + " L " + pts[pts.length - 1][0] + " " + zero + " L " + pts[0][0] + " " + zero + " Z";
+          out.push(html49`<path class="vf-chart__area" data-series="${color(series.index)}" d="${area}"></path>`);
+        }
+        out.push(html49`<path class="vf-chart__line" data-series="${color(series.index)}" d="${line}"></path>`);
+        for (let i = 0; i < pts.length; i++) {
+          out.push(html49`<circle ${attrs(markAttrs(s, series, i, d.labels[i], series.data[i], "vf-chart__mark vf-chart__point"))} cx="${pts[i][0]}" cy="${pts[i][1]}" r="4"></circle>`);
+        }
+      }
+    }
+    return out;
+  }
+  __name(cartesian, "cartesian");
+  function radial(s, d, W2, H2) {
+    const series = d.series[0] || { name: "", data: [], index: 0 };
+    const cx = W2 / 2;
+    const cy = H2 / 2;
+    const radius = Math.max(1, Math.min(W2, H2) / 2 - 8);
+    const inner = s.type === "donut" ? r2(radius * 0.6) : 0;
+    let total = 0;
+    for (let i = 0; i < series.data.length; i++) if (s.hidden.indexOf(i) < 0) total += Math.max(0, series.data[i]);
+    const out = [];
+    let a = 0;
+    for (let i = 0; i < series.data.length; i++) {
+      const v = Math.max(0, series.data[i]);
+      if (s.hidden.indexOf(i) >= 0 || !v || !total) continue;
+      const a1 = a + v / total * Math.PI * 2;
+      const slice = { name: d.labels[i] != null ? String(d.labels[i]) : series.name, index: i };
+      out.push(html49`<path ${attrs(markAttrs(s, slice, i, d.labels[i], v, "vf-chart__mark vf-chart__slice"))} d="${arcPath(cx, cy, r2(radius), inner, a, a1)}"></path>`);
+      a = a1;
+    }
+    return out;
+  }
+  __name(radial, "radial");
+  function legend(s, d) {
+    const radialType = s.type === "pie" || s.type === "donut";
+    const names = [];
+    if (radialType) for (let i = 0; i < d.labels.length; i++) names.push({ name: d.labels[i], index: i });
+    else for (let i = 0; i < d.series.length; i++) names.push({ name: d.series[i].name, index: i });
+    if (names.length < 2 && !radialType) return "";
+    const items = [];
+    for (let i = 0; i < names.length; i++) {
+      const shown = s.hidden.indexOf(names[i].index) < 0;
+      const swatch = html49`<span class="vf-chart__swatch" data-series="${color(names[i].index)}" aria-hidden="true"></span>`;
+      items.push(s.interactive ? html49`<li><button ${attrs({ type: "button", class: "vf-chart__toggle", "data-action": "toggle-series", "data-index": names[i].index, "aria-pressed": shown })}>${swatch}${names[i].name}</button></li>` : html49`<li class="vf-chart__entry">${swatch}${names[i].name}</li>`);
+    }
+    return html49`<ul class="vf-chart__legend" aria-label="${msg("chart.legend")}">${items}</ul>`;
+  }
+  __name(legend, "legend");
+  function dataTable(s, d) {
+    const columns = [{ key: "label", label: "" }];
+    for (let i = 0; i < d.series.length; i++) columns.push({ key: "s" + i, label: d.series[i].name, align: "end" });
+    const rows = [];
+    for (let j = 0; j < d.labels.length; j++) {
+      const row = { id: String(j), label: d.labels[j] };
+      for (let i = 0; i < d.series.length; i++) row["s" + i] = ui_default.fmt.number(d.series[i].data[j] || 0, s.valueFormat);
+      rows.push(row);
+    }
+    return html49`<div class="vf-visually-hidden">${ui_default.vsTable({ columns, data: rows, caption: s.label || msg("chart.label") })}</div>`;
+  }
+  __name(dataTable, "dataTable");
+  function draw(s) {
+    const type = oneOf("vsChart type", s.type, TYPES4);
+    const d = normalize(s.data);
+    if (type === "sparkline") {
+      return ui_default.vsSparkline({ data: d.series[0] ? d.series[0].data : [], label: s.label, format: s.valueFormat, id: s.id, className: s.className });
+    }
+    const st = extend({}, s, { type, hidden: s.hidden || [] });
+    const W2 = Math.max(120, Math.round(Number(s.width) || 600));
+    const H2 = Math.max(80, Math.round(Number(s.height) || 240));
+    const visible = [];
+    for (let i = 0; i < d.series.length; i++) if (st.hidden.indexOf(i) < 0) visible.push(d.series[i]);
+    const marks = type === "pie" || type === "donut" ? radial(st, d, W2, H2) : cartesian(st, d, visible, W2, H2);
+    const tooltip = s.interactive ? html49`<div ${attrs({ class: "vf-chart__tooltip", id: s.id + "-tooltip", "aria-hidden": true, hidden: true })}></div>` : "";
+    return html49`<figure ${attrs({
+      class: cls("vf-chart", s.className),
+      id: s.id,
+      "data-ref": s.ref,
+      "data-type": type,
+      "data-animate": s.animate ? true : null
+    })}><svg ${attrs({ class: "vf-chart__svg", role: "img", "aria-label": present(s.label) ? s.label : msg("chart.label") })} viewBox="0 0 ${W2} ${H2}" focusable="false">${marks}</svg>${s.legend === false ? "" : legend(st, d)}${s.dataTable ? dataTable(st, d) : ""}${tooltip}</figure>`;
+  }
+  __name(draw, "draw");
+  function vsChart(props) {
+    return draw(extend({}, props || {}, { interactive: false, animate: false }));
+  }
+  __name(vsChart, "vsChart");
+  function vfChart(props) {
+    const p = props || {};
+    let observer = null;
+    let onResize = null;
+    function measure(self2) {
+      const width = self2.$node.clientWidth;
+      if (width > 0 && Math.abs(width - (self2.state.width || 0)) > 1) self2.setState({ width });
+    }
+    __name(measure, "measure");
+    function tip(self2, mark, show) {
+      const tooltip = self2.ids[self2.state.id + "-tooltip"];
+      if (!tooltip) return;
+      if (!show) {
+        tooltip.hidden = true;
+        return;
+      }
+      tooltip.textContent = mark.getAttribute("aria-label");
+      tooltip.hidden = false;
+      const root2 = self2.$node.getBoundingClientRect();
+      const r = mark.getBoundingClientRect();
+      tooltip.style.left = Math.round(r.left - root2.left + r.width / 2) + "px";
+      tooltip.style.top = Math.round(r.top - root2.top) + "px";
+    }
+    __name(tip, "tip");
+    const state = stateOf(p, "chart", {
+      type: oneOf("vfChart type", p.type, TYPES4),
+      data: p.data || { labels: [], series: [] },
+      hidden: [],
+      interactive: true,
+      animate: true,
+      width: 0,
+      instance: null
+    });
+    return instance({
+      state,
+      render: draw,
+      delegates: [
+        { selector: '[data-action="mark"]', eventType: "mouseover", onEvent: /* @__PURE__ */ __name(function(e) {
+          tip(e.sender, e.target, true);
+        }, "onEvent") },
+        { selector: '[data-action="mark"]', eventType: "focusin", onEvent: /* @__PURE__ */ __name(function(e) {
+          tip(e.sender, e.target, true);
+        }, "onEvent") },
+        { selector: '[data-action="mark"]', eventType: "mouseout", onEvent: /* @__PURE__ */ __name(function(e) {
+          tip(e.sender, e.target, false);
+        }, "onEvent") },
+        { selector: '[data-action="mark"]', eventType: "focusout", onEvent: /* @__PURE__ */ __name(function(e) {
+          tip(e.sender, e.target, false);
+        }, "onEvent") },
+        {
+          selector: '[data-action="mark"]',
+          eventType: "click",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            const s = e.sender.state;
+            const d = normalize(s.data);
+            const si = Number(e.target.getAttribute("data-s"));
+            const i = Number(e.target.getAttribute("data-index"));
+            const radialType = s.type === "pie" || s.type === "donut";
+            const series = radialType ? d.series[0] : d.series[si];
+            emit(p.onClick, e.sender, e.event, {
+              series: series ? series.name : null,
+              index: i,
+              label: d.labels[i],
+              value: series ? series.data[i] : null
+            });
+          }, "onEvent")
+        },
+        {
+          selector: '[data-action="toggle-series"]',
+          eventType: "click",
+          onEvent: /* @__PURE__ */ __name(function(e) {
+            const i = Number(e.target.getAttribute("data-index"));
+            const hidden = e.sender.state.hidden.slice();
+            const at = hidden.indexOf(i);
+            if (at >= 0) hidden.splice(at, 1);
+            else hidden.push(i);
+            e.sender.setState({ hidden, animate: false });
+          }, "onEvent")
+        }
+      ],
+      methods: {
+        setData: /* @__PURE__ */ __name(function(data) {
+          this.setState({ data: data || { labels: [], series: [] }, hidden: [], animate: true });
+        }, "setData"),
+        setType: /* @__PURE__ */ __name(function(type) {
+          this.setState({ type: oneOf("vfChart type", type, TYPES4), hidden: [], animate: true });
+        }, "setType"),
+        resize: /* @__PURE__ */ __name(function() {
+          measure(this);
+        }, "resize"),
+        getValue: /* @__PURE__ */ __name(function() {
+          return this.state.data;
+        }, "getValue"),
+        setValue: /* @__PURE__ */ __name(function(data) {
+          this.setData(data);
+        }, "setValue")
+      },
+      onMount: /* @__PURE__ */ __name(function(self2) {
+        measure(self2);
+        if (typeof window === "undefined") return;
+        if (typeof window.ResizeObserver === "function") {
+          observer = new window.ResizeObserver(function() {
+            measure(self2);
+          });
+          observer.observe(self2.$node);
+        } else {
+          onResize = /* @__PURE__ */ __name(function() {
+            measure(self2);
+          }, "onResize");
+          window.addEventListener("resize", onResize);
+        }
+      }, "onMount"),
+      onUpdate: /* @__PURE__ */ __name(function(self2) {
+        self2.state.animate = false;
+        if (observer) {
+          observer.disconnect();
+          observer.observe(self2.$node);
+        }
+      }, "onUpdate"),
+      onDestroy: /* @__PURE__ */ __name(function() {
+        if (observer) observer.disconnect();
+        if (onResize) window.removeEventListener("resize", onResize);
+        observer = null;
+        onResize = null;
+      }, "onDestroy")
+    });
+  }
+  __name(vfChart, "vfChart");
+
+  // layer2/src/data.js
+  var members2 = {
+    vfGrid,
+    vsChart,
+    vfChart
+  };
+  var hasOwn4 = Object.prototype.hasOwnProperty;
+  var conflicts2 = [];
+  for (const key in members2) {
+    if (!hasOwn4.call(members2, key)) continue;
+    if (hasOwn4.call(ui_default, key)) {
+      if (ui_default[key] !== members2[key]) conflicts2.push(key);
+      continue;
+    }
+    Object.defineProperty(ui_default, key, { value: members2[key], enumerable: true, writable: false, configurable: false });
+  }
+  if (DEV2 && conflicts2.length) warn2("vf already has " + conflicts2.join(", ") + "; the existing members were kept.");
 })();
 //# sourceMappingURL=vfunc-all.js.map

@@ -173,6 +173,70 @@
     content: html`<p>Press / to search.</p><a href="#h-input">Go to inputs</a>`,
     onClose: function (e) { log('popover ' + e.data.reason); } }));
 
+  // --- data ----------------------------------------------------------------------------------------
+
+  var PEOPLE = [];
+  var NAMES = ['Ada', 'Grace', 'Linus', 'Barbara', 'Alan', 'Margaret', 'Dennis', 'Frances', 'Ken', 'Radia', 'Tim', 'Hedy'];
+  for (var n = 0; n < 24; n++) {
+    PEOPLE.push({ id: 'p' + (n + 1), name: NAMES[n % NAMES.length] + ' ' + (n + 1), age: 20 + ((n * 7) % 40),
+      trend: [n % 5, (n * 3) % 7, (n * 5) % 9, (n * 2) % 6, (n * 4) % 8] });
+  }
+
+  // A list screen with the core file only: the app keeps sort and page in its state.
+  var list = vf.vfunc({
+    state: { sort: { key: 'name', dir: 'asc' }, page: 1 },
+    render: function (s) {
+      var rows = PEOPLE.slice().sort(function (a, b) {
+        var d = a[s.sort.key] < b[s.sort.key] ? -1 : a[s.sort.key] > b[s.sort.key] ? 1 : 0;
+        return s.sort.dir === 'desc' ? -d : d;
+      });
+      return html`<div>${vf.vsTable({
+        caption: 'People', sort: s.sort,
+        columns: [
+          { key: 'name', label: 'Name', sortable: true },
+          { key: 'age', label: 'Age', sortable: true, align: 'end' },
+          { key: 'trend', label: 'Trend', render: function (row) { return vf.vsSparkline({ data: row.trend }); } }
+        ],
+        data: rows.slice((s.page - 1) * 5, s.page * 5)
+      })}${vf.vsPagination({ id: 'simple-pages', total: rows.length, page: s.page, pageSize: 5 })}</div>`;
+    },
+    delegates: [
+      {
+        selector: '[data-action="sort"]',
+        eventType: 'click',
+        onEvent: function (e) {
+          var key = e.target.getAttribute('data-value');
+          var s = e.sender.state;
+          e.sender.setState({ page: 1, sort: { key: key, dir: s.sort.key === key && s.sort.dir === 'asc' ? 'desc' : 'asc' } });
+          log('list sort ' + key);
+        }
+      },
+      {
+        selector: '[data-action="page"]',
+        eventType: 'click',
+        onEvent: function (e) {
+          e.sender.setState({ page: Number(e.target.getAttribute('data-page')) });
+          log('list page ' + e.target.getAttribute('data-page'));
+        }
+      }
+    ]
+  });
+  mount('simple-list', list);
+
+  mount('grid', vf.vfGrid({ id: 'people', caption: 'People (vfGrid)', data: PEOPLE, pageSize: 8, selectable: 'multiple', height: 280,
+    columns: [{ key: 'name', label: 'Name', sortable: true }, { key: 'age', label: 'Age', sortable: true, align: 'end' }],
+    onSelect: function (e) { log('grid select ' + e.data.keys.join(',')); },
+    onSort: function (e) { log('grid sort ' + e.data.key + ' ' + e.data.dir); },
+    onRowClick: function (e) { log('grid row ' + e.data.key); } }));
+
+  var chart = mount('chart', vf.vfChart({ id: 'sales', type: 'bar', label: 'Monthly sales', dataTable: true,
+    data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      series: [{ name: '2025', data: [12, 19, 15, 22, 18, 25] }, { name: '2026', data: [14, 21, 24, 20, 28, 31] }] },
+    onClick: function (e) { log('chart ' + e.data.series + ' ' + e.data.label + ' ' + e.data.value); } }));
+  mount('chart-type', vf.vfSelectButton({ id: 'chart-types', ariaLabel: 'Chart type', value: 'bar',
+    options: ['bar', 'line', 'area', 'pie', 'donut'],
+    onChange: function (e) { chart.setType(e.data.value); log('chart type ' + e.data.value); } }));
+
   // --- language and shortcut -------------------------------------------------------------------
 
   vf.vfSelectButton({ ariaLabel: 'Language', id: 'lang-switch', options: [{ value: 'en', label: 'English' }, { value: 'ko', label: '한국어' }], value: 'en',

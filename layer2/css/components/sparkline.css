@@ -1,0 +1,22 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsSparkline: sized here; the SVG stretches to it. Color is currentColor (set `color` on it). */
+
+.vf-sparkline {
+  display: inline-block;
+  inline-size: 6em;
+  block-size: 1.5em;
+  overflow: visible;
+  color: var(--vf-color-primary);
+  vertical-align: middle;
+}
+
+.vf-sparkline__line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.vf-sparkline__bar { fill: currentColor; }

@@ -232,6 +232,56 @@ test('vfPopover: focus into the content, Escape back to the trigger', async () =
   assert.equal(await active(), 'help-trigger');
 });
 
+test('core list screen: vsTable sort buttons and vsPagination driven by app state', async () => {
+  const firstName = () => page.evaluate(() => document.querySelector('#simple-list tbody tr td').textContent);
+  assert.equal(await firstName(), 'Ada 1');
+  await press('#simple-list [data-action="sort"][data-value="age"]');
+  await waitLog('list sort age');
+  assert.equal(await page.getAttribute('#simple-list th[aria-sort="ascending"] [data-action="sort"]', 'data-value'), 'age');
+  assert.equal(await active(), 'sort', 'the focus stays on a sort button after the refresh');
+  await press('#simple-pages [data-page="2"]');
+  await waitLog('list page 2');
+  assert.equal(await page.locator('#simple-list tbody tr').count(), 5);
+  assert.equal(await page.locator('#simple-list svg.vf-sparkline[role="img"]').count(), 5);
+});
+
+test('vfGrid: sort, select all on the page, a row click; the header stays on top while scrolling', async () => {
+  await press('#people [data-action="sort"][data-value="age"]');
+  await waitLog('grid sort age asc');
+  await page.check('#people [data-action="select-all"]');
+  await page.waitForFunction(() => document.getElementById('log').textContent.indexOf('grid select ') === 0);
+  assert.equal((await page.textContent('#log')).split(',').length, 8, 'the 8 rows of the page');
+  await page.click('#people tbody tr:nth-child(2) td:last-child');
+  await page.waitForFunction(() => document.getElementById('log').textContent.indexOf('grid row ') === 0);
+  const sticky = await page.evaluate(() => {
+    const box = document.getElementById('people-scroll');
+    box.scrollTop = 200;
+    const head = box.querySelector('th').getBoundingClientRect().top;
+    return { head: head, box: box.getBoundingClientRect().top, max: box.style.maxHeight };
+  });
+  assert.equal(sticky.max, '280px');
+  assert.ok(Math.abs(sticky.head - sticky.box) < 3, 'the header is at the top of the scroll box');
+  await press('#people-pages [data-page="3"]');
+  assert.equal(await page.textContent('#people .vf-grid__range'), '17–24 of 24');
+});
+
+test('vfChart: keyboard focus shows the tooltip, Enter-less click reports, legend toggles, type switch', async () => {
+  await page.focus('#sales [data-action="mark"]');
+  assert.equal(await page.isVisible('#sales-tooltip'), true);
+  assert.equal(await page.textContent('#sales-tooltip'), '2025, Jan: 12');
+  await page.click('#sales [data-action="mark"][data-s="1"][data-index="2"]');
+  await waitLog('chart 2026 Mar 24');
+  await press('#sales [data-action="toggle-series"][data-index="0"]');
+  await page.waitForFunction(() => document.querySelectorAll('#sales rect').length === 6);
+  assert.equal(await page.getAttribute('#sales [data-action="toggle-series"][data-index="0"]', 'aria-pressed'), 'false');
+  await page.click('#chart-types [data-value="donut"]');
+  await waitLog('chart type donut');
+  assert.equal(await page.locator('#sales .vf-chart__slice').count(), 6);
+  const width = await page.evaluate(() => document.querySelector('#sales svg').getAttribute('viewBox').split(' ')[2]);
+  assert.equal(Number(width), await page.evaluate(() => document.getElementById('sales').clientWidth), 'drawn at its own width');
+  assert.equal(await page.locator('#sales .vf-visually-hidden table').count(), 1, 'a data table for screen readers');
+});
+
 test('switching the language re-renders the messages', async () => {
   await page.click('#lang [data-value="ko"]');
   await page.waitForFunction(() => document.querySelector('#pages').getAttribute('aria-label') === '페이지 이동');

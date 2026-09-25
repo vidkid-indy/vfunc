@@ -23,6 +23,11 @@ export default {
     pause: 'Pause',
     play: 'Play'
   },
+  chart: {
+    label: 'Chart',
+    legend: 'Legend',
+    point: '{series}, {label}: {value}'
+  },
   confirm: {
     ok: 'OK',
     cancel: 'Cancel'
@@ -36,6 +41,12 @@ export default {
   },
   emptyState: {
     title: 'No data'
+  },
+  grid: {
+    select: 'Select',
+    selectAll: 'Select all rows on this page',
+    selectRow: 'Select row {index}',
+    range: '{from}–{to} of {total}'
   },
   modal: {
     close: 'Close'
@@ -62,6 +73,10 @@ export default {
     label: 'Search',
     placeholder: 'Search',
     clear: 'Clear search'
+  },
+  sparkline: {
+    summary: 'From {first} to {last}, low {min}, high {max}',
+    empty: 'No data'
   },
   splitButton: {
     more: 'More options'

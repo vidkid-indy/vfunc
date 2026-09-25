@@ -3,10 +3,12 @@
 // vfunc-ui — layer 2 of vfunc.js: vs* functions return markup (SafeHtml), vf* functions return
 // instances (rule 17). Importing this module adds every member to the engine's `vf` object,
 // read-only and without replacing existing members, so `vf.vsButton` works in <script> pages and
-// in ES modules alike (D-002, D-029). The list follows layer2/catalog.json.
+// in ES modules alike (D-002, D-029). The list follows layer2/catalog.json; grid and charts are in
+// the data file (data.js, D-031, D-033).
 
 import vf from './_internal/vf.js';
 import { DEV, warn } from './_internal/dev.js';
+import en from './locales/en.js';
 import { vsButton } from './components/button.js';
 import { vsField } from './components/field.js';
 import { vsInput } from './components/input.js';
@@ -47,13 +49,17 @@ import { vsPagination, vfPagination } from './components/pagination.js';
 import { vsTabs, vfTabs } from './components/tabs.js';
 import { vsAccordion, vfAccordion } from './components/accordion.js';
 import { vsStepper, vfStepper } from './components/stepper.js';
-import { vfModal } from './components/modal.js';
-import { vfDrawer } from './components/modal.js';
+import { vfModal, vfDrawer } from './components/modal.js';
 import { vfConfirm } from './components/confirm.js';
 import { vfToast } from './components/toast.js';
 import { vfDropdown } from './components/dropdown.js';
 import { vfPopover } from './components/popover.js';
 import { vsSplitButton, vfSplitButton } from './components/split-button.js';
+import { vsTable } from './components/table.js';
+import { vsSparkline } from './components/sparkline.js';
+
+// Built-in English messages of every component (the data file's too), below the app's (D-028).
+vf.i18n.add('en', en, { defaults: true });
 
 const members = {
   vsButton: vsButton,
@@ -117,7 +123,9 @@ const members = {
   vfDropdown: vfDropdown,
   vfPopover: vfPopover,
   vsSplitButton: vsSplitButton,
-  vfSplitButton: vfSplitButton
+  vfSplitButton: vfSplitButton,
+  vsTable: vsTable,
+  vsSparkline: vsSparkline
 };
 
 const hasOwn = Object.prototype.hasOwnProperty;
@@ -194,6 +202,8 @@ export {
   vfDropdown,
   vfPopover,
   vsSplitButton,
-  vfSplitButton
+  vfSplitButton,
+  vsTable,
+  vsSparkline
 };
 export default members;

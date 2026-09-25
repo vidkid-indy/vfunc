@@ -12,30 +12,6 @@ function warn(message) {
 }
 __name(warn, "warn");
 
-// layer2/src/_internal/attrs.js
-var ATTR_NAME = /^(?:id|name|class|title|role|type|value|for|form|href|src|alt|label|datetime|placeholder|autocomplete|inputmode|pattern|min|max|step|minlength|maxlength|rows|cols|tabindex|disabled|readonly|required|checked|selected|multiple|hidden|lang|dir|aria-[a-z]+|data-[a-z0-9]+(?:-[a-z0-9]+)*)$/;
-var URL_ATTR = /^(?:href|src)$/;
-var hasOwn = Object.prototype.hasOwnProperty;
-function attrs(map) {
-  const out = [];
-  for (const name in map) {
-    if (!hasOwn.call(map, name)) continue;
-    if (!ATTR_NAME.test(name)) {
-      if (DEV) warn('attribute "' + name + '" is not allowed in component markup.');
-      continue;
-    }
-    const value = map[name];
-    if (value == null || value === false || value === "") {
-      if (value === false && /^(aria|data)-/.test(name)) out.push(name + '="false"');
-      continue;
-    }
-    if (value === true) out.push(/^(aria|data)-/.test(name) ? name + '="true"' : name);
-    else out.push(name + '="' + default2.esc(URL_ATTR.test(name) ? default2.safeUrl(value) : value) + '"');
-  }
-  return default2.unsafeHtml(out.join(" "));
-}
-__name(attrs, "attrs");
-
 // layer2/src/locales/en.js
 var en_default = {
   common: {
@@ -57,6 +33,11 @@ var en_default = {
     pause: "Pause",
     play: "Play"
   },
+  chart: {
+    label: "Chart",
+    legend: "Legend",
+    point: "{series}, {label}: {value}"
+  },
   confirm: {
     ok: "OK",
     cancel: "Cancel"
@@ -70,6 +51,12 @@ var en_default = {
   },
   emptyState: {
     title: "No data"
+  },
+  grid: {
+    select: "Select",
+    selectAll: "Select all rows on this page",
+    selectRow: "Select row {index}",
+    range: "{from}–{to} of {total}"
   },
   modal: {
     close: "Close"
@@ -97,6 +84,10 @@ var en_default = {
     placeholder: "Search",
     clear: "Clear search"
   },
+  sparkline: {
+    summary: "From {first} to {last}, low {min}, high {max}",
+    empty: "No data"
+  },
   splitButton: {
     more: "More options"
   },
@@ -119,8 +110,31 @@ var en_default = {
   }
 };
 
+// layer2/src/_internal/attrs.js
+var ATTR_NAME = /^(?:id|name|class|title|role|type|value|for|form|href|src|alt|label|datetime|scope|placeholder|autocomplete|inputmode|pattern|min|max|step|minlength|maxlength|rows|cols|tabindex|disabled|readonly|required|checked|selected|multiple|hidden|lang|dir|aria-[a-z]+|data-[a-z0-9]+(?:-[a-z0-9]+)*)$/;
+var URL_ATTR = /^(?:href|src)$/;
+var hasOwn = Object.prototype.hasOwnProperty;
+function attrs(map) {
+  const out = [];
+  for (const name in map) {
+    if (!hasOwn.call(map, name)) continue;
+    if (!ATTR_NAME.test(name)) {
+      if (DEV) warn('attribute "' + name + '" is not allowed in component markup.');
+      continue;
+    }
+    const value = map[name];
+    if (value == null || value === false || value === "") {
+      if (value === false && /^(aria|data)-/.test(name)) out.push(name + '="false"');
+      continue;
+    }
+    if (value === true) out.push(/^(aria|data)-/.test(name) ? name + '="true"' : name);
+    else out.push(name + '="' + default2.esc(URL_ATTR.test(name) ? default2.safeUrl(value) : value) + '"');
+  }
+  return default2.unsafeHtml(out.join(" "));
+}
+__name(attrs, "attrs");
+
 // layer2/src/_internal/messages.js
-default2.i18n.add("en", en_default, { defaults: true });
 function msg(key, override, params) {
   if (override != null && override !== "") return override;
   return default2.t(key, params);
@@ -3198,7 +3212,120 @@ function vfSplitButton(props) {
 }
 __name(vfSplitButton, "vfSplitButton");
 
+// layer2/src/components/table.js
+var html45 = default2.html;
+var ALIGNS = { start: 1, center: 1, end: 1 };
+function cellOf(column, row, index) {
+  if (typeof column.render === "function") return column.render(row, index);
+  return row == null ? "" : row[column.key];
+}
+__name(cellOf, "cellOf");
+function rowKeyOf(row, index, rowKey) {
+  const k = rowKey || "id";
+  return row != null && typeof row === "object" && row[k] != null ? String(row[k]) : String(index);
+}
+__name(rowKeyOf, "rowKeyOf");
+function vsTable(props) {
+  const p = props || {};
+  const columns = p.columns || [];
+  const rows = p.data || [];
+  const sort = p.sort || {};
+  const base = Number(p.indexBase) || 0;
+  const head = [];
+  for (let c = 0; c < columns.length; c++) {
+    const col = columns[c];
+    const align = ALIGNS[col.align] ? col.align : null;
+    const sorted = col.sortable && sort.key === col.key ? sort.dir === "desc" ? "descending" : "ascending" : col.sortable ? "none" : null;
+    const label = col.sortable ? html45`<button ${attrs({ type: "button", class: "vf-table__sort", "data-action": "sort", "data-value": col.key })}>${col.label}<span class="vf-table__sort-icon" aria-hidden="true"></span></button>` : col.label;
+    head.push(html45`<th ${attrs({ class: "vf-table__head", scope: "col", "data-align": align, "aria-sort": sorted })}>${label}</th>`);
+  }
+  const body = [];
+  for (let r = 0; r < rows.length; r++) {
+    const key = rowKeyOf(rows[r], base + r, p.rowKey);
+    const cells = [];
+    for (let c = 0; c < columns.length; c++) {
+      cells.push(html45`<td ${attrs({ class: "vf-table__cell", "data-align": ALIGNS[columns[c].align] ? columns[c].align : null })}>${cellOf(columns[c], rows[r], base + r)}</td>`);
+    }
+    body.push(html45`<tr ${attrs({
+      class: "vf-table__row",
+      "data-value": key,
+      "data-index": base + r,
+      "data-action": p.rowAction,
+      "data-state": hasValue(p.selected, key) ? "selected" : null
+    })}>${cells}</tr>`);
+  }
+  if (!rows.length) {
+    body.push(html45`<tr><td class="vf-table__empty" colspan="${columns.length || 1}">${p.loading ? html45`<span class="vf-table__loading">${msg("common.loading")}</span>` : vsEmptyState({ title: p.emptyText })}</td></tr>`);
+  }
+  return html45`<div ${attrs({ class: cls("vf-table", p.className), "data-ref": p.ref, "data-state": p.loading ? "loading" : null })}><table ${attrs({
+    class: "vf-table__table",
+    id: p.id,
+    "aria-busy": p.loading ? true : null
+  })}>${present(p.caption) ? html45`<caption class="vf-table__caption">${p.caption}</caption>` : ""}<thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+}
+__name(vsTable, "vsTable");
+
+// layer2/src/components/sparkline.js
+var html46 = default2.html;
+var TYPES3 = ["line", "bar"];
+var W = 100;
+var H = 24;
+function numbers(data) {
+  const out = [];
+  const list2 = data || [];
+  for (let i = 0; i < list2.length; i++) {
+    const n = Number(list2[i]);
+    if (!isNaN(n)) out.push(n);
+  }
+  return out;
+}
+__name(numbers, "numbers");
+function round(n) {
+  return Math.round(n * 100) / 100;
+}
+__name(round, "round");
+function vsSparkline(props) {
+  const p = props || {};
+  const values = numbers(p.data);
+  const type = oneOf("vsSparkline type", p.type, TYPES3);
+  let low = Infinity;
+  let high = -Infinity;
+  for (let i = 0; i < values.length; i++) {
+    if (values[i] < low) low = values[i];
+    if (values[i] > high) high = values[i];
+  }
+  const min = type === "bar" ? Math.min(low, 0) : low;
+  const max = type === "bar" ? Math.max(high, 0) : high;
+  const span = max - min || 1;
+  const y = /* @__PURE__ */ __name(function(v) {
+    return round(H - (v - min) / span * H);
+  }, "y");
+  let marks = "";
+  if (values.length && type === "line") {
+    const step = values.length > 1 ? W / (values.length - 1) : 0;
+    const points = [];
+    for (let i = 0; i < values.length; i++) points.push(round(i * step) + "," + y(values[i]));
+    marks = html46`<polyline class="vf-sparkline__line" points="${points.join(" ")}"></polyline>`;
+  } else if (values.length) {
+    const band = W / values.length;
+    const bars = [];
+    for (let i = 0; i < values.length; i++) {
+      const top = Math.min(y(values[i]), y(0));
+      const height = Math.max(round(Math.abs(y(values[i]) - y(0))), 0.5);
+      bars.push(html46`<rect class="vf-sparkline__bar" x="${round(i * band + band * 0.15)}" y="${top}" width="${round(band * 0.7)}" height="${height}"></rect>`);
+    }
+    marks = html46`${bars}`;
+  }
+  const f = /* @__PURE__ */ __name(function(n) {
+    return default2.fmt.number(n, p.format);
+  }, "f");
+  const label = present(p.label) ? p.label : values.length ? msg("sparkline.summary", null, { first: f(values[0]), last: f(values[values.length - 1]), min: f(low), max: f(high) }) : msg("sparkline.empty");
+  return html46`<svg ${attrs({ class: cls("vf-sparkline", p.className), id: p.id, "data-ref": p.ref, "data-type": type, role: "img", "aria-label": label })} viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" focusable="false">${marks}</svg>`;
+}
+__name(vsSparkline, "vsSparkline");
+
 // layer2/src/index.js
+default2.i18n.add("en", en_default, { defaults: true });
 var members = {
   vsButton,
   vsField,
@@ -3261,7 +3388,9 @@ var members = {
   vfDropdown,
   vfPopover,
   vsSplitButton,
-  vfSplitButton
+  vfSplitButton,
+  vsTable,
+  vsSparkline
 };
 var hasOwn2 = Object.prototype.hasOwnProperty;
 var conflicts = [];
@@ -3328,11 +3457,13 @@ export {
   vsSelectButton,
   vsSkeleton,
   vsSlider,
+  vsSparkline,
   vsSpinner,
   vsSplitButton,
   vsStatCard,
   vsStepper,
   vsSwitch,
+  vsTable,
   vsTabs,
   vsTag,
   vsTextarea,

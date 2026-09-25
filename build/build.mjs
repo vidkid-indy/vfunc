@@ -6,6 +6,7 @@
 //   node build/build.mjs --check   build in memory and fail when committed files are out of date
 //
 // Layer 2 outputs (layer2/dist/, D-029): vfunc-ui.{js,min.js,esm.js,esm.min.js,legacy.min.js}
+// and the data file vfunc-ui-data.* (grid and charts, D-031, D-033; budgets 12 KB / 15 KB gzip)
 // (budgets 24 KB / 30 KB gzip), vfunc-ui.locale.ko.*, vfunc-all.{js,min.js,legacy.min.js}
 // (layers 1 + 2), vfunc-ui.css (12 KB) and vfunc-ui.legacy.css (build/ui-css.mjs).
 //
@@ -39,6 +40,7 @@ const LEGACY_ENTRY = 'build/legacy-entry.js';
 const DIST = 'layer1/dist';
 const UI_SOURCE = 'layer2/src/index.js';
 const UI_KO_SOURCE = 'layer2/src/locale.ko.js';
+const UI_DATA_SOURCE = 'layer2/src/data.js';
 const UI_DIST = 'layer2/dist';
 const NPM_OUT = 'build/out/npm';
 const TMP = 'build/out/tmp';
@@ -112,6 +114,36 @@ function uiEngine(mode) {
   };
 }
 
+/**
+ * How the data file reaches the core layer 2 (D-033): layer2/src/_internal/ui.js is replaced so the
+ * core is never bundled twice.
+ * - 'global': <script> files read window.vf, which vfunc-ui.js filled first.
+ * - 'esm' / 'esm.min': import the core module next to the data file, then the engine.
+ * - 'bundle' (vfunc-all): the source is bundled once; no replacement.
+ */
+const UI_CORE_ESM = { esm: './vfunc-ui.esm.js', 'esm.min': './vfunc-ui.esm.min.js' };
+
+function uiCore(mode) {
+  return {
+    name: 'vfunc-ui-core',
+    setup(build) {
+      if (mode === 'bundle') return;
+      build.onLoad({ filter: /[\\/]layer2[\\/]src[\\/]_internal[\\/]ui\.js$/ }, () => {
+        if (mode === 'global') {
+          return {
+            loader: 'js',
+            contents: 'var vf = typeof window !== "undefined" ? window.vf : undefined;\n' +
+              'if (!vf || typeof vf.vsTable !== "function") throw new Error("[vfunc-ui-data] load vfunc-ui.js before this file.");\n' +
+              'export default vf;\n'
+          };
+        }
+        return { loader: 'js', contents: 'import "vfunc-ui-core";\nexport { default } from "vfunc-engine";\n' };
+      });
+      build.onResolve({ filter: /^vfunc-ui-core$/ }, () => ({ path: UI_CORE_ESM[mode], external: true }));
+    }
+  };
+}
+
 /** The source keeps its own header for readers; the build replaces it with the stamped banner. */
 const stripSourceHeader = {
   name: 'vfunc-source-header',
@@ -142,6 +174,11 @@ const TARGETS = [
   { dist: UI_DIST, file: 'vfunc-ui.esm.js', entry: UI_SOURCE, format: 'esm', minify: false, ui: 'esm' },
   { dist: UI_DIST, file: 'vfunc-ui.esm.min.js', entry: UI_SOURCE, format: 'esm', minify: true, ui: 'esm.min' },
   { dist: UI_DIST, file: 'vfunc-ui.legacy.min.js', entry: UI_SOURCE, format: 'iife', minify: true, legacy: true, ui: 'global', budget: 30 * 1024 },
+  { dist: UI_DIST, file: 'vfunc-ui-data.js', entry: UI_DATA_SOURCE, format: 'iife', minify: false, ui: 'global', data: true },
+  { dist: UI_DIST, file: 'vfunc-ui-data.min.js', entry: UI_DATA_SOURCE, format: 'iife', minify: true, ui: 'global', data: true, budget: 12 * 1024 },
+  { dist: UI_DIST, file: 'vfunc-ui-data.esm.js', entry: UI_DATA_SOURCE, format: 'esm', minify: false, ui: 'esm', data: true },
+  { dist: UI_DIST, file: 'vfunc-ui-data.esm.min.js', entry: UI_DATA_SOURCE, format: 'esm', minify: true, ui: 'esm.min', data: true },
+  { dist: UI_DIST, file: 'vfunc-ui-data.legacy.min.js', entry: UI_DATA_SOURCE, format: 'iife', minify: true, legacy: true, ui: 'global', data: true, budget: 15 * 1024 },
   { dist: UI_DIST, file: 'vfunc-ui.locale.ko.js', entry: UI_KO_SOURCE, format: 'iife', minify: true, legacy: true, ui: 'global' },
   { dist: UI_DIST, file: 'vfunc-ui.locale.ko.esm.js', entry: UI_KO_SOURCE, format: 'esm', minify: false, ui: 'esm' },
   { dist: UI_DIST, file: 'vfunc-ui.locale.ko.esm.min.js', entry: UI_KO_SOURCE, format: 'esm', minify: true, ui: 'esm.min' },
@@ -154,7 +191,8 @@ const distOf = (target) => target.dist || DIST;
 
 /** esbuild plugins for a target: the engine header, and for layer 2 how it reaches the engine. */
 function pluginsOf(target) {
-  return target.ui === undefined ? [stripSourceHeader] : [stripSourceHeader, uiEngine(target.ui)];
+  if (target.ui === undefined) return [stripSourceHeader];
+  return target.data ? [stripSourceHeader, uiEngine(target.ui), uiCore(target.ui)] : [stripSourceHeader, uiEngine(target.ui)];
 }
 
 /** Returns { files: [{ path, text }], inputs: [path] } without writing anything. */
@@ -391,7 +429,7 @@ function assembleNpmPackage() {
       else copyFlat(from, join(out, 'dist', file));
     }
   }
-  for (const file of ['vfunc-ui.d.ts']) copyFlat(join(ROOT, 'layer2/types', file), join(out, 'types', file));
+  for (const file of ['vfunc-ui.d.ts', 'vfunc-ui-data.d.ts']) copyFlat(join(ROOT, 'layer2/types', file), join(out, 'types', file));
   for (const file of ['vfunc-ui.css', 'vfunc-ui.legacy.css']) copy(join(ROOT, UI_DIST, file), join(out, 'css', file));
   for (const file of ['vfunc.d.ts', 'global.d.ts', 'plugins/update.d.ts', 'plugins/shortcut.d.ts']) copy(join(ROOT, 'layer1/types', file), join(out, 'types', file));
   // Optional design tokens (D-011). Not generated: the file in layer1/css is the source.
@@ -436,6 +474,11 @@ function assembleNpmPackage() {
         types: './types/vfunc-ui.d.ts',
         production: './dist/vfunc-ui.esm.min.js',
         default: './dist/vfunc-ui.esm.js'
+      },
+      './ui/data': {
+        types: './types/vfunc-ui-data.d.ts',
+        production: './dist/vfunc-ui-data.esm.min.js',
+        default: './dist/vfunc-ui-data.esm.js'
       },
       './ui/locale/ko': {
         production: './dist/vfunc-ui.locale.ko.esm.min.js',

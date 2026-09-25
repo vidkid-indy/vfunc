@@ -48,13 +48,36 @@ test('vfunc-ui.js without vfunc.js stops with a clear error', () => {
   assert.throws(() => loadScripts([LAYER2 + 'vfunc-ui.js']), /load vfunc\.js before this file/);
 });
 
-test('vfunc-all.js files hold both layers in one <script>', () => {
+test('vfunc-all.js files hold both layers and the data file in one <script>', () => {
   for (const name of ['vfunc-all.js', 'vfunc-all.min.js', 'vfunc-all.legacy.min.js']) {
     const { vf } = loadScripts([LAYER2 + name]);
     assert.equal(typeof vf.vfunc, 'function', name);
     assert.equal(typeof vf.vsButton, 'function', name);
+    assert.equal(typeof vf.vfGrid, 'function', name);
     assert.equal(vf.version, pkg.version, name);
   }
+});
+
+test('vfunc-ui-data.js joins after vfunc-ui.js and draws a chart with the core table (D-033)', () => {
+  for (const [engine, ui, data] of [['vfunc.js', 'vfunc-ui.js', 'vfunc-ui-data.js'], ['vfunc.min.js', 'vfunc-ui.min.js', 'vfunc-ui-data.min.js'],
+    ['vfunc.legacy.min.js', 'vfunc-ui.legacy.min.js', 'vfunc-ui-data.legacy.min.js']]) {
+    const { vf, page, logs } = loadScripts([LAYER1 + engine, LAYER2 + ui, LAYER2 + data]);
+    assert.equal(typeof vf.vfGrid, 'function', data);
+    const holder = page.document.createElement('div');
+    holder.innerHTML = String(vf.vsChart({ type: 'bar', data: { labels: ['a'], series: [{ name: 's', data: [1] }] }, dataTable: true }));
+    assert.ok(holder.querySelector('svg rect'), data);
+    assert.ok(holder.querySelector('table'), data + ': the core vsTable is used');
+    assert.deepEqual(logs.warn.concat(logs.error), [], data);
+  }
+});
+
+test('vfunc-ui-data.js without vfunc-ui.js stops with a clear error; it never bundles the core', () => {
+  assert.throws(() => loadScripts([LAYER1 + 'vfunc.js', LAYER2 + 'vfunc-ui-data.js']), /load vfunc-ui\.js before this file/);
+  for (const name of ['vfunc-ui-data.min.js', 'vfunc-ui-data.esm.js', 'vfunc-ui-data.legacy.min.js']) {
+    assert.equal(file(LAYER2 + name).indexOf('vf-pagination__button'), -1, name + ' has no copy of the core');
+  }
+  assert.match(file(LAYER2 + 'vfunc-ui-data.esm.js'), /import "\.\/vfunc-ui\.esm\.js";/);
+  assert.match(file(LAYER2 + 'vfunc-ui-data.esm.min.js'), /import"\.\/vfunc-ui\.esm\.min\.js";/);
 });
 
 test('the minified files have no development warnings', () => {

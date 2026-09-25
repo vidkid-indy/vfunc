@@ -1,0 +1,41 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vfGrid (data file). The table is vsTable; a max height (set by JS from the height prop) scrolls
+   the rows under a header that stays on top. */
+
+.vf-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vf-space-2);
+  font-family: var(--vf-font-body);
+}
+
+.vf-grid__scroll { overflow: auto; }
+.vf-grid__scroll[data-height] .vf-table { overflow: visible; }
+.vf-grid__scroll[data-height] .vf-table__head {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+}
+
+.vf-grid__check {
+  inline-size: 1em;
+  block-size: 1em;
+  margin: 0;
+  accent-color: var(--vf-color-primary);
+  cursor: pointer;
+}
+
+.vf-grid__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--vf-space-2);
+}
+
+.vf-grid__range {
+  margin: 0;
+  font-size: var(--vf-font-size-sm);
+  color: var(--vf-color-text-muted);
+  font-variant-numeric: tabular-nums;
+}

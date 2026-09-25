@@ -1,0 +1,89 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsTable (and the table inside vfGrid). Sort state from aria-sort; alignment from data-align;
+   selected rows from data-state="selected". */
+
+.vf-table {
+  overflow-x: auto;
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-sm);
+  line-height: var(--vf-line-height);
+  color: var(--vf-color-text);
+  background: var(--vf-color-surface);
+  border: 1px solid var(--vf-color-border);
+  border-radius: var(--vf-radius-md);
+}
+
+.vf-table__table {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.vf-table__caption {
+  padding-block: var(--vf-space-3);
+  padding-inline: var(--vf-space-4);
+  font-weight: var(--vf-font-weight-strong);
+  text-align: start;
+}
+
+.vf-table__head,
+.vf-table__cell {
+  padding-block: var(--vf-space-2);
+  padding-inline: var(--vf-space-3);
+  text-align: start;
+  vertical-align: middle;
+  border-block-end: 1px solid var(--vf-color-border);
+}
+
+.vf-table__head {
+  font-weight: var(--vf-font-weight-strong);
+  color: var(--vf-color-text-muted);
+  background: var(--vf-color-surface-muted);
+  white-space: nowrap;
+}
+
+.vf-table__head[data-align="center"],
+.vf-table__cell[data-align="center"] { text-align: center; }
+.vf-table__head[data-align="end"],
+.vf-table__cell[data-align="end"] { text-align: end; font-variant-numeric: tabular-nums; }
+
+.vf-table__row:last-child .vf-table__cell { border-block-end: 0; }
+.vf-table__row:hover { background: var(--vf-color-surface-muted); }
+.vf-table__row[data-state="selected"] { background: var(--vf-color-primary-soft); }
+.vf-table__row[data-action] { cursor: pointer; }
+
+.vf-table__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vf-space-1);
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: var(--vf-radius-sm);
+  cursor: pointer;
+}
+
+.vf-table__sort:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); }
+
+.vf-table__sort-icon {
+  inline-size: 0.4em;
+  block-size: 0.4em;
+  border-block-end: 2px solid currentColor;
+  border-inline-end: 2px solid currentColor;
+  opacity: 0.3;
+  transform: rotate(45deg);
+}
+
+[aria-sort="ascending"] .vf-table__sort-icon { opacity: 1; transform: rotate(-135deg); }
+[aria-sort="descending"] .vf-table__sort-icon { opacity: 1; }
+
+.vf-table__empty { padding: 0; }
+.vf-table__loading {
+  display: block;
+  padding: var(--vf-space-5);
+  text-align: center;
+  color: var(--vf-color-text-muted);
+}
+
+.vf-table[data-state="loading"] .vf-table__row { opacity: 0.5; }

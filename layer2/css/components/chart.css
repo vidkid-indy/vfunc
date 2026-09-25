@@ -1,0 +1,114 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsChart and vfChart (data file). Series colors come from data-series and the --vf-chart-*
+   tokens, so the dark theme follows; the marks paint with currentColor. */
+
+.vf-chart {
+  position: relative;
+  margin: 0;
+  font-family: var(--vf-font-body);
+  color: var(--vf-color-text);
+}
+
+.vf-chart__svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  overflow: visible;
+}
+
+.vf-chart [data-series="0"] { color: var(--vf-chart-1); }
+.vf-chart [data-series="1"] { color: var(--vf-chart-2); }
+.vf-chart [data-series="2"] { color: var(--vf-chart-3); }
+.vf-chart [data-series="3"] { color: var(--vf-chart-4); }
+.vf-chart [data-series="4"] { color: var(--vf-chart-5); }
+.vf-chart [data-series="5"] { color: var(--vf-chart-6); }
+.vf-chart [data-series="6"] { color: var(--vf-chart-7); }
+.vf-chart [data-series="7"] { color: var(--vf-chart-8); }
+
+.vf-chart__gridline { stroke: var(--vf-color-border); stroke-width: 1; }
+.vf-chart__tick,
+.vf-chart__label { fill: var(--vf-color-text-muted); font-size: var(--vf-font-size-xs); }
+
+.vf-chart__bar,
+.vf-chart__slice,
+.vf-chart__point { fill: currentColor; }
+.vf-chart__slice { stroke: var(--vf-color-surface); stroke-width: 1; }
+.vf-chart__point { stroke: var(--vf-color-surface); stroke-width: 2; }
+.vf-chart__line { fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+.vf-chart__area { fill: currentColor; opacity: 0.15; }
+
+.vf-chart__mark[tabindex] { cursor: pointer; outline: none; }
+.vf-chart__mark[tabindex]:hover,
+.vf-chart__mark[tabindex]:focus { opacity: 0.8; stroke: var(--vf-color-focus); stroke-width: 2; }
+
+.vf-chart[data-animate] .vf-chart__mark,
+.vf-chart[data-animate] .vf-chart__line,
+.vf-chart[data-animate] .vf-chart__area { animation: vf-chart-in var(--vf-duration-base) var(--vf-easing); }
+
+@keyframes vf-chart-in {
+  from { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vf-chart[data-animate] .vf-chart__mark,
+  .vf-chart[data-animate] .vf-chart__line,
+  .vf-chart[data-animate] .vf-chart__area { animation: none; }
+}
+
+.vf-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vf-space-1) var(--vf-space-3);
+  margin: 0;
+  margin-block-start: var(--vf-space-2);
+  padding: 0;
+  list-style: none;
+  font-size: var(--vf-font-size-sm);
+}
+
+.vf-chart__entry,
+.vf-chart__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vf-space-1);
+}
+
+.vf-chart__toggle {
+  padding-block: 0;
+  padding-inline: var(--vf-space-1);
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: var(--vf-radius-sm);
+  cursor: pointer;
+}
+
+.vf-chart__toggle[aria-pressed="false"] { color: var(--vf-color-text-disabled); text-decoration: line-through; }
+.vf-chart__toggle:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); }
+
+.vf-chart__swatch {
+  inline-size: 0.75em;
+  block-size: 0.75em;
+  background: currentColor;
+  border-radius: var(--vf-radius-sm);
+}
+
+.vf-chart__toggle[aria-pressed="false"] .vf-chart__swatch { opacity: 0.3; }
+
+.vf-chart__tooltip {
+  position: absolute;
+  z-index: var(--vf-z-popover);
+  padding-block: var(--vf-space-1);
+  padding-inline: var(--vf-space-2);
+  font-size: var(--vf-font-size-xs);
+  white-space: nowrap;
+  color: var(--vf-color-text-inverse);
+  background: var(--vf-color-text);
+  border-radius: var(--vf-radius-sm);
+  box-shadow: var(--vf-shadow-2);
+  pointer-events: none;
+  transform: translate(-50%, -110%);
+}
+
+.vf-chart__tooltip[hidden] { display: none; }

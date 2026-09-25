@@ -659,6 +659,65 @@ export interface VfPopoverProps {
 export declare function vfPopover(props: VfPopoverProps): VfuncInstance & { open(): void; close(): void; isOpen(): boolean };
 
 // ---------------------------------------------------------------------------------------------
+// Data (core file; vfGrid and the charts are in vfunc-ui-data, D-031)
+// ---------------------------------------------------------------------------------------------
+
+export interface VsTableColumn<T = any> {
+  key: string;
+  label: VsContent;
+  /** `data-align`. */
+  align?: 'start' | 'center' | 'end';
+  /** The header is a button with data-action "sort" and data-value = key; aria-sort shows the state. */
+  sortable?: boolean;
+  /** Markup or text of a cell; default row[key]. */
+  render?: (row: T, index: number) => VsSlot;
+}
+
+export interface VsTableProps<T = any> {
+  columns: Array<VsTableColumn<T>>;
+  /** The rows to show. */
+  data: T[];
+  sort?: { key: string; dir: 'asc' | 'desc' } | null;
+  /** `data-value` of each row: row[rowKey], else its index. Default 'id'. */
+  rowKey?: string;
+  /** Keys of rows marked `data-state="selected"`. */
+  selected?: string[];
+  /** `data-action` on each row, for a delegate on row clicks. */
+  rowAction?: string;
+  /** The table's caption (its accessible name). */
+  caption?: VsContent;
+  /** Title of the empty state. */
+  emptyText?: VsContent;
+  /** `aria-busy`; without rows, a loading row. */
+  loading?: boolean;
+  /** Added to the row index given to render (paged data). */
+  indexBase?: number;
+  /** The table's id. */
+  id?: string;
+  ref?: string;
+  className?: string;
+}
+
+/** A `<table>` in a `<div class="vf-table">` (horizontal scroll). */
+export declare function vsTable<T = any>(props: VsTableProps<T>): SafeHtml;
+
+export interface VsSparklineProps {
+  data: number[];
+  /** `data-type`. Default 'line'. */
+  type?: 'line' | 'bar';
+  /** The text alternative; replaces the `sparkline.summary` message. */
+  label?: string;
+  /** For the numbers in the summary. */
+  format?: Intl.NumberFormatOptions;
+  id?: string;
+  ref?: string;
+  className?: string;
+}
+
+/** A small `<svg role="img" class="vf-sparkline">`; color is currentColor, size from CSS. */
+export declare function vsSparkline(props: VsSparklineProps): SafeHtml;
+
+// ---------------------------------------------------------------------------------------------
 // Input
 // ---------------------------------------------------------------------------------------------
 
@@ -1072,6 +1131,8 @@ declare const ui: {
   readonly vfPopover: typeof vfPopover;
   readonly vsSplitButton: typeof vsSplitButton;
   readonly vfSplitButton: typeof vfSplitButton;
+  readonly vsTable: typeof vsTable;
+  readonly vsSparkline: typeof vsSparkline;
 };
 export default ui;
 
@@ -1139,5 +1200,7 @@ declare module '../../layer1/types/vfunc' {
     readonly vfPopover: typeof vfPopover;
     readonly vsSplitButton: typeof vsSplitButton;
     readonly vfSplitButton: typeof vfSplitButton;
+    readonly vsTable: typeof vsTable;
+    readonly vsSparkline: typeof vsSparkline;
   }
 }

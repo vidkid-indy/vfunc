@@ -840,6 +840,87 @@
         "ko": "주 동작과 관련 동작 메뉴(vfDropdown 메뉴 공유)."
       },
       "example": "vf.vfSplitButton({ label: 'Save', variant: 'primary', items: [{ label: 'Save as draft', action: 'draft' }], onClick: save, onSelect: (e) => run(e.data.action) })"
+    },
+    {
+      "id": "table",
+      "tier": "S",
+      "category": "data",
+      "names": [
+        "vsTable"
+      ],
+      "source": "layer2/src/components/table.js",
+      "css": "layer2/css/components/table.css",
+      "messages": [
+        "common.loading"
+      ],
+      "summary": {
+        "en": "A table with sortable header buttons (aria-sort, data-action=\"sort\"), row keys, empty and loading states; with vfPagination and app state it makes list screens.",
+        "ko": "정렬 헤더 버튼(aria-sort, data-action=\"sort\"), 행 키, 빈·로딩 상태를 가진 표. vfPagination과 앱 state로 목록 화면을 만듭니다."
+      },
+      "example": "vf.vsTable({ caption: 'Users', columns: [{ key: 'name', label: 'Name', sortable: true }, { key: 'age', label: 'Age', align: 'end' }], data: rows, sort: state.sort })"
+    },
+    {
+      "id": "sparkline",
+      "tier": "S",
+      "category": "data",
+      "names": [
+        "vsSparkline"
+      ],
+      "source": "layer2/src/components/sparkline.js",
+      "css": "layer2/css/components/sparkline.css",
+      "messages": [
+        "sparkline.empty",
+        "sparkline.summary"
+      ],
+      "summary": {
+        "en": "A small static SVG trend (line or bars) with a text alternative; for tables and stat cards.",
+        "ko": "대체 텍스트가 있는 작은 정적 SVG 추세(선·막대). 표와 통계 카드용."
+      },
+      "example": "vf.vsSparkline({ data: [3, 5, 4, 8, 7], type: 'line' })"
+    },
+    {
+      "id": "grid",
+      "tier": "F",
+      "category": "data",
+      "names": [
+        "vfGrid"
+      ],
+      "source": "layer2/src/data/grid.js",
+      "file": "data",
+      "css": "layer2/css/components/grid.css",
+      "messages": [
+        "grid.range",
+        "grid.select",
+        "grid.selectAll",
+        "grid.selectRow"
+      ],
+      "summary": {
+        "en": "A data grid (data file): sorting, paging, filter, row selection, server mode, fixed header; the G-1 grid contract.",
+        "ko": "데이터 그리드(데이터 파일): 정렬, 페이징, 필터, 행 선택, 서버 모드, 고정 헤더. G-1 그리드 계약."
+      },
+      "example": "vf.vfGrid({ columns, data: users, pageSize: 20, selectable: 'multiple', onSelect: (e) => setSelected(e.data.keys) })"
+    },
+    {
+      "id": "chart",
+      "tier": "P",
+      "category": "data",
+      "names": [
+        "vsChart",
+        "vfChart"
+      ],
+      "source": "layer2/src/data/chart.js",
+      "file": "data",
+      "css": "layer2/css/components/chart.css",
+      "messages": [
+        "chart.label",
+        "chart.legend",
+        "chart.point"
+      ],
+      "summary": {
+        "en": "SVG charts (data file): bar, line, area, pie, donut, sparkline; colors from --vf-chart-* tokens. vfChart adds tooltips, legend toggles and redraws at its width.",
+        "ko": "SVG 차트(데이터 파일): 막대·선·영역·원·도넛·스파크라인, 색은 --vf-chart-* 토큰. vfChart는 툴팁, 범례 토글, 폭 추적."
+      },
+      "example": "vf.vfChart({ type: 'line', label: 'Monthly sales', data: { labels: ['Jan', 'Feb', 'Mar'], series: [{ name: '2026', data: [12, 19, 15] }] } })"
     }
   ]
 }

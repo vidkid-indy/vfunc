@@ -474,6 +474,121 @@
 .vf-carousel__dot[aria-current="true"] { background: var(--vf-color-primary); }
 
 /* SPDX-License-Identifier: Apache-2.0 */
+/* vsChart and vfChart (data file). Series colors come from data-series and the --vf-chart-*
+   tokens, so the dark theme follows; the marks paint with currentColor. */
+
+.vf-chart {
+  position: relative;
+  margin: 0;
+  font-family: var(--vf-font-body);
+  color: var(--vf-color-text);
+}
+
+.vf-chart__svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  overflow: visible;
+}
+
+.vf-chart [data-series="0"] { color: var(--vf-chart-1); }
+.vf-chart [data-series="1"] { color: var(--vf-chart-2); }
+.vf-chart [data-series="2"] { color: var(--vf-chart-3); }
+.vf-chart [data-series="3"] { color: var(--vf-chart-4); }
+.vf-chart [data-series="4"] { color: var(--vf-chart-5); }
+.vf-chart [data-series="5"] { color: var(--vf-chart-6); }
+.vf-chart [data-series="6"] { color: var(--vf-chart-7); }
+.vf-chart [data-series="7"] { color: var(--vf-chart-8); }
+
+.vf-chart__gridline { stroke: var(--vf-color-border); stroke-width: 1; }
+.vf-chart__tick,
+.vf-chart__label { fill: var(--vf-color-text-muted); font-size: var(--vf-font-size-xs); }
+
+.vf-chart__bar,
+.vf-chart__slice,
+.vf-chart__point { fill: currentColor; }
+.vf-chart__slice { stroke: var(--vf-color-surface); stroke-width: 1; }
+.vf-chart__point { stroke: var(--vf-color-surface); stroke-width: 2; }
+.vf-chart__line { fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+.vf-chart__area { fill: currentColor; opacity: 0.15; }
+
+.vf-chart__mark[tabindex] { cursor: pointer; outline: none; }
+.vf-chart__mark[tabindex]:hover,
+.vf-chart__mark[tabindex]:focus { opacity: 0.8; stroke: var(--vf-color-focus); stroke-width: 2; }
+
+.vf-chart[data-animate] .vf-chart__mark,
+.vf-chart[data-animate] .vf-chart__line,
+.vf-chart[data-animate] .vf-chart__area { animation: vf-chart-in var(--vf-duration-base) var(--vf-easing); }
+
+@keyframes vf-chart-in {
+  from { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vf-chart[data-animate] .vf-chart__mark,
+  .vf-chart[data-animate] .vf-chart__line,
+  .vf-chart[data-animate] .vf-chart__area { animation: none; }
+}
+
+.vf-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vf-space-1) var(--vf-space-3);
+  margin: 0;
+  margin-block-start: var(--vf-space-2);
+  padding: 0;
+  list-style: none;
+  font-size: var(--vf-font-size-sm);
+}
+
+.vf-chart__entry,
+.vf-chart__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vf-space-1);
+}
+
+.vf-chart__toggle {
+  padding-block: 0;
+  padding-inline: var(--vf-space-1);
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: var(--vf-radius-sm);
+  cursor: pointer;
+}
+
+.vf-chart__toggle[aria-pressed="false"] { color: var(--vf-color-text-disabled); text-decoration: line-through; }
+.vf-chart__toggle:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); }
+
+.vf-chart__swatch {
+  inline-size: 0.75em;
+  block-size: 0.75em;
+  background: currentColor;
+  border-radius: var(--vf-radius-sm);
+}
+
+.vf-chart__toggle[aria-pressed="false"] .vf-chart__swatch { opacity: 0.3; }
+
+.vf-chart__tooltip {
+  position: absolute;
+  z-index: var(--vf-z-popover);
+  padding-block: var(--vf-space-1);
+  padding-inline: var(--vf-space-2);
+  font-size: var(--vf-font-size-xs);
+  white-space: nowrap;
+  color: var(--vf-color-text-inverse);
+  background: var(--vf-color-text);
+  border-radius: var(--vf-radius-sm);
+  box-shadow: var(--vf-shadow-2);
+  pointer-events: none;
+  transform: translate(-50%, -110%);
+}
+
+.vf-chart__tooltip[hidden] { display: none; }
+
+/* SPDX-License-Identifier: Apache-2.0 */
 /* vsCheckbox and the radios of vsRadioGroup: native inputs in the theme color. */
 
 .vf-check {
@@ -695,6 +810,48 @@
   flex-direction: row;
   flex-wrap: wrap;
   gap: var(--vf-space-4);
+}
+
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vfGrid (data file). The table is vsTable; a max height (set by JS from the height prop) scrolls
+   the rows under a header that stays on top. */
+
+.vf-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vf-space-2);
+  font-family: var(--vf-font-body);
+}
+
+.vf-grid__scroll { overflow: auto; }
+.vf-grid__scroll[data-height] .vf-table { overflow: visible; }
+.vf-grid__scroll[data-height] .vf-table__head {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+}
+
+.vf-grid__check {
+  inline-size: 1em;
+  block-size: 1em;
+  margin: 0;
+  accent-color: var(--vf-color-primary);
+  cursor: pointer;
+}
+
+.vf-grid__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--vf-space-2);
+}
+
+.vf-grid__range {
+  margin: 0;
+  font-size: var(--vf-font-size-sm);
+  color: var(--vf-color-text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 /* SPDX-License-Identifier: Apache-2.0 */
@@ -1343,6 +1500,29 @@
 .vf-slider:disabled { cursor: not-allowed; opacity: 0.5; }
 
 /* SPDX-License-Identifier: Apache-2.0 */
+/* vsSparkline: sized here; the SVG stretches to it. Color is currentColor (set `color` on it). */
+
+.vf-sparkline {
+  display: inline-block;
+  inline-size: 6em;
+  block-size: 1.5em;
+  overflow: visible;
+  color: var(--vf-color-primary);
+  vertical-align: middle;
+}
+
+.vf-sparkline__line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.vf-sparkline__bar { fill: currentColor; }
+
+/* SPDX-License-Identifier: Apache-2.0 */
 /* vsSpinner. Size from data-size; the vf-spin keyframes are in base.css. */
 
 .vf-spinner {
@@ -1542,6 +1722,96 @@ button.vf-stepper__button:focus-visible { outline: none; box-shadow: var(--vf-fo
   .vf-switch__track,
   .vf-switch__track::after { transition: none; }
 }
+
+/* SPDX-License-Identifier: Apache-2.0 */
+/* vsTable (and the table inside vfGrid). Sort state from aria-sort; alignment from data-align;
+   selected rows from data-state="selected". */
+
+.vf-table {
+  overflow-x: auto;
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-sm);
+  line-height: var(--vf-line-height);
+  color: var(--vf-color-text);
+  background: var(--vf-color-surface);
+  border: 1px solid var(--vf-color-border);
+  border-radius: var(--vf-radius-md);
+}
+
+.vf-table__table {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.vf-table__caption {
+  padding-block: var(--vf-space-3);
+  padding-inline: var(--vf-space-4);
+  font-weight: var(--vf-font-weight-strong);
+  text-align: start;
+}
+
+.vf-table__head,
+.vf-table__cell {
+  padding-block: var(--vf-space-2);
+  padding-inline: var(--vf-space-3);
+  text-align: start;
+  vertical-align: middle;
+  border-block-end: 1px solid var(--vf-color-border);
+}
+
+.vf-table__head {
+  font-weight: var(--vf-font-weight-strong);
+  color: var(--vf-color-text-muted);
+  background: var(--vf-color-surface-muted);
+  white-space: nowrap;
+}
+
+.vf-table__head[data-align="center"],
+.vf-table__cell[data-align="center"] { text-align: center; }
+.vf-table__head[data-align="end"],
+.vf-table__cell[data-align="end"] { text-align: end; font-variant-numeric: tabular-nums; }
+
+.vf-table__row:last-child .vf-table__cell { border-block-end: 0; }
+.vf-table__row:hover { background: var(--vf-color-surface-muted); }
+.vf-table__row[data-state="selected"] { background: var(--vf-color-primary-soft); }
+.vf-table__row[data-action] { cursor: pointer; }
+
+.vf-table__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vf-space-1);
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: var(--vf-radius-sm);
+  cursor: pointer;
+}
+
+.vf-table__sort:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); }
+
+.vf-table__sort-icon {
+  inline-size: 0.4em;
+  block-size: 0.4em;
+  border-block-end: 2px solid currentColor;
+  border-inline-end: 2px solid currentColor;
+  opacity: 0.3;
+  transform: rotate(45deg);
+}
+
+[aria-sort="ascending"] .vf-table__sort-icon { opacity: 1; transform: rotate(-135deg); }
+[aria-sort="descending"] .vf-table__sort-icon { opacity: 1; }
+
+.vf-table__empty { padding: 0; }
+.vf-table__loading {
+  display: block;
+  padding: var(--vf-space-5);
+  text-align: center;
+  color: var(--vf-color-text-muted);
+}
+
+.vf-table[data-state="loading"] .vf-table__row { opacity: 0.5; }
 
 /* SPDX-License-Identifier: Apache-2.0 */
 /* vsTabs. The active tab has aria-selected="true"; inactive panels are [hidden]. */

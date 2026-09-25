@@ -24,6 +24,11 @@ var ko_default = {
     pause: "일시 정지",
     play: "재생"
   },
+  chart: {
+    label: "차트",
+    legend: "범례",
+    point: "{series}, {label}: {value}"
+  },
   confirm: {
     ok: "확인",
     cancel: "취소"
@@ -37,6 +42,12 @@ var ko_default = {
   },
   emptyState: {
     title: "데이터가 없습니다"
+  },
+  grid: {
+    select: "선택",
+    selectAll: "이 페이지의 모든 행 선택",
+    selectRow: "{index}행 선택",
+    range: "{total}개 중 {from}–{to}"
   },
   modal: {
     close: "닫기"
@@ -63,6 +74,10 @@ var ko_default = {
     label: "검색",
     placeholder: "검색",
     clear: "검색어 지우기"
+  },
+  sparkline: {
+    summary: "{first}에서 {last}, 최저 {min}, 최고 {max}",
+    empty: "데이터 없음"
   },
   splitButton: {
     more: "다른 동작"

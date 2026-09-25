@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
-// catalog.json, the exports of layer2/src/index.js and layer2/types/vfunc-ui.d.ts stay 1:1 (D-027),
+// catalog.json, the exports of layer2/src/index.js + data.js and the two declaration files stay 1:1
+// (D-027, D-033: entries with "file": "data" belong to the data file),
 // and every message key exists in both built-in bundles (rule 22).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -7,13 +8,16 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { transformSync } from 'esbuild';
 import '../../layer1/test/setup-dom.js';
-import ui, * as named from '../src/index.js';
+import ui, * as coreNamed from '../src/index.js';
+import dataUi, * as dataNamed from '../src/data.js';
 import en from '../src/locales/en.js';
 import ko from '../src/locales/ko.js';
 
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 const catalog = JSON.parse(readFileSync(new URL('../catalog.json', import.meta.url), 'utf8'));
-const dts = readFileSync(new URL('../types/vfunc-ui.d.ts', import.meta.url), 'utf8');
+const coreDts = readFileSync(new URL('../types/vfunc-ui.d.ts', import.meta.url), 'utf8');
+const dataDts = readFileSync(new URL('../types/vfunc-ui-data.d.ts', import.meta.url), 'utf8');
+const exportsOf = (mod) => Object.keys(mod).filter((key) => key !== 'default');
 
 const sorted = (list) => Array.from(new Set(list)).sort();
 const catalogNames = () => catalog.components.reduce((all, c) => all.concat(c.names), []);
@@ -29,10 +33,13 @@ function flatKeys(table, prefix) {
   return keys;
 }
 
-test('catalog names = exports of index.js = members of the default export', () => {
-  const exported = Object.keys(named).filter((key) => key !== 'default');
-  assert.deepEqual(sorted(catalogNames()), sorted(exported));
-  assert.deepEqual(sorted(Object.keys(ui)), sorted(exported));
+test('catalog names = exports of index.js (core) and data.js (data file) = their default exports', () => {
+  const namesOf = (file) => catalog.components.filter((c) => (c.file || 'core') === file).reduce((all, c) => all.concat(c.names), []);
+  assert.deepEqual(sorted(namesOf('core')), sorted(exportsOf(coreNamed)));
+  assert.deepEqual(sorted(Object.keys(ui)), sorted(exportsOf(coreNamed)));
+  assert.deepEqual(sorted(namesOf('data')), sorted(exportsOf(dataNamed)));
+  assert.deepEqual(sorted(Object.keys(dataUi)), sorted(exportsOf(dataNamed)));
+  for (const c of catalog.components) assert.ok(!c.file || c.file === 'data', c.id + ': file is "data" or absent');
 });
 
 test('catalog entries follow the naming rule of their tier (rule 17)', () => {
@@ -50,18 +57,19 @@ test('catalog entries follow the naming rule of their tier (rule 17)', () => {
   }
 });
 
-test('the declaration file parses, declares every export and adds each one to Vf', () => {
-  assert.doesNotThrow(() => transformSync(dts, { loader: 'ts', sourcefile: 'vfunc-ui.d.ts' }));
-  const declared = Array.from(dts.matchAll(/^export declare function ([\w$]+)/gm)).map((m) => m[1]);
-  const exported = Object.keys(named).filter((key) => key !== 'default');
-  assert.deepEqual(sorted(declared), sorted(exported));
-  const vfBlock = /interface Vf \{([\s\S]*?)\n {2}\}/.exec(dts);
-  assert.ok(vfBlock, 'module augmentation of Vf');
-  const members = Array.from(vfBlock[1].matchAll(/readonly ([\w$]+): typeof ([\w$]+);/g)).map((m) => {
-    assert.equal(m[1], m[2]);
-    return m[1];
-  });
-  assert.deepEqual(sorted(members), sorted(exported));
+test('each declaration file parses, declares every export of its entry and adds each one to Vf', () => {
+  for (const [name, dts, mod] of [['vfunc-ui.d.ts', coreDts, coreNamed], ['vfunc-ui-data.d.ts', dataDts, dataNamed]]) {
+    assert.doesNotThrow(() => transformSync(dts, { loader: 'ts', sourcefile: name }), name);
+    const declared = Array.from(dts.matchAll(/^export declare function ([\w$]+)/gm)).map((m) => m[1]);
+    assert.deepEqual(sorted(declared), sorted(exportsOf(mod)), name);
+    const vfBlock = /interface Vf \{([\s\S]*?)\n {2}\}/.exec(dts);
+    assert.ok(vfBlock, name + ': module augmentation of Vf');
+    const members = Array.from(vfBlock[1].matchAll(/readonly ([\w$]+): typeof ([\w$]+);/g)).map((m) => {
+      assert.equal(m[1], m[2]);
+      return m[1];
+    });
+    assert.deepEqual(sorted(members), sorted(exportsOf(mod)), name);
+  }
 });
 
 test('en and ko have the same message keys, and every key a component uses is in them', () => {
