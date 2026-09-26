@@ -1,0 +1,39 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Layout of the Leaflet sample. Tokens only. */
+
+body {
+  margin: 0;
+  font-family: var(--vf-font-body);
+  color: var(--vf-color-text);
+  background: var(--vf-color-bg);
+}
+
+.byol {
+  box-sizing: border-box;
+  max-inline-size: 60em;
+  margin-inline: auto;
+  padding: var(--vf-space-5);
+}
+
+.byol__title { margin: 0; font-size: var(--vf-font-size-2xl); }
+.byol__lead { color: var(--vf-color-text-muted); }
+
+.byol__log {
+  min-block-size: 1.5em;
+  padding: var(--vf-space-2) var(--vf-space-3);
+  font-family: var(--vf-font-mono);
+  font-size: var(--vf-font-size-sm);
+  background: var(--vf-color-surface-muted);
+  border-radius: var(--vf-radius-md);
+}
+
+.byol__level { margin-block-end: var(--vf-space-6); }
+.byol__row { display: flex; flex-wrap: wrap; gap: var(--vf-space-2); margin-block-end: var(--vf-space-2); }
+
+/* The map hosts need a height; Leaflet draws inside them. */
+.byol-map,
+.vf-map-leaflet .vf-adapter__host {
+  block-size: 16em;
+  border: 1px solid var(--vf-color-border);
+  border-radius: var(--vf-radius-md);
+}

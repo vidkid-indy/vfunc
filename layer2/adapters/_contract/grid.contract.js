@@ -26,7 +26,8 @@ export const SAMPLE_COLUMNS = [{ key: 'name', label: 'Name', sortable: true }, {
 export function gridContract(o) {
   const props = o.props || { columns: SAMPLE_COLUMNS, data: SAMPLE_ROWS, pageSize: 10, selectable: 'multiple' };
   const { name, factory, test, assert, window } = o;
-  const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+  // Some vendors build or redraw asynchronously: wait for a returned promise, then a moment.
+  const flush = (value) => Promise.resolve(value).then(() => new Promise((resolve) => setTimeout(resolve, o.wait || 0)));
   baseContract(Object.assign({}, o, { props: props }));
 
   test(name + ' · grid: every contract method is there', () => {
@@ -38,9 +39,9 @@ export function gridContract(o) {
   test(name + ' · grid: setData / getData, and the vendor object is kept', async () => {
     const inst = factory(props);
     await inst.mount(window.document.body);
-    const vendor = inst.instance;
-    inst.setData(SAMPLE_ROWS.slice(0, 2));
     await flush();
+    const vendor = inst.instance;
+    await flush(inst.setData(SAMPLE_ROWS.slice(0, 2)));
     assert.deepEqual(inst.getData().map((r) => r.id), ['a', 'b']);
     assert.deepEqual(o.visibleKeys(inst), ['a', 'b']);
     assert.equal(inst.instance, vendor, 'setData does not create a new vendor object');
@@ -55,6 +56,7 @@ export function gridContract(o) {
       onRowClick: (e) => calls.row.push(e)
     }));
     await inst.mount(window.document.body);
+    await flush();
     await o.actions.sort(inst, 'age');
     await flush();
     assertEvent(assert, calls.sort[0], inst, ['key', 'dir']);
@@ -64,12 +66,14 @@ export function gridContract(o) {
     await flush();
     assertEvent(assert, calls.select[0], inst, ['keys', 'rows']);
     assert.deepEqual(inst.getSelection().map((r) => r.id), ['b']);
-    inst.clearSelection();
-    await flush();
+    await flush(inst.clearSelection());
     assert.deepEqual(inst.getSelection(), []);
     await o.actions.clickRow(inst, 'a');
-    assertEvent(assert, calls.row[0], inst, ['row']);
-    assert.equal(calls.row[0].data.row.id, 'a');
+    await flush();
+    // Some vendors also report the row click of the selection above: look at the last one.
+    const last = calls.row[calls.row.length - 1];
+    assertEvent(assert, last, inst, ['row']);
+    assert.equal(last.data.row.id, 'a');
     inst.destroy();
   });
 
@@ -78,11 +82,10 @@ export function gridContract(o) {
     for (let i = 0; i < 25; i++) rows.push({ id: 'r' + i, name: 'Row ' + i, age: i });
     const inst = factory(Object.assign({}, props, { data: rows, pageSize: 10 }));
     await inst.mount(window.document.body);
-    inst.setPage(3);
     await flush();
+    await flush(inst.setPage(3));
     assert.deepEqual(o.visibleKeys(inst), ['r20', 'r21', 'r22', 'r23', 'r24']);
-    inst.setColumns([{ key: 'name', label: 'Name' }]);
-    await flush();
+    await flush(inst.setColumns([{ key: 'name', label: 'Name' }]));
     assert.deepEqual(o.visibleKeys(inst), ['r20', 'r21', 'r22', 'r23', 'r24'], 'columns change, the page stays');
     inst.destroy();
   });

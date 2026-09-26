@@ -6,7 +6,9 @@
 //   node build/build.mjs --check   build in memory and fail when committed files are out of date
 //
 // Layer 2 outputs (layer2/dist/, D-029): vfunc-ui.{js,min.js,esm.js,esm.min.js,legacy.min.js}
-// and the data file vfunc-ui-data.* (grid and charts, D-031, D-033; budgets 12 KB / 15 KB gzip)
+// and the data file vfunc-ui-data.* (grid and charts, D-031, D-033; budgets 12 KB / 15 KB gzip),
+// and the official adapters vfunc-<kind>-<vendor>.{js,min.js,esm.js} (D-034: no vendor inside, no
+// legacy file because the vendors do not support IE11)
 // (budgets 24 KB / 30 KB gzip), vfunc-ui.locale.ko.*, vfunc-all.{js,min.js,legacy.min.js}
 // (layers 1 + 2), vfunc-ui.css (12 KB) and vfunc-ui.legacy.css (build/ui-css.mjs).
 //
@@ -179,6 +181,19 @@ const TARGETS = [
   { dist: UI_DIST, file: 'vfunc-ui-data.esm.js', entry: UI_DATA_SOURCE, format: 'esm', minify: false, ui: 'esm', data: true },
   { dist: UI_DIST, file: 'vfunc-ui-data.esm.min.js', entry: UI_DATA_SOURCE, format: 'esm', minify: true, ui: 'esm.min', data: true },
   { dist: UI_DIST, file: 'vfunc-ui-data.legacy.min.js', entry: UI_DATA_SOURCE, format: 'iife', minify: true, legacy: true, ui: 'global', data: true, budget: 15 * 1024 },
+  // Official adapters (D-034): they need vfunc.js only; the vendor library is the app's.
+  { dist: UI_DIST, file: 'vfunc-grid-ag.js', entry: 'layer2/adapters/grid-ag/index.js', format: 'iife', minify: false, ui: 'global' },
+  { dist: UI_DIST, file: 'vfunc-grid-ag.min.js', entry: 'layer2/adapters/grid-ag/index.js', format: 'iife', minify: true, ui: 'global' },
+  { dist: UI_DIST, file: 'vfunc-grid-ag.esm.js', entry: 'layer2/adapters/grid-ag/index.js', format: 'esm', minify: false, ui: 'esm' },
+  { dist: UI_DIST, file: 'vfunc-grid-tabulator.js', entry: 'layer2/adapters/grid-tabulator/index.js', format: 'iife', minify: false, ui: 'global' },
+  { dist: UI_DIST, file: 'vfunc-grid-tabulator.min.js', entry: 'layer2/adapters/grid-tabulator/index.js', format: 'iife', minify: true, ui: 'global' },
+  { dist: UI_DIST, file: 'vfunc-grid-tabulator.esm.js', entry: 'layer2/adapters/grid-tabulator/index.js', format: 'esm', minify: false, ui: 'esm' },
+  { dist: UI_DIST, file: 'vfunc-chart-chartjs.js', entry: 'layer2/adapters/chart-chartjs/index.js', format: 'iife', minify: false, ui: 'global' },
+  { dist: UI_DIST, file: 'vfunc-chart-chartjs.min.js', entry: 'layer2/adapters/chart-chartjs/index.js', format: 'iife', minify: true, ui: 'global' },
+  { dist: UI_DIST, file: 'vfunc-chart-chartjs.esm.js', entry: 'layer2/adapters/chart-chartjs/index.js', format: 'esm', minify: false, ui: 'esm' },
+  { dist: UI_DIST, file: 'vfunc-chart-echarts.js', entry: 'layer2/adapters/chart-echarts/index.js', format: 'iife', minify: false, ui: 'global' },
+  { dist: UI_DIST, file: 'vfunc-chart-echarts.min.js', entry: 'layer2/adapters/chart-echarts/index.js', format: 'iife', minify: true, ui: 'global' },
+  { dist: UI_DIST, file: 'vfunc-chart-echarts.esm.js', entry: 'layer2/adapters/chart-echarts/index.js', format: 'esm', minify: false, ui: 'esm' },
   { dist: UI_DIST, file: 'vfunc-ui.locale.ko.js', entry: UI_KO_SOURCE, format: 'iife', minify: true, legacy: true, ui: 'global' },
   { dist: UI_DIST, file: 'vfunc-ui.locale.ko.esm.js', entry: UI_KO_SOURCE, format: 'esm', minify: false, ui: 'esm' },
   { dist: UI_DIST, file: 'vfunc-ui.locale.ko.esm.min.js', entry: UI_KO_SOURCE, format: 'esm', minify: true, ui: 'esm.min' },
@@ -430,6 +445,7 @@ function assembleNpmPackage() {
     }
   }
   for (const file of ['vfunc-ui.d.ts', 'vfunc-ui-data.d.ts']) copyFlat(join(ROOT, 'layer2/types', file), join(out, 'types', file));
+  for (const file of readdirSync(join(ROOT, 'layer2/types/adapters'))) copyFlat(join(ROOT, 'layer2/types/adapters', file), join(out, 'types/adapters', file));
   for (const file of ['vfunc-ui.css', 'vfunc-ui.legacy.css']) copy(join(ROOT, UI_DIST, file), join(out, 'css', file));
   for (const file of ['vfunc.d.ts', 'global.d.ts', 'plugins/update.d.ts', 'plugins/shortcut.d.ts']) copy(join(ROOT, 'layer1/types', file), join(out, 'types', file));
   // Optional design tokens (D-011). Not generated: the file in layer1/css is the source.
@@ -479,6 +495,10 @@ function assembleNpmPackage() {
         types: './types/vfunc-ui-data.d.ts',
         production: './dist/vfunc-ui-data.esm.min.js',
         default: './dist/vfunc-ui-data.esm.js'
+      },
+      './adapters/*': {
+        types: './types/adapters/*.d.ts',
+        default: './dist/vfunc-*.esm.js'
       },
       './ui/locale/ko': {
         production: './dist/vfunc-ui.locale.ko.esm.min.js',

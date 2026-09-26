@@ -85,7 +85,9 @@
       "copyright": "Copyright (c) 2014-2024 Chart.js Contributors",
       "url": "https://github.com/chartjs/Chart.js",
       "usedIn": [
-        "layer1/examples/15-with-chartjs (loaded from jsDelivr)"
+        "layer1/examples/15-with-chartjs (loaded from jsDelivr)",
+        "layer2 adapter vfChartChartjs (loaded by the app; not bundled)",
+        "layer2/adapters/_contract/contract.html (loaded from jsDelivr)"
       ],
       "bundled": false
     },
@@ -97,6 +99,53 @@
       "url": "https://github.com/capricorn86/happy-dom",
       "usedIn": [
         "tests (development tool)"
+      ],
+      "bundled": false
+    },
+    {
+      "name": "ag-grid-community",
+      "version": "36.2.0",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2015-2026 AG GRID LTD",
+      "url": "https://github.com/ag-grid/ag-grid",
+      "usedIn": [
+        "layer2 adapter vfGridAg (loaded by the app; not bundled)",
+        "layer2/adapters/_contract/contract.html (loaded from jsDelivr)"
+      ],
+      "bundled": false
+    },
+    {
+      "name": "tabulator-tables",
+      "version": "6.5.3",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2015-2026 Oli Folkerd",
+      "url": "https://github.com/olifolkerd/tabulator",
+      "usedIn": [
+        "layer2 adapter vfGridTabulator (loaded by the app; not bundled)",
+        "layer2/adapters/_contract/contract.html (loaded from jsDelivr)"
+      ],
+      "bundled": false
+    },
+    {
+      "name": "echarts",
+      "version": "6.1.0",
+      "license": "Apache-2.0",
+      "copyright": "Copyright 2017-2026 The Apache Software Foundation",
+      "url": "https://github.com/apache/echarts",
+      "usedIn": [
+        "layer2 adapter vfChartEcharts (loaded by the app; not bundled)",
+        "layer2/adapters/_contract/contract.html (loaded from jsDelivr)"
+      ],
+      "bundled": false
+    },
+    {
+      "name": "leaflet",
+      "version": "1.9.4",
+      "license": "BSD-2-Clause",
+      "copyright": "Copyright (c) 2010-2023, Volodymyr Agafonkin; Copyright (c) 2010-2011, CloudMade",
+      "url": "https://github.com/Leaflet/Leaflet",
+      "usedIn": [
+        "layer2/examples/third-party-custom (loaded from jsDelivr)"
       ],
       "bundled": false
     }

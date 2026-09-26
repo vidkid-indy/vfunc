@@ -34,6 +34,7 @@ gridContract({
 chartContract({
   name: 'vfChart',
   factory: vfChart,
+  hasVendor: false,
   vf, test, assert, window,
   markCount: (inst) => inst.$node.querySelectorAll('[data-action="mark"]').length,
   localeProbe: (inst) => inst.$node.querySelector('svg').getAttribute('aria-label'),

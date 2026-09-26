@@ -17,7 +17,7 @@ export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const REQUIRED_FIELDS = ['name', 'version', 'license', 'copyright', 'url', 'usedIn', 'bundled'];
 
 /** Paths (relative to the repository root, "/" separated) that hold our own code. */
-const OWN_CODE = ['layer1/src/', 'layer1/plugins/', 'layer2/src/', 'build/'];
+const OWN_CODE = ['layer1/src/', 'layer1/plugins/', 'layer2/src/', 'layer2/adapters/', 'build/'];
 
 /** Where bundled third-party code may come from: node_modules/<name>/ or vendor/<name>/. */
 const THIRD_PARTY_DIRS = /^(?:.*\/)?(?:node_modules|vendor)\/((?:@[^/]+\/)?[^/]+)\//;

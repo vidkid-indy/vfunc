@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>Bring your own library: Leaflet — vfunc-ui</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../../layer1/css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../../dist/vfunc-ui.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="byol">
+    <h1 class="byol__title">Bring your own library: Leaflet</h1>
+    <p class="byol__lead">The same map three ways (the levels of the third-party guide). /
+      같은 지도를 세 가지 수준으로 가져옵니다(서드파티 통합 가이드의 수준).</p>
+    <p class="byol__log" id="log" role="status" aria-live="polite"></p>
+
+    <section class="byol__level" aria-labelledby="h-l0">
+      <h2 id="h-l0">L0 — direct use in one component / 한 곳에서 직접 사용</h2>
+      <p>vf.vfunc with onMount / onDestroy creates and removes the Leaflet map. See <code>l0.js</code>.</p>
+      <div id="map-l0"></div>
+    </section>
+
+    <section class="byol__level" aria-labelledby="h-l1">
+      <h2 id="h-l1">L1 — an app wrapper / 앱 전용 래퍼</h2>
+      <p>A factory of your app, reused on several screens, with the props your app needs. See <code>l1.js</code>.</p>
+      <div id="map-l1"></div>
+    </section>
+
+    <section class="byol__level" aria-labelledby="h-l2">
+      <h2 id="h-l2">L2 — a contract adapter / 계약 어댑터</h2>
+      <p>vfMapLeaflet follows the base contract (lib, .instance, refresh, destroy, { sender, event, data }), so it
+        passes the contract tests and could be contributed. See <code>vfunc-map-leaflet.js</code>.</p>
+      <div class="byol__row" id="l2-buttons"></div>
+      <div id="map-l2"></div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
+  <script src="../../../layer1/dist/vfunc.js"></script>
+  <script src="../../dist/vfunc-ui.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

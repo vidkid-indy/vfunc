@@ -8,7 +8,9 @@
       "license": "MIT",
       "copyright": "Copyright (c) 2020 Evan Wallace",
       "url": "https://github.com/evanw/esbuild",
-      "usedIn": ["build (development tool)"],
+      "usedIn": [
+        "build (development tool)"
+      ],
       "bundled": false,
       "licenseFile": ""
     },
@@ -18,7 +20,9 @@
       "license": "MIT",
       "copyright": "Copyright (c) 2014-present Sebastian McKenzie and other contributors",
       "url": "https://github.com/babel/babel",
-      "usedIn": ["legacy build (development tool)"],
+      "usedIn": [
+        "legacy build (development tool)"
+      ],
       "bundled": false,
       "licenseFile": ""
     },
@@ -28,7 +32,9 @@
       "license": "MIT",
       "copyright": "Copyright (c) 2014-present Sebastian McKenzie and other contributors",
       "url": "https://github.com/babel/babel",
-      "usedIn": ["legacy build (development tool)"],
+      "usedIn": [
+        "legacy build (development tool)"
+      ],
       "bundled": false,
       "licenseFile": ""
     },
@@ -38,7 +44,9 @@
       "license": "MIT",
       "copyright": "Copyright (c) 2020 Jeff Wainwright",
       "url": "https://github.com/yowainwright/es-check",
-      "usedIn": ["legacy build check (development tool)"],
+      "usedIn": [
+        "legacy build check (development tool)"
+      ],
       "bundled": false,
       "licenseFile": ""
     },
@@ -48,7 +56,9 @@
       "license": "Apache-2.0",
       "copyright": "Copyright (c) Microsoft Corporation",
       "url": "https://github.com/microsoft/playwright",
-      "usedIn": ["example smoke tests (development tool)"],
+      "usedIn": [
+        "example smoke tests (development tool)"
+      ],
       "bundled": false,
       "licenseFile": ""
     },
@@ -58,7 +68,9 @@
       "license": "MIT",
       "copyright": "Copyright (c) 2011-2025 The Bootstrap Authors",
       "url": "https://github.com/twbs/bootstrap",
-      "usedIn": ["layer1/examples/12-with-bootstrap (loaded from jsDelivr)"],
+      "usedIn": [
+        "layer1/examples/12-with-bootstrap (loaded from jsDelivr)"
+      ],
       "bundled": false,
       "licenseFile": ""
     },
@@ -68,7 +80,9 @@
       "license": "MIT",
       "copyright": "Copyright (c) Tailwind Labs, Inc.",
       "url": "https://github.com/tailwindlabs/tailwindcss",
-      "usedIn": ["layer1/examples/13-with-tailwind (loaded from jsDelivr)"],
+      "usedIn": [
+        "layer1/examples/13-with-tailwind (loaded from jsDelivr)"
+      ],
       "bundled": false,
       "licenseFile": ""
     },
@@ -78,7 +92,11 @@
       "license": "MIT",
       "copyright": "Copyright (c) 2014-2024 Chart.js Contributors",
       "url": "https://github.com/chartjs/Chart.js",
-      "usedIn": ["layer1/examples/15-with-chartjs (loaded from jsDelivr)"],
+      "usedIn": [
+        "layer1/examples/15-with-chartjs (loaded from jsDelivr)",
+        "layer2 adapter vfChartChartjs (loaded by the app; not bundled)",
+        "layer2/adapters/_contract/contract.html (loaded from jsDelivr)"
+      ],
       "bundled": false,
       "licenseFile": ""
     },
@@ -88,7 +106,60 @@
       "license": "MIT",
       "copyright": "Copyright (c) 2019 David Ortner (capricorn86)",
       "url": "https://github.com/capricorn86/happy-dom",
-      "usedIn": ["tests (development tool)"],
+      "usedIn": [
+        "tests (development tool)"
+      ],
+      "bundled": false,
+      "licenseFile": ""
+    },
+    {
+      "name": "ag-grid-community",
+      "version": "36.2.0",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2015-2026 AG GRID LTD",
+      "url": "https://github.com/ag-grid/ag-grid",
+      "usedIn": [
+        "layer2 adapter vfGridAg (loaded by the app; not bundled)",
+        "layer2/adapters/_contract/contract.html (loaded from jsDelivr)"
+      ],
+      "bundled": false,
+      "licenseFile": ""
+    },
+    {
+      "name": "tabulator-tables",
+      "version": "6.5.3",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2015-2026 Oli Folkerd",
+      "url": "https://github.com/olifolkerd/tabulator",
+      "usedIn": [
+        "layer2 adapter vfGridTabulator (loaded by the app; not bundled)",
+        "layer2/adapters/_contract/contract.html (loaded from jsDelivr)"
+      ],
+      "bundled": false,
+      "licenseFile": ""
+    },
+    {
+      "name": "echarts",
+      "version": "6.1.0",
+      "license": "Apache-2.0",
+      "copyright": "Copyright 2017-2026 The Apache Software Foundation",
+      "url": "https://github.com/apache/echarts",
+      "usedIn": [
+        "layer2 adapter vfChartEcharts (loaded by the app; not bundled)",
+        "layer2/adapters/_contract/contract.html (loaded from jsDelivr)"
+      ],
+      "bundled": false,
+      "licenseFile": ""
+    },
+    {
+      "name": "leaflet",
+      "version": "1.9.4",
+      "license": "BSD-2-Clause",
+      "copyright": "Copyright (c) 2010-2023, Volodymyr Agafonkin; Copyright (c) 2010-2011, CloudMade",
+      "url": "https://github.com/Leaflet/Leaflet",
+      "usedIn": [
+        "layer2/examples/third-party-custom (loaded from jsDelivr)"
+      ],
       "bundled": false,
       "licenseFile": ""
     }

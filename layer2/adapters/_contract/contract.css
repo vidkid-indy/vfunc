@@ -1,0 +1,28 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* The contract test page. Tokens only. */
+
+body {
+  margin: 0;
+  font-family: var(--vf-font-body);
+  color: var(--vf-color-text);
+  background: var(--vf-color-bg);
+}
+
+.contract {
+  box-sizing: border-box;
+  max-inline-size: 60em;
+  margin-inline: auto;
+  padding: var(--vf-space-5);
+}
+
+.contract__title { margin: 0; font-size: var(--vf-font-size-xl); }
+.contract__lead { color: var(--vf-color-text-muted); }
+.contract__summary { font-weight: var(--vf-font-weight-strong); }
+.contract__results { font-family: var(--vf-font-mono); font-size: var(--vf-font-size-sm); }
+.contract__results [data-state="fail"] { color: var(--vf-color-danger-text); }
+.contract__results [data-state="pass"] { color: var(--vf-color-success-text); }
+
+/* Instances under test are mounted in the body; give vendors room to draw. */
+.vf-adapter,
+.vf-grid,
+.vf-chart { inline-size: 40em; max-inline-size: 100%; }
