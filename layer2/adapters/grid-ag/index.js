@@ -3,8 +3,10 @@
 // vfGridAg — the G-1 grid contract on AG Grid Community (MIT). The vendor is not bundled (rule 23):
 // load ag-grid-community 36.x (dist/ag-grid-community.min.js → global agGrid) or pass the library
 // as `lib`. The Quartz theme gets its colors and font from the --vf-* tokens.
-// CSP: AG Grid 33+ injects its styles and an icon font, so a page with AG Grid needs
-// style-src 'unsafe-inline' and font-src data: (script-src stays strict; D-034 10).
+// CSP (script-src stays strict; D-034 10, D-035): AG Grid 33+ injects <style> elements and uses data:
+// images for icons. With a per-response nonce, load the noStyle build and pass options.styleNonce
+// (style-src 'nonce-…', img-src data:); a static page needs style-src 'unsafe-inline',
+// font-src data: and img-src data:.
 // AG Grid Enterprise features need a commercial license from AG Grid; this adapter uses Community only.
 // No IE11 (AG Grid does not support it): use vf.vfGrid there.
 //

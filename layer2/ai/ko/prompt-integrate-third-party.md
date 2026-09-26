@@ -47,7 +47,7 @@ vfunc.js 앱에서 쓸 수 있도록 서드파티 브라우저 라이브러리(�
 - `document` 리스너나 타이머가 `destroy` 뒤에도 남음.
 - 라이브러리 로드가 끝나기 전에 벤더 객체를 만듦.
 - HTML을 받는 벤더 렌더러나 툴팁을 통한 XSS.
-- `<style>`이나 글꼴을 주입하는 라이브러리(예: AG Grid 33 이상)를 엄격한 CSP가 막음: 페이지에 필요한 CSP 지시어를 적습니다. `script-src`에는 `'unsafe-inline'`을 넣지 않습니다.
+- `<style>`이나 글꼴을 주입하는 라이브러리(예: AG Grid 33 이상)를 엄격한 CSP가 막음: 페이지에 필요한 CSP 지시어를 적습니다. 라이브러리가 nonce 옵션을 받으면(AG Grid: noStyle판과 `styleNonce`) nonce 구성을 먼저 보입니다. `script-src`에는 `'unsafe-inline'`을 넣지 않습니다.
 
 ## 출력 형식
 1. 라이선스 판단과 수준(요청 또는 권장)

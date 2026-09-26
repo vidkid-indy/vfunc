@@ -7,12 +7,12 @@
 import vf from '../../../layer1/dist/vfunc.esm.js';
 import '../../dist/vfunc-ui.esm.js';
 import { vfGrid, vfChart } from '../../dist/vfunc-ui-data.esm.js';
-import { vfGridAg } from '../../dist/vfunc-grid-ag.esm.js';
 import { vfGridTabulator } from '../../dist/vfunc-grid-tabulator.esm.js';
 import { vfChartChartjs } from '../../dist/vfunc-chart-chartjs.esm.js';
 import { vfChartEcharts } from '../../dist/vfunc-chart-echarts.esm.js';
 import { gridContract, SAMPLE_ROWS } from './grid.contract.js';
 import { chartContract } from './chart.contract.js';
+import { agGridSuite } from './ag-grid.suite.js';
 import { test, assert, run } from './runner.js';
 
 const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -57,26 +57,7 @@ chartContract(Object.assign({}, common, {
 
 // --- AG Grid -----------------------------------------------------------------------------------
 
-gridContract(Object.assign({}, common, {
-  name: 'vfGridAg (AG Grid 36.2.0)',
-  factory: (props) => vfGridAg(Object.assign({}, props, { lib: window.agGrid })),
-  wait: 60,
-  leakWait: 1000, // AG Grid finishes a 500 ms timer after destroy
-  // Through the grid API: rows that AG Grid is animating out stay in the DOM for a moment.
-  visibleKeys: (inst) => {
-    const api = inst.instance;
-    const out = [];
-    const first = api.getFirstDisplayedRowIndex();
-    const last = api.getLastDisplayedRowIndex();
-    for (let i = first; i >= 0 && i <= last; i++) out.push(api.getDisplayedRowAtIndex(i).id);
-    return out;
-  },
-  actions: {
-    sort: async (inst, key) => { click(inst.$node.querySelector('.ag-header-cell[col-id="' + key + '"] .ag-header-cell-label')); await pause(60); },
-    selectRow: async (inst, key) => { click(inst.$node.querySelector('.ag-row[row-id="' + key + '"] .ag-selection-checkbox input')); await pause(60); },
-    clickRow: async (inst, key) => { click(inst.$node.querySelector('.ag-row[row-id="' + key + '"] .ag-cell[col-id="name"]')); await pause(60); }
-  }
-}));
+agGridSuite(common);
 
 // --- Tabulator ---------------------------------------------------------------------------------
 

@@ -47,7 +47,7 @@ You are wrapping a third-party browser library (a map, an editor, a date picker,
 - A `document` listener or a timer survives `destroy`.
 - Creating the vendor object before its library has loaded.
 - XSS through a vendor renderer or tooltip that takes HTML.
-- A strict CSP blocks a library that injects `<style>` or fonts (for example AG Grid 33+): say which CSP directives the page needs; `script-src` stays without `'unsafe-inline'`.
+- A strict CSP blocks a library that injects `<style>` or fonts (for example AG Grid 33+): say which CSP directives the page needs; if the library takes a nonce option (AG Grid: `styleNonce` with its noStyle build), show the nonce setup first; `script-src` stays without `'unsafe-inline'`.
 
 ## Output format
 1. License verdict and the level (asked or recommended)

@@ -22,7 +22,8 @@ after(async () => {
   if (server) await server.close();
 });
 
-test('every adapter passes the grid / chart contract with its real vendor', async () => {
+/** Opens a contract page, waits for its runner and returns { result, problems }. */
+async function runPage(path) {
   const context = await browser.newContext({ locale: 'en-US', viewport: { width: 1200, height: 900 } });
   const page = await context.newPage();
   const problems = [];
@@ -30,13 +31,24 @@ test('every adapter passes the grid / chart contract with its real vendor', asyn
   page.on('pageerror', (err) => problems.push('page error: ' + err.message));
   page.on('requestfailed', (req) => problems.push('request failed: ' + req.url()));
   try {
-    await page.goto(server.origin + '/layer2/adapters/_contract/contract.html', { waitUntil: 'load' });
+    await page.goto(server.origin + path, { waitUntil: 'load' });
     await page.waitForFunction(() => window.__contract && window.__contract.done, null, { timeout: 180000 });
-    const result = await page.evaluate(() => window.__contract);
-    assert.deepEqual(result.failures, []);
-    assert.ok(result.passed >= 45, '45 checks (6 suites): ' + result.passed);
-    assert.deepEqual(problems, []);
+    return { result: await page.evaluate(() => window.__contract), problems };
   } finally {
     await context.close();
   }
+}
+
+test('every adapter passes the grid / chart contract with its real vendor', async () => {
+  const { result, problems } = await runPage('/layer2/adapters/_contract/contract.html');
+  assert.deepEqual(result.failures, []);
+  assert.ok(result.passed >= 45, '45 checks (6 suites): ' + result.passed);
+  assert.deepEqual(problems, []);
+});
+
+test('vfGridAg passes the grid contract under a nonce-only style-src (D-035)', async () => {
+  const { result, problems } = await runPage('/layer2/adapters/_contract/csp-nonce.html');
+  assert.deepEqual(result.failures, []);
+  assert.ok(result.passed >= 9, 'the nonce check, the grid suite and the violation check: ' + result.passed);
+  assert.deepEqual(problems, []);
 });

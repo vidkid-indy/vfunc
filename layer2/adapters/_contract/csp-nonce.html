@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- A strict style-src without 'unsafe-inline': AG Grid gets the nonce through options.styleNonce.
+       A real server makes a new nonce for every response; this test page uses a fixed one (D-035).
+       img-src data: is for the Quartz theme's icons; no data: font is needed with the noStyle build. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'nonce-vfContractNonce'; font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>AG Grid with a CSP nonce — vfunc-ui</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../../layer1/css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../../dist/vfunc-ui.css">
+  <link rel="stylesheet" href="./contract.css">
+</head>
+<body>
+  <main class="contract">
+    <h1 class="contract__title">AG Grid with a CSP nonce</h1>
+    <p class="contract__lead">The grid contract on vfGridAg under style-src 'nonce-…' without 'unsafe-inline'
+      (options.styleNonce). /
+      style-src에 'unsafe-inline' 없이 nonce만 둔 페이지에서 vfGridAg의 그리드 계약을 검사합니다.</p>
+    <p class="contract__summary" id="summary" role="status" aria-live="polite">Running…</p>
+    <ol class="contract__results" id="results"></ol>
+    <div class="contract__stage" id="stage"></div>
+  </main>
+  <script src="./csp-watch.js"></script>
+  <!-- The noStyle build: ag-grid-community.min.js also injects the legacy theme CSS when it loads,
+       before any grid option can pass the nonce. -->
+  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@36.2.0/dist/ag-grid-community.min.noStyle.js"
+          integrity="sha384-JewyKQVv58P2YbRlV8jKY66cx7Ys5bR17/UxZaAB9CFggWLuOGLY+SoOC3G9pgbZ" crossorigin="anonymous"></script>
+  <script type="module" src="./csp-nonce-page.js"></script>
+</body>
+</html>

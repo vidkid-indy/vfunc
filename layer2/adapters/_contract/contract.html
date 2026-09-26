@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
-  <!-- style-src 'unsafe-inline' and font-src data: are for AG Grid, which injects its styles and icon font (D-034 10). -->
+  <!-- style-src 'unsafe-inline', font-src data: and img-src data: are for AG Grid, which injects its styles,
+       icon fonts and icon images (D-034 10). csp-nonce.html checks the strict nonce setup (D-035). -->
   <title>Adapter contract tests — vfunc-ui</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="../../../layer1/css/vfunc.tokens.css">

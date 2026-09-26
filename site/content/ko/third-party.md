@@ -32,7 +32,10 @@
 
 - IE11이 필요하면 기본 `vfGrid`·`vfChart`를 쓰세요. 네 벤더의 현재 버전은 IE11을 지원하지 않습니다.
 - AG Grid Enterprise 기능은 AG Grid의 상용 라이선스가 따로 필요합니다. 어댑터는 Community만 씁니다.
-- AG Grid 33 이상은 스타일과 아이콘 글꼴을 스스로 주입합니다. 이 어댑터를 쓰는 페이지의 CSP에는 `style-src 'unsafe-inline'`과 `font-src data:`가 필요합니다. `script-src`에는 여전히 `'unsafe-inline'`을 넣지 않습니다.
+- AG Grid 33 이상은 `<style>`을 스스로 주입하고 테마 아이콘을 `data:` 이미지로 씁니다. 페이지의 CSP는 경우에 따라 고릅니다. 어느 경우든 `script-src`에는 `'unsafe-inline'`을 넣지 않습니다.
+  - **서버가 응답마다 nonce를 만들 수 있을 때(엄격 유지):** 스크립트 로드 때 스타일을 넣지 않는 `ag-grid-community.min.noStyle.js`를 쓰고, 같은 nonce를 `options: { styleNonce: nonce }`로 넘깁니다. CSP는 `style-src 'self' 'nonce-…'; img-src 'self' data:`입니다. nonce는 요청마다 새로 만들고 고정값을 쓰지 않습니다.
+  - **정적 페이지(nonce를 만들 수 없음):** `ag-grid-community.min.js`와 `style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:`. 이 파일은 로드될 때 legacy 테마 CSS와 아이콘 글꼴도 넣습니다.
+  - **정적 페이지인데 `style-src`도 엄격해야 할 때:** AG Grid 대신 `vf.vfGridTabulator`나 기본 `vf.vfGrid`를 쓰세요.
 - Chart.js는 차트 종류를 제자리에서 바꾸지 못해 `setType`이 차트를 새로 만듭니다. `.instance`는 항상 현재 객체입니다.
 - 색은 `--vf-chart-1`~`8` 토큰에서 읽으므로 다크 테마를 따라갑니다.
 

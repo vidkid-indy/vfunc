@@ -32,7 +32,10 @@ They keep the same contracts as the built-in `vf.vfGrid` and `vf.vfChart`, so sw
 
 - For IE11, use the built-in `vfGrid` and `vfChart`: the current versions of the four vendors do not support it.
 - AG Grid Enterprise features need a separate commercial license from AG Grid; the adapter uses Community only.
-- AG Grid 33 and later inject their styles and icon font. A page with this adapter needs `style-src 'unsafe-inline'` and `font-src data:` in its CSP; `script-src` still has no `'unsafe-inline'`.
+- AG Grid 33 and later inject their own `<style>` elements and use `data:` images for the theme icons. Pick the page's CSP for your case. In every case `script-src` has no `'unsafe-inline'`.
+  - **The server can make a nonce for every response (stays strict):** load `ag-grid-community.min.noStyle.js`, which injects no styles when it loads, and pass the same nonce as `options: { styleNonce: nonce }`. The CSP is `style-src 'self' 'nonce-…'; img-src 'self' data:`. Make a new nonce for every request; never a fixed value.
+  - **A static page (no nonce):** `ag-grid-community.min.js` with `style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:`. This file also injects the legacy theme CSS and icon fonts when it loads.
+  - **A static page whose `style-src` must stay strict too:** use `vf.vfGridTabulator` or the built-in `vf.vfGrid` instead of AG Grid.
 - Chart.js cannot change the type of a chart in place, so `setType` creates a new chart; `.instance` is always the current one.
 - Colors come from the `--vf-chart-1`–`8` tokens, so charts follow the dark theme.
 
