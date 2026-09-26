@@ -28,7 +28,7 @@ You are wrapping a third-party browser library (a map, an editor, a date picker,
 6. **Events.** Vendor events become props callbacks that receive `{ sender, event, data }`.
 7. **Destroy** in `onDestroy`: the vendor's destroy call, and every listener, observer, subscription and timer you added.
 8. **Size.** `ResizeObserver` on the host, else `window` resize, calling the vendor's resize.
-9. **Theme.** Give the vendor colors and fonts from the `--vf-*` tokens (`getComputedStyle(document.documentElement).getPropertyValue(...)`). No color literals in JS.
+9. **Theme.** Give the vendor colors and fonts from the `--vf-*` tokens (`getComputedStyle(document.documentElement).getPropertyValue(...)`). No color literals in JS, not even as a fallback for a missing token.
 10. **Locale.** `vf.i18n.subscribe` → the vendor's locale or texts; visible text comes from message keys.
 11. **XSS.** Where the vendor takes HTML strings (cells, tooltips, popups, labels), pass `vf.esc(text)` or a DOM node built from `vf.html` markup, never raw data.
 12. **`.instance`.** Expose the vendor object (`state.instance`), and say that its features are outside the contract.

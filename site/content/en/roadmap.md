@@ -2,8 +2,8 @@
 
 | Stage | Contents | Status |
 |---|---|---|
-| Stage 1 | the `vf.vfunc` engine and helpers, router, store, i18n, IE legacy file, tokens, update plugin, examples, starter, AI prompt kit, this site | 1.0 release candidate |
-| Stage 2 | class-free components `vf.vs*` (strings) and `vf.vf*` (instances), a basic grid and chart, third-party adapters (AG Grid, Tabulator, Chart.js, ECharts), a component gallery, a theme builder | planned |
+| Stage 1 | the `vf.vfunc` engine and helpers, router, store, i18n, IE legacy file, tokens, update plugin, examples, starter, AI prompt kit, this site | 1.0 |
+| Stage 2 | class-free components `vf.vs*` (markup) and `vf.vf*` (instances), a basic grid and chart, third-party adapters (AG Grid, Tabulator, Chart.js, ECharts), a component gallery, `design-check` | 1.0 (a theme builder comes later) |
 | Stage 3 | the class-based `vf.VClass` family, templates, tools | planned |
 
 ## Naming

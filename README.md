@@ -4,7 +4,7 @@
 
 [한국어](README.ko.md) · [Website](https://vidkid-indy.github.io/vfunc/en/) · [Discussions](https://github.com/vidkid-indy/vfunc/discussions)
 
-> **Status: 1.0 release candidate (`1.0.0-rc.7`).** The 1.0 API is complete; changes before 1.0.0 come only from release-candidate feedback.
+> **Status: 1.0.0.** The engine (layer 1) and the components (layer 2) are stable and follow semantic versioning.
 
 vfunc.js is a small vanilla JavaScript library for building interactive pages and single-page apps.
 Its core idea: **keep your HTML as it is, and turn only the parts you need to control into vfunc components.**
@@ -22,8 +22,8 @@ Script tag (pin the exact version and keep the SRI hash):
 
 ```html
 <div id="counter"></div>
-<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.8/dist/vfunc.min.js"
-        integrity="sha384-xNOPbYN0d0OGrhulOpdDp2J1IuCtB419bkm/UgypyZtwVnSt0uYVjpdDTdUscEAS"
+<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0/dist/vfunc.min.js"
+        integrity="sha384-3rmVR+LCPl9RqreURnm808mUqrbUD2gVgo7P7mK20vIlp6mCO3JnbgiD9gJ+Gf3N"
         crossorigin="anonymous"></script>
 <script src="app.js"></script>
 ```
@@ -77,8 +77,8 @@ import vf from 'vfunc';
 
 | Layer | Contents | Status |
 |---|---|---|
-| layer1 | The engine `vf.vfunc` and helpers (`attach`, `html`, `router`, `store`, `i18n`, `fmt`) | 1.0 release candidate |
-| layer2 | Class-free components (`vs*` returns a string, `vf*` returns an instance), grid, chart, third-party adapters | Planned |
+| layer1 | The engine `vf.vfunc` and helpers (`attach`, `html`, `router`, `store`, `i18n`, `fmt`) | 1.0 |
+| layer2 | Class-free components (`vs*` returns markup, `vf*` returns an instance), grid, chart, third-party adapters (`vfunc/ui`, `vfunc/ui/data`, `vfunc/adapters/*`) | 1.0 |
 | layer3 | Class-based framework (`VClass`) and tools | Planned |
 
 ## Contributing and security

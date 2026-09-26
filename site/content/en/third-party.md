@@ -1,6 +1,6 @@
 # Third-party integration
 
-How to use existing libraries — maps, editors, charts, grids — in a vfunc app. There are four official adapters; for any other library, follow the steps below. Layer 2 is a preview and is published on npm with 1.0.0.
+How to use existing libraries — maps, editors, charts, grids — in a vfunc app. There are four official adapters; for any other library, follow the steps below. From 1.0.0 the adapters ship in the `vfunc` package (`vfunc/adapters/*`).
 
 ## Integration levels
 

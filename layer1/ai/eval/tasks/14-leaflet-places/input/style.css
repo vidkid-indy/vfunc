@@ -1,0 +1,46 @@
+/* Page layout. Tokens only. */
+body {
+  margin: 0;
+  font-family: var(--vf-font-body);
+  color: var(--vf-color-text);
+  background: var(--vf-color-bg);
+}
+
+.page {
+  box-sizing: border-box;
+  max-inline-size: 48em;
+  margin-inline: auto;
+  padding: var(--vf-space-5);
+}
+
+.page__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--vf-space-4);
+}
+
+.page__title { margin: 0; font-size: var(--vf-font-size-2xl); }
+.page__current { color: var(--vf-color-text-muted); }
+
+.page__button,
+.places__button {
+  padding: var(--vf-space-2) var(--vf-space-3);
+  font: inherit;
+  color: var(--vf-color-text);
+  background: var(--vf-color-surface);
+  border: 1px solid var(--vf-color-border);
+  border-radius: var(--vf-radius-md);
+}
+
+.places {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vf-space-2);
+  margin: 0 0 var(--vf-space-4);
+  padding: 0;
+  list-style: none;
+}
+
+/* The map needs a height: give it to the element Leaflet draws in. */
+.map-slot [data-vf-keep] { block-size: calc(var(--vf-space-7) * 7); }

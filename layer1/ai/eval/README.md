@@ -1,6 +1,6 @@
 # vfunc.js LLM evaluation set
 
-Ten tasks that show how well an AI model writes vfunc.js code from the AI kit alone, graded automatically in three browser engines. Korean: [README.ko.md](README.ko.md). Results are published on the website (Working with AI → Evaluation set).
+Fourteen tasks (ten for the engine, four for the layer 2 components) that show how well an AI model writes vfunc.js code from the AI kit alone, graded automatically in three browser engines. Korean: [README.ko.md](README.ko.md). Results are published on the website (Working with AI → Evaluation set).
 
 | # | Task | Kit prompt | What it checks most |
 |---|---|---|---|
@@ -14,6 +14,12 @@ Ten tasks that show how well an AI model writes vfunc.js code from the AI kit al
 | 08 | Chart.js inside a component | add-feature | `onMount` / `onUpdate` / `onDestroy`, `data-vf-keep`, token colors |
 | 09 | Apply a DESIGN.md | design/apply-design | JS unchanged, computed styles in light and dark |
 | 10 | Fix seven bugs | debug | the traps found by earlier independent runs |
+| 11 | Admin dashboard (layer 2) | add-feature | `vfSearchInput`, `vfGrid` (sort, search, selection), `vfChart` with its data table |
+| 12 | Profile form (layer 2) | add-feature | `vs*` field props (`label`, `hint`, `error`), values kept across the error re-render |
+| 13 | Delete with a confirmation (layer 2) | add-feature | `vfConfirm` (`danger`, Escape), one `vfToast`, focus after a delete |
+| 14 | Leaflet as an app wrapper (layer 2 kit) | integrate-third-party | L1 wrapper on `app`, `data-vf-keep`, `map.remove()`, escaped tooltips (CDN) |
+
+Layer 2 tasks have `"layer": 2` in `task.json`: their bundle adds `components.md` to the kit and lists the layer 2 files of `lib/`, the grader copies those files from `layer2/dist`, and the kit prompt may come from `layer2/ai`.
 
 ## How it works
 
@@ -32,7 +38,7 @@ Ten tasks that show how well an AI model writes vfunc.js code from the AI kit al
 6. Write `run.json` in the same folder (below), then grade: `node layer1/ai/eval/tools/grade.mjs layer1/ai/eval/results/<run>`. Add `--engines chromium` for a quick look; a published result uses all three. Task 08 needs network access (Chart.js from the CDN).
 7. Read `results.md` and the answers' `REPORT.md`, fill in the manual scores (the `rubric` of each `task.json`, 0–2 points each) and notes in `run.json`, then run `grade.mjs <run folder> --report` to rewrite `results.md` without grading again.
 
-Grading all ten tasks in three engines takes about 5 minutes for good answers and up to 15 minutes when many checks fail (a failing check waits for its time limit).
+Grading all fourteen tasks in three engines takes about 5 minutes for good answers and up to 15 minutes when many checks fail (a failing check waits for its time limit).
 
 ```json
 {

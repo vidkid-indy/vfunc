@@ -2,7 +2,8 @@
 //
 // Turns a saved model answer (answer.md) into a project folder (maintainer decision D-024).
 // The answer lists files as `### relative/path` followed by one fenced code block. The folder
-// gets the task's project files first, then the answer's files on top, then lib/ from layer1/dist.
+// gets the task's project files first, then the answer's files on top, then lib/ from layer1/dist
+// (and layer2/dist for a layer 2 task).
 //
 //   node layer1/ai/eval/tools/extract.mjs <answer.md> <task id> <out dir>
 
@@ -19,6 +20,27 @@ export const LIB = {
   'lib/vfunc.esm.js': 'layer1/dist/vfunc.esm.js',
   'lib/vfunc.tokens.css': 'layer1/css/vfunc.tokens.css'
 };
+
+/** More lib/ files for a layer 2 task ("layer": 2 in task.json, decision D-039). */
+export const LIB_LAYER2 = {
+  'lib/vfunc-ui.js': 'layer2/dist/vfunc-ui.js',
+  'lib/vfunc-ui-data.js': 'layer2/dist/vfunc-ui-data.js',
+  'lib/vfunc-ui.locale.ko.js': 'layer2/dist/vfunc-ui.locale.ko.js',
+  'lib/vfunc-ui.esm.js': 'layer2/dist/vfunc-ui.esm.js',
+  'lib/vfunc-ui-data.esm.js': 'layer2/dist/vfunc-ui-data.esm.js',
+  'lib/vfunc-ui.css': 'layer2/dist/vfunc-ui.css'
+};
+
+/** The lib/ files of a task: { 'lib/…': repository path }. */
+export function libFor(task) {
+  return task && task.layer === 2 ? Object.assign({}, LIB, LIB_LAYER2) : LIB;
+}
+
+/** The kit prompt of a task in a language: layer1/ai/<lang>/<prompt>, else layer2/ai/<lang>/<prompt>. */
+export function promptPath(task, lang) {
+  const l1 = join(ROOT, 'layer1/ai', lang, task.prompt);
+  return existsSync(l1) ? l1 : join(ROOT, 'layer2/ai', lang, task.prompt);
+}
 
 const lf = (s) => s.replace(/\r\n/g, '\n');
 
@@ -137,9 +159,10 @@ export function extractAnswer(markdown, task, outDir) {
     writeFileSync(join(outDir, path), work[path]);
   }
   if (parsed.report !== null) writeFileSync(join(outDir, 'REPORT.md'), parsed.report);
-  for (const path of Object.keys(LIB)) {
+  const lib = libFor(task);
+  for (const path of Object.keys(lib)) {
     mkdirSync(dirname(join(outDir, path)), { recursive: true });
-    copyFileSync(join(ROOT, LIB[path]), join(outDir, path));
+    copyFileSync(join(ROOT, lib[path]), join(outDir, path));
   }
   return {
     files: parsed.files.map((f) => f.path),

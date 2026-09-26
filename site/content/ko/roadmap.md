@@ -2,8 +2,8 @@
 
 | 단계 | 내용 | 상태 |
 |---|---|---|
-| 1단계 | 엔진 `vf.vfunc`와 헬퍼, 라우터, store, 다국어, IE legacy 파일, 토큰, update 플러그인, 예제, 스타터, AI 프롬프트 킷, 이 사이트 | 1.0 릴리스 후보 |
-| 2단계 | 클래스 없는 컴포넌트 `vf.vs*`(문자열)·`vf.vf*`(인스턴스), 기본 그리드와 차트, 서드파티 어댑터(AG Grid, Tabulator, Chart.js, ECharts), 컴포넌트 갤러리, 테마 빌더 | 계획 |
+| 1단계 | 엔진 `vf.vfunc`와 헬퍼, 라우터, store, 다국어, IE legacy 파일, 토큰, update 플러그인, 예제, 스타터, AI 프롬프트 킷, 이 사이트 | 1.0 |
+| 2단계 | 클래스 없는 컴포넌트 `vf.vs*`(마크업)·`vf.vf*`(인스턴스), 기본 그리드와 차트, 서드파티 어댑터(AG Grid, Tabulator, Chart.js, ECharts), 컴포넌트 갤러리, `design-check` | 1.0(테마 빌더는 나중에) |
 | 3단계 | 클래스 기반 `vf.VClass` 계열, 템플릿, 도구 | 계획 |
 
 ## 이름 규칙

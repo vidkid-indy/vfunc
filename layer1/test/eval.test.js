@@ -8,8 +8,8 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { EVAL, loadTasks, inputPath, parseAnswer, pathFrom, extractAnswer, readInputs } from '../ai/eval/tools/extract.mjs';
-import { buildBundle, fenced, LANGS } from '../ai/eval/tools/bundle.mjs';
+import { EVAL, loadTasks, inputPath, parseAnswer, pathFrom, extractAnswer, readInputs, promptPath, libFor } from '../ai/eval/tools/extract.mjs';
+import { buildBundle, fenced, kitFiles, LANGS } from '../ai/eval/tools/bundle.mjs';
 import { staticCheck, scanJs, selectsByClass } from '../ai/eval/tools/static.mjs';
 import { report } from '../ai/eval/tools/report.mjs';
 
@@ -17,8 +17,9 @@ const read = (path) => readFileSync(path, 'utf8').replace(/\r\n/g, '\n');
 const tasks = loadTasks();
 const reference = (task) => read(join(task.dir, 'reference', 'answer.md'));
 
-test('ten tasks, each with task.json, texts in both languages, checks and a reference answer', () => {
-  assert.equal(tasks.length, 10);
+test('fourteen tasks (four of layer 2), each with task.json, texts in both languages, checks and a reference answer', () => {
+  assert.equal(tasks.length, 14);
+  assert.deepEqual(tasks.filter((t) => t.layer === 2).map((t) => t.id.slice(0, 2)), ['11', '12', '13', '14']);
   const folders = readdirSync(join(EVAL, 'tasks'), { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name).sort();
   assert.deepEqual(folders, tasks.map((t) => t.id));
   for (const task of tasks) {
@@ -32,7 +33,7 @@ test('ten tasks, each with task.json, texts in both languages, checks and a refe
     }
     for (const path of task.mustKeep || []) assert.ok(task.project[path], task.id + ' mustKeep ' + path + ' is a project file');
     if (task.prompt) {
-      for (const lang of LANGS) assert.ok(existsSync(join(EVAL, '..', lang, task.prompt)), task.id + ' prompt ' + lang);
+      for (const lang of LANGS) assert.ok(existsSync(promptPath(task, lang)), task.id + ' prompt ' + lang);
     }
   }
 });
@@ -56,13 +57,18 @@ test('a bundle carries the header, the kit, the task and its inputs', () => {
       assert.ok(bundle.indexOf(read(join(EVAL, '..', lang === 'ko' ? 'llms.ko.txt' : 'llms.txt')).split('\n')[2]) >= 0, task.id + ' ' + lang + ' llms');
       assert.ok(bundle.indexOf(read(join(task.dir, 'task.' + lang + '.md')).trim()) >= 0, task.id + ' ' + lang + ' task text');
       if (task.prompt) {
-        const prompt = read(join(EVAL, '..', lang, task.prompt));
+        const prompt = read(promptPath(task, lang));
         assert.ok(bundle.indexOf(prompt.slice(prompt.indexOf('\n---\n') + 5).trim().split('\n')[0]) >= 0, task.id + ' ' + lang + ' prompt');
       }
       for (const f of readInputs(task, 'project').concat(readInputs(task, 'reference'))) {
         assert.ok(bundle.indexOf(f.content) >= 0, task.id + ' ' + lang + ' input ' + f.path);
       }
-      assert.ok(bundle.indexOf('@VERSION@') < 0, 'version filled in');
+      assert.ok(bundle.indexOf('@VERSION@') < 0 && bundle.indexOf('@LIB@') < 0, 'version and lib/ list filled in');
+      // Layer 2 tasks (D-039): the component list and the layer 2 lib/ files; layer 1 tasks: neither.
+      const components = read(join(EVAL, '..', '..', '..', 'layer2', 'ai', lang, 'components.md')).split('\n')[0];
+      assert.equal(bundle.indexOf(components) >= 0, task.layer === 2, task.id + ' ' + lang + ' components.md');
+      assert.equal(bundle.indexOf('`lib/vfunc-ui.js`') >= 0, task.layer === 2, task.id + ' ' + lang + ' lib/ list');
+      assert.ok(bundle.indexOf('`lib/vfunc.js`') >= 0, task.id + ' ' + lang + ' lib/vfunc.js listed');
     }
   }
 });
@@ -80,7 +86,9 @@ test('a bundle never contains the reference answer or the checks', () => {
     assert.ok(own.length > 0, task.id + ': the reference answer has lines of its own');
     for (const lang of LANGS) {
       const bundle = buildBundle(task, lang);
-      assert.deepEqual(own.filter((l) => bundle.indexOf(l) >= 0), [], task.id + ' ' + lang);
+      // A line the kit itself shows (a documented example) is not a leak.
+      const kit = kitFiles(task, lang).map((f) => f.content).join('\n');
+      assert.deepEqual(own.filter((l) => bundle.indexOf(l) >= 0 && kit.indexOf(l) < 0), [], task.id + ' ' + lang);
       assert.ok(bundle.indexOf('tools/helpers.mjs') < 0, 'no checks');
     }
   }
@@ -160,8 +168,18 @@ test('extraction: project files, the answer on top, lib/ from dist, must-keep vi
     assert.ok(existsSync(join(out, 'lib', 'vfunc.esm.js')) && existsSync(join(out, 'lib', 'vfunc.js')) && existsSync(join(out, 'lib', 'vfunc.tokens.css')));
     assert.equal(read(join(out, 'styles', 'app.css')), read(join(task.dir, 'input', 'app.css')), 'untouched project files are copied');
     assert.equal(read(join(out, 'REPORT.md')), 'ok\n');
+    assert.equal(existsSync(join(out, 'lib', 'vfunc-ui.js')), false, 'a layer 1 task gets no layer 2 files');
   } finally {
     rmSync(out, { recursive: true, force: true });
+  }
+  const task2 = tasks.filter((t) => t.id === '11-admin-dashboard')[0];
+  const out2 = mkdtempSync(join(tmpdir(), 'vf-eval-'));
+  try {
+    extractAnswer('### REPORT.md\n\nok\n', task2, out2);
+    for (const path of Object.keys(libFor(task2))) assert.ok(existsSync(join(out2, path)), 'layer 2 task: ' + path);
+    assert.ok(existsSync(join(out2, 'lib', 'vfunc-ui.css')) && existsSync(join(out2, 'lib', 'vfunc-ui-data.esm.js')));
+  } finally {
+    rmSync(out2, { recursive: true, force: true });
   }
 });
 
@@ -187,6 +205,9 @@ test('static checks: each rule fires on its mistake and not on correct code', ()
   assert.deepEqual(rules(js('root.querySelector(".card__title")')), ['class-selector']);
   assert.deepEqual(rules(js('e.target.closest(\'[data-id] .row\')')), ['class-selector']);
   assert.equal(selectsByClass('[data-x=".y"]'), false);
+  assert.equal(selectsByClass('#delete-${next.id}'), false, 'a template expression is not a class');
+  assert.equal(selectsByClass('.row-${n}'), true);
+  assert.deepEqual(rules(js('const b = vf.$(`#delete-${next.id}`);\n')), []);
   assert.deepEqual(rules(js('list.innerHTML = items.map((i) => i.name).join("")')), ['html-string']);
   assert.deepEqual(staticCheck(js('list.innerHTML =\n  String(vf.html`<li>${x}</li>`);')).map((f) => f.rule + ':' + f.severity), ['html-string:warn'], 'escaped by vf.html');
   assert.deepEqual(rules(js('const row = `<li>${name}</li>`;')), ['html-string']);

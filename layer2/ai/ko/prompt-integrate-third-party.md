@@ -28,7 +28,7 @@ vfunc.js 앱에서 쓸 수 있도록 서드파티 브라우저 라이브러리(�
 6. **이벤트.** 벤더 이벤트를 props 콜백으로 잇고, 콜백은 `{ sender, event, data }`를 받습니다.
 7. **정리**는 `onDestroy`에서: 벤더의 destroy 호출, 그리고 추가한 리스너·옵저버·구독·타이머 전부.
 8. **크기.** 호스트에 `ResizeObserver`, 없으면 `window` resize로 벤더의 resize를 부릅니다.
-9. **테마.** 색과 글꼴은 `--vf-*` 토큰에서 읽어 벤더에 줍니다(`getComputedStyle(document.documentElement).getPropertyValue(...)`). JS에 색 값을 쓰지 않습니다.
+9. **테마.** 색과 글꼴은 `--vf-*` 토큰에서 읽어 벤더에 줍니다(`getComputedStyle(document.documentElement).getPropertyValue(...)`). JS에 색 값을 쓰지 않습니다. 토큰이 없을 때의 대체 값으로도 쓰지 않습니다.
 10. **다국어.** `vf.i18n.subscribe` → 벤더 로케일이나 문구. 화면 문구는 메시지 키에서 가져옵니다.
 11. **XSS.** 벤더가 HTML 문자열을 받는 곳(셀, 툴팁, 팝업, 라벨)에는 `vf.esc(text)`나 `vf.html` 마크업으로 만든 DOM 노드를 넘기고, 원본 데이터를 그대로 넘기지 않습니다.
 12. **`.instance`.** 벤더 객체를 노출하고(`state.instance`), 그 기능은 계약 밖이라고 적습니다.

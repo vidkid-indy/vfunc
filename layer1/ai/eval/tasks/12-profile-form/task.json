@@ -1,0 +1,21 @@
+{
+  "id": "12-profile-form",
+  "title": { "en": "Profile form with vs* fields", "ko": "vs* 필드로 만드는 프로필 폼" },
+  "layer": 2,
+  "prompt": "prompt-add-feature.md",
+  "entry": "index.html",
+  "project": {
+    "index.html": "input/index.html",
+    "app.js": "input/app.js",
+    "style.css": "input/style.css"
+  },
+  "reference": {},
+  "mustKeep": [],
+  "static": {},
+  "rubric": [
+    { "id": "spec", "en": "Follows the fields, messages, hooks and behavior of the task", "ko": "과제의 필드, 문구, 훅, 동작을 지킴" },
+    { "id": "fields", "en": "Uses the vs* field props (label, hint, error, required) instead of hand-made labels and aria attributes", "ko": "손으로 만든 라벨·aria 대신 vs* 필드 props(label, hint, error, required)를 씀" },
+    { "id": "values", "en": "Typed values survive the re-render that shows the errors (kept outside the markup or read back)", "ko": "오류를 보이려고 다시 그려도 입력값이 남음(마크업 밖에 두거나 다시 읽음)" },
+    { "id": "report", "en": "Honest report (assumptions, unverified items)", "ko": "정직한 보고(가정, 확인하지 못한 항목)" }
+  ]
+}

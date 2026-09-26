@@ -2,11 +2,11 @@
 
 > vfunc.js는 빌드가 필요 없는 순수 Vanilla JavaScript UI 라이브러리입니다(Apache-2.0). Virtual DOM 없이 innerHTML로 렌더링하고, 이벤트는 위임으로, 요소는 `data-ref`로 찾습니다. 기본 개념: HTML은 그대로 쓰고 제어가 필요한 곳만 vfunc로 만든다. 전역은 `vf` 하나입니다.
 
-vfunc.js 1.0(릴리스 후보)용입니다. 전체 레퍼런스는 llms-full.txt(이 파일의 영어판 + 사이트 가이드·API 레퍼런스 + 타입 선언)이고, 이 파일에는 올바른 코드를 쓰는 데 필요한 것만 담았습니다. 코드 예시와 API 설명은 영어판 llms.txt와 같습니다.
+vfunc.js 1.0용입니다. 전체 레퍼런스는 llms-full.txt(이 파일의 영어판 + 사이트 가이드·API 레퍼런스 + 타입 선언)이고, 이 파일에는 올바른 코드를 쓰는 데 필요한 것만 담았습니다. 코드 예시와 API 설명은 영어판 llms.txt와 같습니다.
 
 ## 불러오기
 
-- 스크립트 태그: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.8/dist/vfunc.min.js" integrity="sha384-xNOPbYN0d0OGrhulOpdDp2J1IuCtB419bkm/UgypyZtwVnSt0uYVjpdDTdUscEAS" crossorigin="anonymous"></script>` → 전역 `vf`. 운영에서는 정확한 버전과 SRI를 붙입니다. integrity 값은 버전·파일마다 다릅니다(이 값은 1.0.0-rc.7의 vfunc.min.js). `dist/vfunc.js`는 경고가 나오는 개발용입니다.
+- 스크립트 태그: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0/dist/vfunc.min.js" integrity="sha384-3rmVR+LCPl9RqreURnm808mUqrbUD2gVgo7P7mK20vIlp6mCO3JnbgiD9gJ+Gf3N" crossorigin="anonymous"></script>` → 전역 `vf`. 운영에서는 정확한 버전과 SRI를 붙입니다. integrity 값은 버전·파일마다 다릅니다(이 값은 1.0.0의 vfunc.min.js). `dist/vfunc.js`는 경고가 나오는 개발용입니다.
 - ES 모듈: `import vf from 'vfunc'` 또는 `import { vfunc, html, router } from 'vfunc'`. 복사한 파일도 같습니다(`import vf from './lib/vfunc.esm.min.js'`). ES 모듈은 `window.vf`를 건드리지 않습니다.
 - IE11·Edge IE 모드: `dist/vfunc.legacy.min.js`(API 동일, Promise 폴리필만 포함). 앱 코드도 ES5여야 합니다. 화살표 함수·const/let·템플릿 리터럴·클래스를 쓰지 말고, vf.html 템플릿 리터럴 대신 `vf.tpl('<b>{name}</b>', data)`을 씁니다. 앱에 필요한 다른 기능(Object.assign, fetch 등)은 앱이 직접 폴리필합니다. 불러오기: `<script type="module" src="app.js">` + `<script nomodule src="vfunc.legacy.min.js">` + `<script nomodule src="app.es5.js">`.
 
@@ -103,6 +103,10 @@ refresh: 루트 안쪽을 교체하고, `childs`는 다시 옮겨 붙이며(상�
 - CSP가 있으면 인라인 `style="…"`과 인라인 `<script>`를 쓸 수 없습니다. 파일로 두세요(보이기/숨기기는 `hidden` 속성).
 - 표의 행은 table 안에서 파싱해야 합니다. `<tbody>`/`<tr>`을 렌더하는 `vf.vfunc`는 `tag: 'table'`(또는 `'tbody'`). `<tbody>`에 붙인 `vf.attach`는 따로 줄 것이 없습니다. `vf.node`/`vf.frag`는 `<div>`에서 파싱하므로 행에는 쓰지 않습니다.
 - 데이터·로케일 주소는 모듈 기준(`new URL('./data/x.json', import.meta.url)`)으로 만들어야 버전 폴더 안에서도 맞습니다.
+- `vf.attach` 인스턴스는 이미 페이지에 있습니다. `mount()`를 부르지 않습니다(요소를 자기 안에 넣게 됨). `mount()`는 `vf.vfunc` 인스턴스에만 씁니다.
+- `vf.attach`와 `vf.$`의 대상도 훅으로 찾습니다: `'#id'`나 `'[data-ref="x"]'`. 클래스로 찾지 않습니다(`vf.$('.topbar__user')`는 디자인이 바뀌면 깨짐).
+- `vf.html` 항목의 배열은 템플릿에 그대로 넣습니다(`${items}`). `.join('')`은 일반 문자열로 바꾸므로, 그것을 `innerHTML`에 넣으면 문자열로 만든 마크업이 됩니다. `render`로 다시 그리세요.
+- JS에는 색 값을 쓰지 않습니다. 토큰이 없을 때를 대비한 대체 값(`value || '#1d4ed8'`)도 마찬가지입니다. 토큰 파일은 항상 로드됩니다.
 
 ## 예제, 스타터, 프롬프트 킷
 

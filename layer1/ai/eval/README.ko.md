@@ -1,6 +1,6 @@
 # vfunc.js LLM 평가 세트
 
-AI 모델이 AI 킷만 보고 vfunc.js 코드를 얼마나 잘 쓰는지 보여 주는 과제 10개입니다. 세 브라우저 엔진에서 자동으로 채점합니다. 영어: [README.md](README.md). 결과는 사이트(AI와 작업하기 → 평가 세트)에 공개합니다.
+AI 모델이 AI 킷만 보고 vfunc.js 코드를 얼마나 잘 쓰는지 보여 주는 과제 14개(엔진 10개, layer2 컴포넌트 4개)입니다. 세 브라우저 엔진에서 자동으로 채점합니다. 영어: [README.md](README.md). 결과는 사이트(AI와 작업하기 → 평가 세트)에 공개합니다.
 
 | # | 과제 | 킷 프롬프트 | 주로 확인하는 것 |
 |---|---|---|---|
@@ -14,6 +14,12 @@ AI 모델이 AI 킷만 보고 vfunc.js 코드를 얼마나 잘 쓰는지 보여 
 | 08 | 컴포넌트 안의 Chart.js | add-feature | `onMount` / `onUpdate` / `onDestroy`, `data-vf-keep`, 토큰 색 |
 | 09 | DESIGN.md 적용 | design/apply-design | JS 변경 없음, 라이트·다크의 계산된 스타일 |
 | 10 | 버그 일곱 개 고치기 | debug | 앞선 독립 실행에서 드러난 함정 |
+| 11 | 관리자 대시보드(layer2) | add-feature | `vfSearchInput`, `vfGrid`(정렬·검색·선택), 데이터 표가 있는 `vfChart` |
+| 12 | 프로필 폼(layer2) | add-feature | `vs*` 필드 props(`label`, `hint`, `error`), 오류를 다시 그려도 남는 값 |
+| 13 | 확인을 거치는 삭제(layer2) | add-feature | `vfConfirm`(`danger`, Escape), `vfToast` 하나, 삭제 뒤 포커스 |
+| 14 | 앱 래퍼로 쓰는 Leaflet(layer2 킷) | integrate-third-party | `app`의 L1 래퍼, `data-vf-keep`, `map.remove()`, 이스케이프한 툴팁(CDN) |
+
+layer2 과제는 `task.json`에 `"layer": 2`가 있습니다. 묶음은 킷에 `components.md`를 더하고 `lib/`의 layer2 파일을 안내하며, 채점기는 그 파일을 `layer2/dist`에서 복사합니다. 킷 프롬프트는 `layer2/ai`에서 올 수도 있습니다.
 
 ## 동작 방식
 
@@ -32,7 +38,7 @@ AI 모델이 AI 킷만 보고 vfunc.js 코드를 얼마나 잘 쓰는지 보여 
 6. 같은 폴더에 `run.json`(아래)을 쓰고 채점합니다: `node layer1/ai/eval/tools/grade.mjs layer1/ai/eval/results/<실행>`. 빨리 보려면 `--engines chromium`을 붙입니다. 공개하는 결과는 세 엔진을 모두 씁니다. 과제 08은 네트워크가 필요합니다(CDN의 Chart.js).
 7. `results.md`와 답의 `REPORT.md`를 읽고, 수동 점수(각 `task.json`의 `rubric`, 항목마다 0~2점)와 메모를 `run.json`에 적은 뒤 `grade.mjs <실행 폴더> --report`로 다시 채점하지 않고 `results.md`만 새로 만듭니다.
 
-세 엔진에서 과제 10개를 채점하는 데 좋은 답은 5분쯤, 실패한 검사가 많으면 15분까지 걸립니다(실패한 검사는 제한 시간까지 기다립니다).
+세 엔진에서 과제 14개를 채점하는 데 좋은 답은 5분쯤, 실패한 검사가 많으면 15분까지 걸립니다(실패한 검사는 제한 시간까지 기다립니다).
 
 ```json
 {

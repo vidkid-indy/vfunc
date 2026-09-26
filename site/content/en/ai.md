@@ -24,7 +24,7 @@ Example 14 is a published dashboard converted with `prompt-html-to-vfunc`, toget
 
 ## Evaluation set
 
-To check the claim above with numbers, we give AI models ten tasks and grade their answers automatically: counter and greeting, to-do list, converting a published dashboard, a sign-up form, a server list with untrusted data, an SPA scaffold, porting a React component, Chart.js, applying a `DESIGN.md` without touching JS, and fixing seven bugs.
+To check the claim above with numbers, we give AI models fourteen tasks and grade their answers automatically. The ten engine tasks: counter and greeting, to-do list, converting a published dashboard, a sign-up form, a server list with untrusted data, an SPA scaffold, porting a React component, Chart.js, applying a `DESIGN.md` without touching JS, and fixing seven bugs. The four component (layer 2) tasks: an admin dashboard (`vfGrid`, `vfChart`), a profile form (`vs*` fields), deleting with a confirmation (`vfConfirm`, `vfToast`) and a Leaflet app wrapper; their kit adds the [component list](components.md).
 
 - Each model gets one file per task: the kit (`AGENTS.md`, `llms.txt`, the task's prompt), the task and its input files. It answers once, without follow-up questions, and the answer is saved as it is.
 - The grader opens the result in Chromium, Firefox and WebKit, runs the checks of the task, and requires a clean console. It also looks for the mistakes the kit warns about: inline handlers, `javascript:` URLs, class selectors, HTML strings outside `vf.html`, a missing CSP, empty `aria-*` values.

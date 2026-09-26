@@ -1,0 +1,32 @@
+/* Page layout; the components are styled by lib/vfunc-ui.css. Tokens only. */
+body {
+  margin: 0;
+  font-family: var(--vf-font-body);
+  color: var(--vf-color-text);
+  background: var(--vf-color-bg);
+}
+
+.page {
+  box-sizing: border-box;
+  max-inline-size: 36em;
+  margin-inline: auto;
+  padding: var(--vf-space-5);
+}
+
+.page__title { margin: 0; font-size: var(--vf-font-size-2xl); }
+.page__count { color: var(--vf-color-text-muted); }
+
+.files {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.files__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--vf-space-3);
+  padding-block: var(--vf-space-2);
+  border-block-end: 1px solid var(--vf-color-border);
+}

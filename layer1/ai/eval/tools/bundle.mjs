@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 // Writes one paste-ready file per task and language (maintainer decision D-024): the evaluation
-// header, the kit (AGENTS.template.md, llms.txt, the task's prompt), the task text and its input
-// files. Reference answers and checks are never included. Bundles are generated, not committed.
+// header, the kit (AGENTS.template.md, llms.txt, components.md for a layer 2 task, the task's
+// prompt), the task text and its input files. Reference answers and checks are never included. Bundles are generated, not committed.
 //
 //   node layer1/ai/eval/tools/bundle.mjs [--lang en|ko] [--out <dir>] [task ids…]
 //   default: both languages, every task, into build/out/eval/bundles/<lang>/
@@ -10,7 +10,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, extname } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { ROOT, EVAL, loadTask, loadTasks, readInputs } from './extract.mjs';
+import { ROOT, EVAL, loadTask, loadTasks, readInputs, libFor, promptPath } from './extract.mjs';
 
 export const LANGS = ['en', 'ko'];
 
@@ -26,6 +26,37 @@ export function fenced(content, lang) {
   return fence + (lang || '') + '\n' + content.replace(/\n?$/, '\n') + fence;
 }
 
+/** What each lib/ file is, for the header's list. */
+const LIB_TEXT = {
+  en: {
+    'lib/vfunc.js': 'script build, global `vf` (development build: it prints warnings for mistakes)',
+    'lib/vfunc.esm.js': "ES module: `import vf from './lib/vfunc.esm.js'`",
+    'lib/vfunc.tokens.css': 'the optional design tokens',
+    'lib/vfunc-ui.js': 'layer 2 components, script build (after `lib/vfunc.js`; adds `vf.vs*` / `vf.vf*`)',
+    'lib/vfunc-ui-data.js': 'layer 2 data file: `vfGrid`, `vsChart`, `vfChart` (after `lib/vfunc-ui.js`)',
+    'lib/vfunc-ui.locale.ko.js': 'the Korean built-in texts of the components',
+    'lib/vfunc-ui.esm.js': "layer 2 as an ES module: `import './lib/vfunc-ui.esm.js'` (it imports `./vfunc.esm.js`)",
+    'lib/vfunc-ui-data.esm.js': "the data file as an ES module: `import './lib/vfunc-ui-data.esm.js'`",
+    'lib/vfunc-ui.css': 'the components\' CSS (load it after `lib/vfunc.tokens.css`)'
+  },
+  ko: {
+    'lib/vfunc.js': '스크립트 빌드, 전역 `vf`(개발 빌드: 실수하면 경고를 출력)',
+    'lib/vfunc.esm.js': "ES 모듈: `import vf from './lib/vfunc.esm.js'`",
+    'lib/vfunc.tokens.css': '선택 사항인 디자인 토큰',
+    'lib/vfunc-ui.js': 'layer2 컴포넌트, 스크립트 빌드(`lib/vfunc.js` 다음, `vf.vs*` / `vf.vf*`를 더함)',
+    'lib/vfunc-ui-data.js': 'layer2 데이터 파일: `vfGrid`, `vsChart`, `vfChart`(`lib/vfunc-ui.js` 다음)',
+    'lib/vfunc-ui.locale.ko.js': '컴포넌트의 한국어 기본 문구',
+    'lib/vfunc-ui.esm.js': "layer2 ES 모듈: `import './lib/vfunc-ui.esm.js'`(`./vfunc.esm.js`를 import)",
+    'lib/vfunc-ui-data.esm.js': "데이터 파일 ES 모듈: `import './lib/vfunc-ui-data.esm.js'`",
+    'lib/vfunc-ui.css': '컴포넌트 CSS(`lib/vfunc.tokens.css` 다음에 로드)'
+  }
+};
+
+/** The header's list of lib/ files for a task. */
+export function libList(task, lang) {
+  return Object.keys(libFor(task)).map((path) => '   - `' + path + '` — ' + LIB_TEXT[lang][path]).join('\n');
+}
+
 /** The kit files given with a task, as { name, content }. */
 export function kitFiles(task, lang) {
   const kit = join(ROOT, 'layer1/ai');
@@ -33,8 +64,10 @@ export function kitFiles(task, lang) {
     { name: 'AGENTS.md', content: read(join(kit, lang, 'AGENTS.template.md')) },
     { name: lang === 'ko' ? 'llms.ko.txt' : 'llms.txt', content: read(join(kit, lang === 'ko' ? 'llms.ko.txt' : 'llms.txt')) }
   ];
+  // A layer 2 task also gets the generated component list (decision D-039).
+  if (task.layer === 2) files.push({ name: 'components.md', content: read(join(ROOT, 'layer2/ai', lang, 'components.md')) });
   if (task.prompt) {
-    const text = read(join(kit, lang, task.prompt));
+    const text = read(promptPath(task, lang));
     const cut = text.indexOf('\n---\n');
     files.push({ name: task.prompt.split('/').pop(), content: cut >= 0 ? text.slice(cut + 5).replace(/^\n+/, '') : text });
   }
@@ -45,7 +78,7 @@ export function kitFiles(task, lang) {
 export function buildBundle(task, lang) {
   const version = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).version;
   const ko = lang === 'ko';
-  const header = read(join(EVAL, 'header.' + lang + '.md')).replace(/@VERSION@/g, version);
+  const header = read(join(EVAL, 'header.' + lang + '.md')).replace(/@VERSION@/g, version).replace('@LIB@', libList(task, lang));
   const parts = [
     '# ' + (ko ? 'vfunc.js 평가 과제 ' : 'vfunc.js evaluation task ') + task.id + ' — ' + task.title[lang],
     '',

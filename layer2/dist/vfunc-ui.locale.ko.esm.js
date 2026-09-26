@@ -1,4 +1,4 @@
-/*! vfunc-ui (vfunc.js layer 2) v1.0.0-rc.8 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
+/*! vfunc-ui (vfunc.js layer 2) v1.0.0 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
 
 // layer2/src/_internal/vf.js
 import { default as default2 } from "../../layer1/dist/vfunc.esm.js";

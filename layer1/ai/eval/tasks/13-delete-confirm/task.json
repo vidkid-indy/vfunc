@@ -1,0 +1,25 @@
+{
+  "id": "13-delete-confirm",
+  "title": { "en": "Delete with a confirmation", "ko": "확인을 거치는 삭제" },
+  "layer": 2,
+  "prompt": "prompt-add-feature.md",
+  "entry": "index.html",
+  "project": {
+    "index.html": "input/index.html",
+    "app.js": "input/app.js",
+    "style.css": "input/style.css"
+  },
+  "reference": {},
+  "mustKeep": [],
+  "static": {
+    "forbid": [
+      { "pattern": "\\bwindow\\.confirm\\b|(^|[^.\\w])confirm\\s*\\(\\s*['\"`]", "files": "\\.js$", "message": "window.confirm instead of vf.vfConfirm" }
+    ]
+  },
+  "rubric": [
+    { "id": "spec", "en": "Follows the hooks, texts and focus rules of the task", "ko": "과제의 훅, 문구, 포커스 규칙을 지킴" },
+    { "id": "overlays", "en": "vfConfirm awaited through open() (Promise), one vfToast for the page; no hand-made dialog or focus trap", "ko": "open()(Promise)으로 기다리는 vfConfirm, 페이지에 vfToast 하나, 손으로 만든 대화상자·포커스 가두기 없음" },
+    { "id": "cleanup", "en": "Each confirm is destroyed after its answer or one is reused; no instance per row", "ko": "확인 창은 답을 받은 뒤 정리하거나 하나를 재사용, 행마다 인스턴스를 만들지 않음" },
+    { "id": "report", "en": "Honest report (assumptions, unverified items)", "ko": "정직한 보고(가정, 확인하지 못한 항목)" }
+  ]
+}

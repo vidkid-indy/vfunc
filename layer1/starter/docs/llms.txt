@@ -2,11 +2,11 @@
 
 > vfunc.js is a no-build vanilla JavaScript UI library (Apache-2.0). No virtual DOM: components render with innerHTML, events use delegation, and elements are reached through `data-ref`. Idea: keep your HTML as it is and use vfunc only where you need control. One global `vf`.
 
-For vfunc.js 1.0 (release candidates). The full reference is llms-full.txt (this file + the website guide and API reference + the type declarations); this file keeps only what is needed to write correct code. Korean: llms.ko.txt.
+For vfunc.js 1.0. The full reference is llms-full.txt (this file + the website guide and API reference + the type declarations); this file keeps only what is needed to write correct code. Korean: llms.ko.txt.
 
 ## Load
 
-- Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.8/dist/vfunc.min.js" integrity="sha384-xNOPbYN0d0OGrhulOpdDp2J1IuCtB419bkm/UgypyZtwVnSt0uYVjpdDTdUscEAS" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production; the integrity value differs per version and file (this one is 1.0.0-rc.7 vfunc.min.js). `dist/vfunc.js` is the development build with warnings.
+- Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0/dist/vfunc.min.js" integrity="sha384-3rmVR+LCPl9RqreURnm808mUqrbUD2gVgo7P7mK20vIlp6mCO3JnbgiD9gJ+Gf3N" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production; the integrity value differs per version and file (this one is 1.0.0 vfunc.min.js). `dist/vfunc.js` is the development build with warnings.
 - ES module: `import vf from 'vfunc'` or `import { vfunc, html, router } from 'vfunc'`; a copied file works the same (`import vf from './lib/vfunc.esm.min.js'`). The ES modules never touch `window.vf`.
 - IE11 / Edge IE mode: `dist/vfunc.legacy.min.js` (same API; includes only a Promise polyfill). The app code must be ES5: no arrow functions, const/let, template literals or classes; use `vf.tpl('<b>{name}</b>', data)` instead of vf.html template literals. Polyfill anything else the app needs (Object.assign, fetch, …) yourself. Load pattern: `<script type="module" src="app.js">` + `<script nomodule src="vfunc.legacy.min.js">` + `<script nomodule src="app.es5.js">`.
 
@@ -129,6 +129,10 @@ Optional components without classes. Load `vfunc.js` → `dist/vfunc-ui.js` (+ `
 - With a CSP, no inline `style="…"` or inline `<script>`: use files (show/hide with the `hidden` attribute).
 - Table rows must be parsed inside a table: a `vf.vfunc` that renders `<tbody>`/`<tr>` uses `tag: 'table'` (or `'tbody'`); `vf.attach` on a `<tbody>` needs nothing. `vf.node` / `vf.frag` parse in a `<div>`, so not for rows.
 - Resolve data and locale URLs from the module (`new URL('./data/x.json', import.meta.url)`), so they still work inside a version folder.
+- A `vf.attach` instance is already in the page: never call `mount()` on it (that puts the element inside itself). `mount()` is for `vf.vfunc` instances only.
+- The target of `vf.attach` and `vf.$` is found like any hook: `'#id'` or `'[data-ref="x"]'`, never a class (`vf.$('.topbar__user')` breaks when the design changes).
+- A list of `vf.html` items goes into the template as is (`${items}`); `.join('')` turns it into a plain string, and putting that in `innerHTML` is string-built markup. Re-render with `render` instead.
+- No color literal in JS, not even as a fallback when a token is missing (`value || '#1d4ed8'`): the token file is always loaded.
 
 ## Examples, starter and prompt kit
 

@@ -1,0 +1,22 @@
+{
+  "id": "14-leaflet-places",
+  "title": { "en": "Leaflet as an app wrapper (L1)", "ko": "앱 래퍼로 쓰는 Leaflet(L1)" },
+  "layer": 2,
+  "prompt": "prompt-integrate-third-party.md",
+  "entry": "index.html",
+  "project": {
+    "index.html": "input/index.html",
+    "places-map.js": "input/places-map.js",
+    "app.js": "input/app.js",
+    "style.css": "input/style.css"
+  },
+  "reference": {},
+  "mustKeep": ["index.html"],
+  "static": {},
+  "rubric": [
+    { "id": "lifecycle", "en": "Map created in onMount inside a data-vf-keep element, removed in onDestroy (map.remove()); listeners released", "ko": "data-vf-keep 요소 안에서 onMount에 지도를 만들고 onDestroy에서 제거(map.remove()), 리스너 해제" },
+    { "id": "namespace", "en": "The wrapper lives in the app namespace (app.vfPlacesMap), not on vf; callbacks receive { sender, event, data }", "ko": "래퍼는 앱 네임스페이스(app.vfPlacesMap)에 두고 vf에 붙이지 않음, 콜백은 { sender, event, data }" },
+    { "id": "xss-tokens", "en": "Tooltip text escaped (vf.esc); marker colors from tokens, no color values in JS", "ko": "툴팁 글자는 이스케이프(vf.esc), 마커 색은 토큰에서, JS에 색 값 없음" },
+    { "id": "report", "en": "License verdict, level and an honest report (assumptions, unverified items)", "ko": "라이선스 판단, 수준, 정직한 보고(가정, 확인하지 못한 항목)" }
+  ]
+}

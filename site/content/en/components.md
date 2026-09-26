@@ -1,6 +1,6 @@
 # Components
 
-Layer 2 (`vfunc-ui`) is a set of components without classes, built on the engine. Use them where they save work and keep plain HTML everywhere else. Layer 2 is a preview; it is published to npm with 1.0.0.
+Layer 2 (`vfunc-ui`) is a set of components without classes, built on the engine. Use them where they save work and keep plain HTML everywhere else. From 1.0.0 it ships in the `vfunc` package.
 
 ## Loading
 

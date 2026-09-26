@@ -124,9 +124,12 @@ const snippet = (src, index) => {
   return src.slice(from, to < 0 ? src.length : to).trim().slice(0, 160);
 };
 
-/** True when a CSS selector string selects by class (attribute values and strings ignored). */
+/**
+ * True when a CSS selector string selects by class (attribute values, strings and the ${…}
+ * expressions of a template literal ignored: `#delete-${file.id}` is an id selector).
+ */
 export function selectsByClass(selector) {
-  const bare = selector.replace(/\[[^\]]*\]/g, '').replace(/(["'])(?:\\.|(?!\1).)*\1/g, '');
+  const bare = selector.replace(/\$\{[^}]*\}/g, 'x').replace(/\[[^\]]*\]/g, '').replace(/(["'])(?:\\.|(?!\1).)*\1/g, '');
   return /\.[A-Za-z_-]/.test(bare);
 }
 

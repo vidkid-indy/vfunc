@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'">
+  <title>Places</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./lib/vfunc.tokens.css">
+  <!-- Leaflet 1.9.4 (BSD-2-Clause): exact version + SRI. Do not change these tags. -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="page">
+    <header class="page__head">
+      <h1 class="page__title">Places</h1>
+      <button class="page__button" type="button" data-action="toggle-map" aria-controls="map-slot">Hide map</button>
+    </header>
+    <p class="page__current" data-ref="current">No place selected</p>
+    <ul class="places" id="places">
+      <li><button class="places__button" type="button" data-action="select" data-id="p1">Seoul Station</button></li>
+      <li><button class="places__button" type="button" data-action="select" data-id="p2">Cafe &lt;b&gt;Moon&lt;/b&gt;</button></li>
+      <li><button class="places__button" type="button" data-action="select" data-id="p3">Namsan Tower</button></li>
+    </ul>
+    <div class="map-slot" id="map-slot"></div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
+  <script src="./lib/vfunc.js"></script>
+  <script src="./places-map.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

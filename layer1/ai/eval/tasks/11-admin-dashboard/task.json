@@ -1,0 +1,22 @@
+{
+  "id": "11-admin-dashboard",
+  "title": { "en": "Admin dashboard with layer 2", "ko": "layer2로 만드는 관리자 대시보드" },
+  "layer": 2,
+  "prompt": "prompt-add-feature.md",
+  "entry": "index.html",
+  "project": {
+    "index.html": "input/index.html",
+    "data.js": "input/data.js",
+    "app.js": "input/app.js",
+    "style.css": "input/style.css"
+  },
+  "reference": {},
+  "mustKeep": ["data.js"],
+  "static": {},
+  "rubric": [
+    { "id": "spec", "en": "Follows the hooks, texts and behavior of the task", "ko": "과제의 훅, 문구, 동작을 지킴" },
+    { "id": "components", "en": "Uses vfSearchInput, vfGrid and vfChart as the task asks, with their own methods (setQuery …) and callbacks reading e.data", "ko": "과제대로 vfSearchInput, vfGrid, vfChart를 쓰고, 컴포넌트 메서드(setQuery 등)와 e.data를 읽는 콜백을 씀" },
+    { "id": "no-rebuild", "en": "Does not rebuild the grid or chart for a search or a selection; no hand-made table or SVG", "ko": "검색·선택 때 그리드나 차트를 다시 만들지 않음, 표나 SVG를 손으로 만들지 않음" },
+    { "id": "report", "en": "Honest report (assumptions, unverified items)", "ko": "정직한 보고(가정, 확인하지 못한 항목)" }
+  ]
+}

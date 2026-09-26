@@ -8,5 +8,9 @@
   "07-react-port",
   "08-chartjs",
   "09-design-apply",
-  "10-bug-fix"
+  "10-bug-fix",
+  "11-admin-dashboard",
+  "12-profile-form",
+  "13-delete-confirm",
+  "14-leaflet-places"
 ]

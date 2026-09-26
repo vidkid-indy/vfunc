@@ -4,7 +4,7 @@
 
 [English](README.md) · [웹사이트](https://vidkid-indy.github.io/vfunc/ko/) · [토론 게시판](https://github.com/vidkid-indy/vfunc/discussions)
 
-> **상태: 1.0 릴리스 후보(`1.0.0-rc.7`).** 1.0 API는 완성되었고, 1.0.0 전의 변경은 릴리스 후보 피드백에서만 나옵니다.
+> **상태: 1.0.0.** 엔진(layer1)과 컴포넌트(layer2)는 안정 버전이며 유의적 버전(semver)을 따릅니다.
 
 vfunc.js는 인터랙티브한 페이지와 SPA를 만드는 작은 바닐라 자바스크립트 라이브러리입니다.
 핵심 개념은 **"HTML은 그대로 쓰고, 제어가 필요한 곳만 vfunc 컴포넌트로 만든다"**입니다.
@@ -22,8 +22,8 @@ vfunc.js는 인터랙티브한 페이지와 SPA를 만드는 작은 바닐라 �
 
 ```html
 <div id="counter"></div>
-<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0-rc.8/dist/vfunc.min.js"
-        integrity="sha384-xNOPbYN0d0OGrhulOpdDp2J1IuCtB419bkm/UgypyZtwVnSt0uYVjpdDTdUscEAS"
+<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0/dist/vfunc.min.js"
+        integrity="sha384-3rmVR+LCPl9RqreURnm808mUqrbUD2gVgo7P7mK20vIlp6mCO3JnbgiD9gJ+Gf3N"
         crossorigin="anonymous"></script>
 <script src="app.js"></script>
 ```
@@ -77,8 +77,8 @@ import vf from 'vfunc';
 
 | 레이어 | 내용 | 상태 |
 |---|---|---|
-| layer1 | 엔진 `vf.vfunc`와 헬퍼(`attach`, `html`, `router`, `store`, `i18n`, `fmt`) | 1.0 릴리스 후보 |
-| layer2 | 클래스 없는 컴포넌트(`vs*`는 문자열, `vf*`는 인스턴스 반환), 그리드, 차트, 서드파티 어댑터 | 계획 |
+| layer1 | 엔진 `vf.vfunc`와 헬퍼(`attach`, `html`, `router`, `store`, `i18n`, `fmt`) | 1.0 |
+| layer2 | 클래스 없는 컴포넌트(`vs*`는 마크업, `vf*`는 인스턴스 반환), 그리드, 차트, 서드파티 어댑터(`vfunc/ui`, `vfunc/ui/data`, `vfunc/adapters/*`) | 1.0 |
 | layer3 | 클래스 기반 프레임워크(`VClass`)와 도구 | 계획 |
 
 ## 기여와 보안

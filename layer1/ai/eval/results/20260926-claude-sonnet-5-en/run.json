@@ -1,0 +1,25 @@
+{
+  "model": "Claude Sonnet 5",
+  "modelVersion": "claude-sonnet-5",
+  "service": "Claude Code subagent (reads the bundle, writes the answer; no other tools)",
+  "date": "2026-09-26",
+  "lang": "en",
+  "kit": "1.0.0-rc.8",
+  "settings": "Fourteen tasks: the ten engine tasks (a regression run with the kit after stage 2 Phase 5: llms.txt has a layer 2 section) and the four new layer 2 tasks, whose bundles add components.md and the layer 2 lib/ files. One new session per task, no follow-up messages, unedited answers. Manual scores are not filled in yet.",
+  "tasks": {
+    "01": { "followUps": 0 },
+    "02": { "followUps": 0 },
+    "03": { "followUps": 0 },
+    "04": { "followUps": 0 },
+    "05": { "followUps": 0 },
+    "06": { "followUps": 0, "notes": "The header is a vf.attach instance that is then mounted into its own element (HierarchyRequestError); favorites and the locale buttons fail after it. The kit did not say that an attach instance is never mounted (added to llms.txt after this run)." },
+    "07": { "followUps": 0 },
+    "08": { "followUps": 0 },
+    "09": { "followUps": 0 },
+    "10": { "followUps": 0 },
+    "11": { "followUps": 0 },
+    "12": { "followUps": 0 },
+    "13": { "followUps": 0, "notes": "Graded again after a grader fix: the static check read vf.$(`#delete-${next.id}`) as a class selector (the ${...} expression). All checks pass." },
+    "14": { "followUps": 0, "notes": "All behaviour checks pass; a color literal in JS as the fallback of a missing token (the kit now says: not even as a fallback)." }
+  }
+}

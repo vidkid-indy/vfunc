@@ -1,7 +1,7 @@
 # Extending vfunc.js / vfunc.js 확장하기
 
-> Plugins (`vf.use`, `vf.ext`), your own components on top of layer 2 (C3) and third-party adapters (C4) are described here. Layer 2 is a preview until 1.0.0.
-> 플러그인(`vf.use`, `vf.ext`), layer2 위의 내 컴포넌트(C3), 서드파티 어댑터(C4)를 다룹니다. layer2는 1.0.0 전까지 미리 보기입니다.
+> Plugins (`vf.use`, `vf.ext`), your own components on top of layer 2 (C3) and third-party adapters (C4) are described here.
+> 플러그인(`vf.use`, `vf.ext`), layer2 위의 내 컴포넌트(C3), 서드파티 어댑터(C4)를 다룹니다.
 
 ## Writing a plugin / 플러그인 작성
 
