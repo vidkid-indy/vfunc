@@ -57,32 +57,42 @@ function installBlock(lang, version, t) {
   return code(html, 'html') + '\n' + code(npm, 'js');
 }
 
+/** The examples of layer 1 (numbered folders) and layer 2 (every folder with a README), one table each. */
 function examplesBlock(lang) {
-  const dir = join(ROOT, 'layer1/examples');
-  const rows = readdirSync(dir).filter((name) => /^\d\d-/.test(name)).sort().map((name) => {
-    const readme = existsSync(join(dir, name, 'README.md')) ? readFileSync(join(dir, name, 'README.md'), 'utf8').replace(/\r\n/g, '\n') : '';
-    const lead = (readme.split('\n').find((line, i) => i > 0 && line.trim() && !/^[#|`-]/.test(line)) || '').trim();
-    const parts = lead.split(' / ');
-    const text = lang === 'ko' && parts.length > 1 ? parts.slice(1).join(' / ') : parts[0];
-    return '<tr><td><a href="../layer1/examples/' + esc(name) + '/">' + esc(name) + '</a></td><td>' +
-      esc(text.replace(/[`*]/g, '')) + '</td><td><a href="https://github.com/vidkid-indy/vfunc/tree/main/layer1/examples/' +
-      esc(name) + '" rel="noopener">source</a></td></tr>';
-  });
-  return '<div class="table"><table><thead><tr><th>#</th><th>' + (lang === 'ko' ? '보여 주는 것' : 'What it shows') +
-    '</th><th></th></tr></thead><tbody>' + rows.join('') + '</tbody></table></div>';
+  const table = (base, names) => {
+    const dir = join(ROOT, base);
+    const rows = names.map((name) => {
+      const readme = existsSync(join(dir, name, 'README.md')) ? readFileSync(join(dir, name, 'README.md'), 'utf8').replace(/\r\n/g, '\n') : '';
+      const lead = (readme.split('\n').find((line, i) => i > 0 && line.trim() && !/^[#|`-]/.test(line)) || '').trim();
+      const parts = lead.split(' / ');
+      const text = lang === 'ko' && parts.length > 1 ? parts.slice(1).join(' / ') : parts[0];
+      return '<tr><td><a href="../' + base + '/' + esc(name) + '/">' + esc(name) + '</a></td><td>' +
+        esc(text.replace(/[`*]/g, '')) + '</td><td><a href="https://github.com/vidkid-indy/vfunc/tree/main/' + base + '/' +
+        esc(name) + '" rel="noopener">source</a></td></tr>';
+    });
+    return '<div class="table"><table><thead><tr><th>' + esc(base) + '</th><th>' + (lang === 'ko' ? '보여 주는 것' : 'What it shows') +
+      '</th><th></th></tr></thead><tbody>' + rows.join('') + '</tbody></table></div>';
+  };
+  const l1 = readdirSync(join(ROOT, 'layer1/examples')).filter((name) => /^\d\d-/.test(name)).sort();
+  const l2dir = join(ROOT, 'layer2/examples');
+  const l2 = readdirSync(l2dir).filter((name) => existsSync(join(l2dir, name, 'README.md'))).sort();
+  return table('layer1/examples', l1) + '\n' + table('layer2/examples', l2);
 }
 
 function promptsBlock(lang, t) {
-  const base = join(ROOT, 'layer1/ai', lang);
+  // Layer 1's kit, then layer 2's (published in the same /ai/<lang>/ folder). The generated
+  // component list is a reference, linked from the components page instead.
   const files = [];
-  (function walk(dir) {
-    for (const name of readdirSync(dir).sort()) {
-      const full = join(dir, name);
-      if (statSync(full).isDirectory()) walk(full);
-      else files.push(relative(base, full).split('\\').join('/'));
-    }
-  })(base);
-  return files.map((file) => {
+  for (const base of [join(ROOT, 'layer1/ai', lang), join(ROOT, 'layer2/ai', lang)]) {
+    (function walk(dir) {
+      for (const name of readdirSync(dir).sort()) {
+        const full = join(dir, name);
+        if (statSync(full).isDirectory()) walk(full);
+        else if (name !== 'components.md') files.push({ base: base, file: relative(base, full).split('\\').join('/') });
+      }
+    })(base);
+  }
+  return files.map(({ base, file }) => {
     const text = readFileSync(join(base, file), 'utf8').replace(/\r\n/g, '\n');
     const heading = (/^# (.+)$/m.exec(text) || [])[1] || file;
     const cut = text.indexOf('\n---\n');
@@ -122,6 +132,27 @@ function evalBlock(lang) {
       '</td><td>' + s.checksPassed + ' / ' + s.checks + '</td><td>' + followUps + '</td><td><a href="https://github.com/vidkid-indy/vfunc/blob/main/layer1/ai/eval/results/' +
       esc(name) + '/results.md" rel="noopener">' + (lang === 'ko' ? '자세히' : 'details') + '</a></td></tr>';
   });
+  return '<div class="table"><table><thead><tr>' + head.map((h) => '<th>' + h + '</th>').join('') + '</tr></thead><tbody>' +
+    rows.join('') + '</tbody></table></div>';
+}
+
+/** The layer 2 component list from layer2/catalog.json (D-036): one table, a row per category. */
+export function componentsBlock(lang) {
+  const catalog = json('layer2/catalog.json');
+  const categories = lang === 'ko'
+    ? { input: '입력', display: '표시', navigation: '내비게이션', overlay: '오버레이', data: '데이터' }
+    : { input: 'Input', display: 'Display', navigation: 'Navigation', overlay: 'Overlay', data: 'Data' };
+  const head = lang === 'ko' ? ['이름', 'Tier', '설명', '예시'] : ['Name', 'Tier', 'What it is', 'Example'];
+  const dataNote = ' (vfunc-ui-data.js)';
+  const rows = [];
+  for (const category of catalog.categories) {
+    rows.push('<tr><th colspan="4" scope="colgroup">' + esc(categories[category]) + '</th></tr>');
+    for (const c of catalog.components.filter((x) => x.category === category)) {
+      rows.push('<tr><td>' + c.names.map((n) => '<code>' + esc(n) + '</code>').join('<br>') + '</td><td>' + esc(c.tier) + '</td><td>' +
+        esc(c.summary[lang]) + (c.file === 'data' ? '<span class="muted">' + esc(dataNote) + '</span>' : '') + '</td><td><code>' +
+        esc(c.example) + '</code></td></tr>');
+    }
+  }
   return '<div class="table"><table><thead><tr>' + head.map((h) => '<th>' + h + '</th>').join('') + '</tr></thead><tbody>' +
     rows.join('') + '</tbody></table></div>';
 }
@@ -187,6 +218,7 @@ export function buildSite(outDir) {
       prompts: promptsBlock(lang, t),
       licenses: licensesBlock(lang),
       eval: evalBlock(lang),
+      components: componentsBlock(lang),
       demo: demoBlock(lang)
     };
     const search = [];
@@ -244,8 +276,13 @@ export function buildSite(outDir) {
   copyDir(join(ROOT, 'layer1/dist'), join(out, 'layer1/dist'));
   copyDir(join(ROOT, 'layer1/css'), join(out, 'layer1/css'));
   copyDir(join(ROOT, 'layer1/examples'), join(out, 'layer1/examples'));
+  // Layer 2: the built files and the examples with their relative paths (gallery, D-036).
+  copyDir(join(ROOT, 'layer2/dist'), join(out, 'layer2/dist'));
+  copyDir(join(ROOT, 'layer2/examples'), join(out, 'layer2/examples'));
   // The evaluation set is repository tooling: the site shows its results table only (D-024).
   copyDir(join(ROOT, 'layer1/ai'), join(out, 'ai'), (name, path) => name === 'eval' && dirname(path) === join(ROOT, 'layer1/ai'));
+  // The layer 2 kit joins the same language folders, as in the npm package (D-034 9).
+  copyDir(join(ROOT, 'layer2/ai'), join(out, 'ai'));
   for (const file of ['llms.txt', 'llms.ko.txt', 'llms-full.txt']) copyFileSync(join(ROOT, 'layer1/ai', file), join(out, file));
   writeFileSync(join(out, '.nojekyll'), '');
   return { out: out, pages: report.pages, version: version };

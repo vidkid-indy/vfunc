@@ -9,6 +9,7 @@ import { attrs } from '../_internal/attrs.js';
 import { msg } from '../_internal/messages.js';
 import { cls, extend, present, emit } from '../_internal/common.js';
 import { stateOf, instance, idSelector } from '../_internal/instance.js';
+import { slotChilds, isInstance } from '../_internal/slots.js';
 import { placementOf } from '../_internal/position.js';
 import { floatControl } from '../_internal/floating.js';
 import { focusables } from '../_internal/overlay.js';
@@ -38,14 +39,14 @@ function render(s) {
     class: 'vf-popover__close',
     'data-action': 'close',
     'aria-label': msg('modal.close')
-  })}><span aria-hidden="true">&times;</span></button></div><div class="vf-popover__body">${s.content}</div></div></div>`;
+  })}><span aria-hidden="true">&times;</span></button></div><div ${attrs({ class: 'vf-popover__body', id: s.id + '-body' })}>${isInstance(s.content) ? '' : s.content}</div></div></div>`;
 }
 
 /**
  * A panel of content next to a button.
  * @param {Object} props
  * @param {Object} props.trigger - vsButton props of the trigger
- * @param {*} props.content - markup (vf.html)
+ * @param {*} props.content - markup (vf.html), or a vfunc instance kept alive in the panel
  * @param {string|SafeHtml} [props.title] - names the panel
  * @param {string} [props.label] - names the panel when there is no title
  * @param {'bottom-start'|'bottom-end'|'top-start'|'top-end'} [props.placement='bottom-start']
@@ -73,8 +74,12 @@ export function vfPopover(props) {
     emit(p.onOpen, sender, event, {});
   }
   const state = stateOf(p, 'popover', { trigger: p.trigger || {}, expanded: false, placement: placementOf(p.placement) });
+  // An instance as the content stays alive in the panel (D-038).
+  const slots = slotChilds([state], 'content', function () { return state.id + '-body'; });
+  state.content = slots.items[0].content;
   return instance({
     state: state,
+    childs: slots.childs,
     render: render,
     delegates: [
       {

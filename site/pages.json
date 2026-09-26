@@ -13,6 +13,7 @@
     { "slug": "deploy", "group": "learn" },
     { "slug": "ai", "group": "learn" },
     { "slug": "api", "group": "reference" },
+    { "slug": "components", "group": "reference" },
     { "slug": "examples", "group": "reference" },
     { "slug": "faq", "group": "reference" },
     { "slug": "roadmap", "group": "about" },

@@ -1,0 +1,76 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* The page itself (plain HTML sections); the components are styled by vfunc-ui.css. Tokens only. */
+
+body {
+  margin: 0;
+  font-family: var(--vf-font-body);
+  line-height: var(--vf-line-height);
+  color: var(--vf-color-text);
+  background: var(--vf-color-bg);
+}
+
+.landing {
+  box-sizing: border-box;
+  max-inline-size: 64em;
+  margin-inline: auto;
+  padding: var(--vf-space-5);
+}
+
+.landing__hero {
+  padding-block: var(--vf-space-7);
+  text-align: center;
+}
+
+.landing__eyebrow {
+  margin: 0;
+  font-weight: var(--vf-font-weight-strong);
+  color: var(--vf-color-primary);
+}
+
+.landing__title { margin-block: var(--vf-space-3); font-size: var(--vf-font-size-2xl); }
+.landing__lead { margin: 0; font-size: var(--vf-font-size-lg); color: var(--vf-color-text-muted); }
+
+.landing__cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--vf-space-3);
+  margin-block-start: var(--vf-space-5);
+}
+
+.landing__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vf-space-4);
+  margin-block-end: var(--vf-space-7);
+}
+
+.landing__heading { margin: 0; font-size: var(--vf-font-size-xl); }
+
+.landing__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16em, 1fr));
+  gap: var(--vf-space-4);
+}
+
+.landing__quote { margin: 0; padding: var(--vf-space-5); text-align: center; }
+.landing__quote blockquote { margin: 0; font-size: var(--vf-font-size-lg); }
+.landing__quote figcaption { margin-block-start: var(--vf-space-2); color: var(--vf-color-text-muted); }
+
+.landing__points { margin: 0; padding-inline-start: var(--vf-space-5); }
+
+.landing__signup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--vf-space-3);
+}
+
+.landing__log {
+  min-block-size: 1.5em;
+  padding: var(--vf-space-2) var(--vf-space-3);
+  font-family: var(--vf-font-mono);
+  font-size: var(--vf-font-size-sm);
+  background: var(--vf-color-surface-muted);
+  border-radius: var(--vf-radius-md);
+}

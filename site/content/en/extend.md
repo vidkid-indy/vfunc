@@ -8,12 +8,30 @@ Extend vfunc through its public API, never by editing its source. Then your exte
 |---|---|
 | Settings | `vf.config({ strict: true })`, messages, tokens |
 | Styles | override `--vf-*` after the token file |
-| Composition | functions that create components, `childs` |
-| Third-party | `onMount` + `data-vf-keep` + `onDestroy` |
+| Composition | functions that create components, `childs`, your own components around the official [components](components.md) (below) |
+| Third-party | `onMount` + `data-vf-keep` + `onDestroy`; levels L0, L1, L2 in [Third-party integration](third-party.md) |
 | Plugins | `vf.use(plugin)` → `vf.ext.<name>` |
 
 - Official `vf.*` members are read-only, and extensions do not add members to the `vf` root.
 - Never patch native prototypes (`Event.prototype` and the like).
+
+## Your own components
+
+Components you build from the official ones read like the rest of your code when they keep the layer 2 rules. Sample: `layer2/examples/custom-component`.
+
+```js
+// shop-ui.js — your module, not the vf root
+export function vsPriceTag({ amount, was, currency = 'USD' }) {
+  const off = was > amount ? Math.round((1 - amount / was) * 100) : 0;
+  return vf.html`<span class="price-tag">${vf.fmt.currency(amount, currency)}${
+    off ? vf.vsBadge({ label: '-' + off + '%', variant: 'danger' }) : ''}</span>`;
+}
+```
+
+- `vs*` returns SafeHtml built with `vf.html`; `vf*` returns an instance with `getValue()` / `setValue(v)`. Callbacks receive `{ sender, event, data }`.
+- Put the official `vf*` you use inside in `childs` (`{ targetId, component }`): they survive your re-renders and are destroyed with you.
+- Hooks on `id`, `data-ref`, `data-action`; your own block class names (`vf-*` is ours); tokens only in CSS.
+- To share them across apps, bundle them as a `vf.ext.<name>` plugin.
 
 ## Plugins — `vf.use`
 

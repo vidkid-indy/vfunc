@@ -12,6 +12,7 @@ import { msg } from '../_internal/messages.js';
 import { oneOf } from '../_internal/props.js';
 import { cls, present, emit } from '../_internal/common.js';
 import { stateOf, instance, idSelector } from '../_internal/instance.js';
+import { isInstance } from '../_internal/slots.js';
 import { pushLayer, removeLayer, lockScroll, unlockScroll, focusables, trapTab, restoreFocus } from '../_internal/overlay.js';
 
 const html = vf.html;
@@ -19,10 +20,6 @@ const html = vf.html;
 const SIZES = ['md', 'sm', 'lg'];
 const SIDES = ['end', 'start', 'bottom'];
 const OWN_ACTIONS = { close: 1, backdrop: 1 };
-
-function isInstance(value) {
-  return !!(value && value.isvfunc);
-}
 
 function render(s) {
   const base = s.id;

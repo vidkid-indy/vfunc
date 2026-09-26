@@ -1,0 +1,55 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Page layout only; the components are styled by vfunc-ui.css. Tokens only. */
+
+body {
+  margin: 0;
+  font-family: var(--vf-font-body);
+  color: var(--vf-color-text);
+  background: var(--vf-color-bg);
+}
+
+.settings {
+  box-sizing: border-box;
+  max-inline-size: 44em;
+  margin-inline: auto;
+  padding: var(--vf-space-5);
+}
+
+.settings__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--vf-space-4);
+}
+
+.settings__title { margin: 0; font-size: var(--vf-font-size-2xl); }
+.settings__lead { color: var(--vf-color-text-muted); }
+
+.settings__log {
+  min-block-size: 1.5em;
+  padding: var(--vf-space-2) var(--vf-space-3);
+  font-family: var(--vf-font-mono);
+  font-size: var(--vf-font-size-sm);
+  overflow-wrap: anywhere;
+  background: var(--vf-color-surface-muted);
+  border-radius: var(--vf-radius-md);
+}
+
+.settings__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vf-space-5);
+}
+
+.settings__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vf-space-4);
+}
+
+.settings__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--vf-space-3);
+}

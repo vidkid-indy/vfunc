@@ -34,6 +34,7 @@ import { spawnSync } from 'node:child_process';
 import { gzipSync } from 'node:zlib';
 import { ROOT, readThirdParty, checkBundledInputs, writeLicenses, OUTPUTS } from './licenses.mjs';
 import { writeLlms, generateLlmsFull, LLMS_FULL } from './llms.mjs';
+import { writeComponents } from './components.mjs';
 import { buildUiCss } from './ui-css.mjs';
 
 const SOURCE = 'layer1/src/vfunc.js';
@@ -383,6 +384,9 @@ async function main() {
     }
   }
 
+  // components.md before anything reads it: llms-full.txt (and the starter's copy) include the English one.
+  const staleComponents = writeComponents({ check: check });
+
   // The starter template carries copies of vfunc and of the AI kit (D-019): generated here, never edited.
   for (const [from, to] of STARTER_COPIES) {
     outputs['layer1/starter/' + to] = outputs[from] !== undefined ? outputs[from]
@@ -401,7 +405,7 @@ async function main() {
       writeFileSync(full, outputs[path]);
     }
   }
-  const staleLicenses = writeLicenses({ check: check });
+  const staleLicenses = writeLicenses({ check: check }).concat(staleComponents);
   if (writeLlms({ check: check })) staleLicenses.push(LLMS_FULL);
   if (check && (stale.length || staleLicenses.length)) {
     failures.push('out of date (run npm run build): ' + stale.concat(staleLicenses).join(', '));
@@ -452,14 +456,19 @@ function assembleNpmPackage() {
   copy(join(ROOT, 'layer1/css/vfunc.tokens.css'), join(out, 'css', 'vfunc.tokens.css'));
   // The AI kit (D-019): llms*.txt, AGENTS templates, prompts and design kit in en/ and ko/.
   // Not the evaluation set (ai/eval, D-024): it is repository tooling and results.
-  (function copyDir(from, to) {
+  // The layer 2 kit (layer2/ai/{en,ko}, D-034 9) joins the same language folders; a name used by
+  // both layers fails the build instead of overwriting.
+  const copyDir = (from, to, noOverwrite) => {
     for (const name of readdirSync(from)) {
       const source = join(from, name);
       if (source === join(ROOT, 'layer1/ai/eval')) continue;
-      if (statSync(source).isDirectory()) copyDir(source, join(to, name));
+      if (statSync(source).isDirectory()) copyDir(source, join(to, name), noOverwrite);
+      else if (noOverwrite && existsSync(join(to, name))) throw new Error('layer2/ai and layer1/ai both have ' + join(to, name).slice(out.length + 1));
       else copy(source, join(to, name));
     }
-  })(join(ROOT, 'layer1/ai'), join(out, 'ai'));
+  };
+  copyDir(join(ROOT, 'layer1/ai'), join(out, 'ai'), false);
+  copyDir(join(ROOT, 'layer2/ai'), join(out, 'ai'), true);
   for (const file of ['README.md', 'README.ko.md', 'LICENSE', 'NOTICE', 'CHANGELOG.md', OUTPUTS.text]) {
     copyFileSync(join(ROOT, file), join(out, file));
   }

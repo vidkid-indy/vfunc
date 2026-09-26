@@ -13,5 +13,8 @@ export const ENGINE = process.env.VF_BROWSER || 'chromium';
 export function launchBrowser() {
   const type = ENGINES[ENGINE];
   if (!type) throw new Error('Unknown VF_BROWSER "' + ENGINE + '" (use chromium, firefox or webkit)');
+  // Firefox's bounce tracking protection may classify the local test server, which the tests open and
+  // close many times in a row, and log a console warning that the tests would count as a page problem.
+  if (ENGINE === 'firefox') return type.launch({ firefoxUserPrefs: { 'privacy.bounceTrackingProtection.mode': 0 } });
   return type.launch();
 }

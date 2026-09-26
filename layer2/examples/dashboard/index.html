@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Tabulator and Chart.js come from jsDelivr (exact versions + SRI). style-src needs no 'unsafe-inline':
+       Tabulator ships a CSS file and Chart.js draws on a canvas (D-036). -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>Admin dashboard — vfunc-ui</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../../layer1/css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../../dist/vfunc-ui.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.5.3/dist/css/tabulator.min.css"
+        integrity="sha384-ORXdSjR2ynQHRquZa5YAyUlBrOl3cizsnUx0hAVXaIe8H6mk2//PzSEgW6ztaD9j" crossorigin="anonymous">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="dash">
+    <header class="dash__header">
+      <div>
+        <h1 class="dash__title">Orders</h1>
+        <p class="dash__lead">vfGrid and vfChart, or the Tabulator and Chart.js adapters: the same props, only the
+          name changes. / 기본 그리드·차트와 어댑터는 props가 같아 이름만 바꾸면 됩니다.</p>
+      </div>
+      <div id="engine"></div>
+    </header>
+
+    <section class="dash__stats" id="stats" aria-label="Summary"></section>
+
+    <p class="dash__log" id="log" role="status" aria-live="polite"></p>
+
+    <section class="dash__panel" aria-labelledby="h-orders">
+      <h2 class="dash__heading" id="h-orders">Recent orders</h2>
+      <div id="grid"></div>
+    </section>
+
+    <section class="dash__panel" aria-labelledby="h-sales">
+      <div class="dash__row">
+        <h2 class="dash__heading" id="h-sales">Monthly sales</h2>
+        <div id="chart-type"></div>
+      </div>
+      <div id="chart"></div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.5.3/dist/js/tabulator.min.js"
+          integrity="sha384-EkhU9cev+ElsgIMdydD5ATwDGjsuvXqtFIqiQn5DXO+xrp52n7Zm407kP4NvBMr/" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"
+          integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
+  <script src="../../../layer1/dist/vfunc.js"></script>
+  <script src="../../dist/vfunc-ui.js"></script>
+  <script src="../../dist/vfunc-ui-data.js"></script>
+  <script src="../../dist/vfunc-grid-tabulator.js"></script>
+  <script src="../../dist/vfunc-chart-chartjs.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

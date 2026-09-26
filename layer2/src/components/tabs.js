@@ -6,8 +6,9 @@
 
 import vf from '../_internal/vf.js';
 import { attrs } from '../_internal/attrs.js';
-import { cls, present, uid, emit } from '../_internal/common.js';
+import { cls, present, uid, emit, extend } from '../_internal/common.js';
 import { stateOf, instance } from '../_internal/instance.js';
+import { slotChilds, markupOnly } from '../_internal/slots.js';
 
 const html = vf.html;
 
@@ -70,7 +71,8 @@ export function vsTabs(props) {
 
 /**
  * vsTabs with behavior: click or arrow keys (Left/Right follow dir="rtl"), Home, End.
- * @param {Object} props - vsTabs props, plus onChange ({ sender, event, data: { id, index } })
+ * @param {Object} props - vsTabs props (a tab's content may also be a vfunc instance, kept alive
+ *   in its panel), plus onChange ({ sender, event, data: { id, index } })
  * @returns {Object} instance with getValue() → active id, setValue(id) (alias select(id))
  */
 export function vfTabs(props) {
@@ -97,11 +99,15 @@ export function vfTabs(props) {
     return from;
   }
   const state = stateOf(p, 'tabs');
+  // Instances in a tab's content stay alive in its panel (D-038).
+  const slots = slotChilds(state.tabs, 'content', function (i) { return state.id + '-panel-' + i; });
+  state.tabs = slots.items;
   const first = (state.tabs || [])[activeIndex(state.tabs || [], p.active)];
   state.active = first ? first.id : null;
   return instance({
     state: state,
-    render: function (s) { return vsTabs(s); },
+    childs: slots.childs,
+    render: function (s) { return vsTabs(extend({}, s, { tabs: markupOnly(s.tabs, 'content') })); },
     delegates: [
       {
         selector: '[data-action="tab"]',

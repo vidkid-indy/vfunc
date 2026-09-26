@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>Landing sections — vfunc-ui</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../../layer1/css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../../dist/vfunc-ui.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <!-- The page is plain HTML and CSS; components fill only the places that gain something
+       (cards, figures, carousel, accordion, the sign-up form). /
+       페이지는 HTML·CSS 그대로이고, 컴포넌트는 얻는 것이 있는 자리에만 씁니다. -->
+  <main class="landing">
+    <section class="landing__hero" aria-labelledby="h-hero">
+      <p class="landing__eyebrow">Acme Notes</p>
+      <h1 class="landing__title" id="h-hero">Notes your whole team can find again</h1>
+      <p class="landing__lead">Write once, link everything, search in a second.</p>
+      <div class="landing__cta" id="cta"></div>
+    </section>
+
+    <section class="landing__section" aria-labelledby="h-features">
+      <h2 class="landing__heading" id="h-features">Why teams switch</h2>
+      <div class="landing__cards" id="features"></div>
+    </section>
+
+    <section class="landing__section" aria-label="In numbers">
+      <div class="landing__cards" id="numbers"></div>
+    </section>
+
+    <section class="landing__section" aria-labelledby="h-quotes">
+      <h2 class="landing__heading" id="h-quotes">What people say</h2>
+      <div id="quotes"></div>
+    </section>
+
+    <section class="landing__section" id="pricing" aria-labelledby="h-pricing" tabindex="-1">
+      <h2 class="landing__heading" id="h-pricing">Pricing</h2>
+      <div class="landing__cards" id="plans"></div>
+    </section>
+
+    <section class="landing__section" id="faq-section" aria-labelledby="h-faq" tabindex="-1">
+      <h2 class="landing__heading" id="h-faq">Questions</h2>
+      <div id="faq"></div>
+    </section>
+
+    <section class="landing__section" aria-labelledby="h-signup">
+      <h2 class="landing__heading" id="h-signup">Get the monthly letter</h2>
+      <form class="landing__signup" id="signup" novalidate></form>
+    </section>
+
+    <p class="landing__log" id="log" role="status" aria-live="polite"></p>
+  </main>
+  <script src="../../../layer1/dist/vfunc.js"></script>
+  <script src="../../dist/vfunc-ui.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

@@ -23,6 +23,8 @@
 
   // --- static markup (vs*) ---------------------------------------------------------------------
 
+  var SAMPLE_COLOR = '#3366ff'; // design-check-ignore: the color input's sample value, not a design color
+
   var form = vf.attach('#form-static', {
     render: function () {
       return html`
@@ -39,7 +41,7 @@
         ${vf.vsSlider({ name: 'volume', label: 'Volume', value: 30 })}
         ${vf.vsProgress({ label: 'Upload', value: 42, showValue: true })}
         ${vf.vsField({ label: 'Color', hint: 'vsField around your own control', control: function (a) {
-          return html`<input type="color" id="${a.id}" aria-describedby="${a.describedBy || ''}" value="#3366ff">`;
+          return html`<input type="color" id="${a.id}" aria-describedby="${a.describedBy || ''}" value="${SAMPLE_COLOR}">`;
         } })}`;
     }
   });

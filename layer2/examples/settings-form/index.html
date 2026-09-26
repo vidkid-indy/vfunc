@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>Settings form — vfunc-ui</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../../layer1/css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../../dist/vfunc-ui.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="settings">
+    <header class="settings__header">
+      <h1 class="settings__title" id="title">Settings</h1>
+      <div id="lang"></div>
+    </header>
+    <p class="settings__lead">vs* fields in one form component, vfChipsInput kept through <code>childs</code>,
+      vfConfirm before a reset, vfToast after saving. / 폼 하나에 vs* 필드, childs로 유지하는 vfChipsInput,
+      초기화 전 vfConfirm, 저장 뒤 vfToast.</p>
+    <p class="settings__log" id="log" role="status" aria-live="polite"></p>
+    <div id="form"></div>
+  </main>
+  <script src="../../../layer1/dist/vfunc.js"></script>
+  <script src="../../dist/vfunc-ui.js"></script>
+  <script src="../../dist/vfunc-ui.locale.ko.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>Your own components — vfunc-ui</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../../layer1/css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../../dist/vfunc-ui.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="cart">
+    <h1 class="cart__title">Your cart</h1>
+    <p class="cart__lead">Your own <code>vsPriceTag</code> (vsBadge + vf.fmt) and <code>vfCartLine</code> (vfNumberInput +
+      vsPriceTag) in <code>shop-ui.js</code>, with a brand color and rounder buttons set in <code>style.css</code> only. /
+      공식 컴포넌트를 감싼 내 컴포넌트(C3), 브랜드 색과 버튼 모양은 style.css에서만(C1·C2).</p>
+    <ul class="cart__lines" id="lines" aria-label="Items"></ul>
+    <div class="cart__summary" id="summary"></div>
+    <p class="cart__log" id="log" role="status" aria-live="polite"></p>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

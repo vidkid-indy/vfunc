@@ -41,3 +41,18 @@
 | 개발된 화면에 퍼블리싱 HTML 도착 | `prompt-merge-published-html`: render 마크업만 바꾸고 훅 매핑표 작성 |
 
 프롬프트와 `DESIGN.md` 템플릿은 [AI와 작업하기](ai.md)에 있습니다. Tailwind를 쓴다면 `@theme`을 토큰에 연결하세요(예제 13).
+
+## 디자인 검사 — `design-check`
+
+스타터의 `tools/design-check.mjs`는 위 규칙을 빌드·의존성 없이 검사합니다(선택 사항). 문제가 있으면 종료 코드 1로 끝나므로 커밋 전이나 CI에 넣을 수 있습니다.
+
+```bash
+node tools/design-check.mjs          # 이 프로젝트
+node tools/design-check.mjs ../other --tokens css/vfunc.tokens.css
+```
+
+- 토큰 선언(`--x: …`) 밖의 원시 색(CSS·JS)
+- 클래스로 요소를 찾는 JS 셀렉터(`selector: '.x'`, `querySelector('.x')`, `closest`, `vf.$`)
+- 사유 주석 없는 `vf.unsafeHtml`
+- 토큰 대비(WCAG AA): 글자 4.5:1, 포커스 색 3:1, 라이트·다크 모두. 앱 CSS의 `:root` 덮어쓰기도 반영합니다.
+- 의도한 곳은 이유와 함께 줄에 `design-check-ignore`, 파일 전체는 `design-check-ignore-file`을 적습니다.

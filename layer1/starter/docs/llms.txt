@@ -103,6 +103,21 @@ Token names are public API: `--vf-color-primary|-hover|-active|-soft`, `--vf-col
 
 `const keys = vf.use(vfShortcut)` → `vf.ext.shortcut`: `const off = keys.add('mod+k', handler, { label, allowInInput: false, preventDefault: true })`, `keys.remove(combo, handler?)`, `keys.list()` → `[{ combo, label }]` for your own help screen, `keys.destroy()`. `mod` is ⌘ on Apple devices and Ctrl elsewhere; key names follow KeyboardEvent.key (`escape`, `enter`, `arrowup`, `?`). Keys typed in inputs and during IME composition are ignored; the newest shortcut of a combo wins. Do not write your own document keydown listener for shortcuts.
 
+## Components (layer 2: vfunc-ui)
+
+Optional components without classes. Load `vfunc.js` → `dist/vfunc-ui.js` (+ `dist/vfunc-ui-data.js` for the grid and charts, + `dist/vfunc-ui.locale.ko.js` for Korean) and `css/vfunc-ui.css` after the tokens; ESM `import 'vfunc/ui'` / `import 'vfunc/ui/data'` add the members to `vf`. Every name, prop and method: ai/en/components.md (generated from the catalog and d.ts). Use a component where it saves work; plain HTML stays fine.
+
+- `vf.vs*(props)` returns SafeHtml markup: put it in `vf.html` / `render` as is. `vf.vf*(props)` returns an instance: `.mount(el)` or a parent's `childs`; callbacks get `{ sender, event, data }` (read `e.data`); `getValue()` / `setValue(v)` (setValue never calls onChange).
+- Slots: a `vs*` slot (vsCard body, …) takes markup only — an instance there becomes a static copy; for a live one leave `<div id="x"></div>` and add `{ targetId: 'x', component }` to your `childs`. The content slots of vfTabs, vfAccordion, vfCarousel, vfPopover, vfModal and vfDrawer also take an instance and keep it alive.
+- Common props: `id`, `ref` (data-ref), `action` (data-action), `className`, `describedBy`; form controls add `name`, `value`, `disabled`, `readonly`, `required`, and `label` / `hint` / `error` wrap them in a linked field. String props are escaped; pass markup with `vf.html`. Delegate on `data-action`, never on the `vf-*` classes.
+- Input: vsField, vsInput, vsTextarea, vsSelect, vsCheckbox, vsRadioGroup, vsSwitch, vsSlider, vsProgress, vsNumberInput/vfNumberInput, vsSearchInput/vfSearchInput, vsPasswordInput/vfPasswordInput, vsChipsInput/vfChipsInput, vsRating/vfRating, vsSelectButton/vfSelectButton, vsMaskedInput/vfMaskedInput, vsDatePicker/vfDatePicker, vsTimePicker/vfTimePicker, vfDateRangePicker.
+- Display: vsButton, vsButtonGroup, vsBadge, vsTag, vsAvatar, vsAlert, vsCard, vsDescriptions, vsStatCard, vsTimeline, vsEmptyState, vsSkeleton, vsSpinner, vsTooltip, vsListView/vfListView, vfCarousel.
+- Navigation: vsBreadcrumb, vsPagination/vfPagination, vsTabs/vfTabs, vsAccordion/vfAccordion, vsStepper/vfStepper, vsSplitButton/vfSplitButton.
+- Overlay: vfModal, vfDrawer, vfConfirm (`await vf.vfConfirm({ title }).open()` → boolean), vfToast (create one region, then `toast.show({ message, variant })`), vfDropdown, vfPopover. They add themselves to document.body, trap focus and return it on close.
+- Data: vsTable, vsSparkline (core file); vfGrid (sorting, paging, selection, `mode: 'server'` with `total`, onSort, onPage), vsChart/vfChart (bar, line, area, pie, donut, sparkline; colors from `--vf-chart-*`) in vfunc-ui-data.js.
+- Adapters (vendor not bundled; load the vendor, then `dist/vfunc-<kind>-<vendor>.js`): vfGridAg (AG Grid), vfGridTabulator, vfChartChartjs, vfChartEcharts — the same props and methods as vfGrid / vfChart plus `lib` and `options`; `.instance` is the vendor object. Your own wrapper for another library: ai/en/prompt-integrate-third-party.md.
+- Text comes from message keys (`emptyState.title`, `confirm.ok`, …): override with props or `vf.i18n.add(locale, { … })`. No IE11 for the adapters; the core and data files have `.legacy.min.js` builds.
+
 ## Common mistakes
 
 - A component renders when created: create components that use vf.t after `vf.i18n.setup()` resolves.
@@ -119,7 +134,9 @@ Token names are public API: `--vf-color-primary|-hover|-active|-soft`, `--vf-col
 
 layer1/examples/: 01 hello, 02 counter, 03 todo, 04 methods-refs, 05 composition, 06 attach-published-html, 07 form, 08 fetch-list, 09 spa-hash-router, 10 spa-app (standard SPA structure: app.js + store.js + api.js + pages/*.js), 11 css-tokens-theme, 12 with-bootstrap, 13 with-tailwind, 14 before-after-conversion (a published dashboard converted with prompt-html-to-vfunc.md), 15 with-chartjs, 16 legacy-ie, 17 i18n, 18 extend-plugin, 19 design-apply, 20 merge-published, 21 cache-update.
 
-layer1/starter/: a copyable app (router, store, i18n, tokens, update plugin, design/DESIGN.md, AGENTS.md, tools/release.mjs for version-folder releases, deploy/ cache headers). layer1/ai/{en,ko}/: AGENTS.template.md, prompts (html-to-vfunc, spa-scaffold, migrate-from-react-vue, add-feature, debug, deploy-setup), anti-patterns.md, design/ (DESIGN.template.md and four design prompts).
+layer2/examples/: dashboard (vfGrid / vfChart ↔ the Tabulator and Chart.js adapters, same props), settings-form (vs* fields, validation with `error`, vfConfirm, vfToast, values kept outside the component), landing (plain HTML page with vsCard, vfCarousel, vfAccordion), legacy-ie (ES5 on vfunc-all.legacy.min.js), custom-component (your own vsPriceTag / vfCartLine from official components, in your module, not on `vf`), gallery (every component), third-party-custom (Leaflet at L0, L1, L2).
+
+layer1/starter/: a copyable app (router, store, i18n, tokens, update plugin, design/DESIGN.md, AGENTS.md, tools/release.mjs for version-folder releases, tools/design-check.mjs for the design rules and WCAG AA token contrast, deploy/ cache headers). layer1/ai/{en,ko}/: AGENTS.template.md, prompts (html-to-vfunc, spa-scaffold, migrate-from-react-vue, add-feature, debug, deploy-setup), anti-patterns.md, design/ (DESIGN.template.md and four design prompts). Layer 2 adds to the same ai/{en,ko}/ folders: components.md (generated component list), prompt-html-to-components.md (hand-written UI → vs* / vf*), prompt-integrate-third-party.md.
 
 ## Extensions
 

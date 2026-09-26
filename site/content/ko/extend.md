@@ -8,12 +8,30 @@ vfunc 소스를 고치지 않고 공개 API로 확장합니다. 그래야 vfunc�
 |---|---|
 | 설정 | `vf.config({ strict: true })`, 메시지, 토큰 |
 | 스타일 | 토큰 파일 뒤에서 `--vf-*` 덮어쓰기 |
-| 조합 | 컴포넌트를 만들어 주는 함수, `childs` |
-| 서드파티 | `onMount` + `data-vf-keep` + `onDestroy` |
+| 조합 | 컴포넌트를 만들어 주는 함수, `childs`, 공식 [컴포넌트](components.md)를 감싼 내 컴포넌트(아래) |
+| 서드파티 | `onMount` + `data-vf-keep` + `onDestroy`, 수준 L0·L1·L2는 [서드파티 통합](third-party.md) |
 | 플러그인 | `vf.use(plugin)` → `vf.ext.<이름>` |
 
 - `vf.*`의 공식 멤버는 읽기 전용이고, 확장은 `vf` 루트에 멤버를 더하지 않습니다.
 - 네이티브 prototype(`Event.prototype` 등)을 고치지 않습니다.
+
+## 내 컴포넌트
+
+공식 컴포넌트로 내 컴포넌트를 만들 때도 layer2 규칙을 따르면 나머지 코드와 같은 모양이 됩니다. 샘플은 `layer2/examples/custom-component`입니다.
+
+```js
+// shop-ui.js — vf 루트가 아닌 내 모듈
+export function vsPriceTag({ amount, was, currency = 'USD' }) {
+  const off = was > amount ? Math.round((1 - amount / was) * 100) : 0;
+  return vf.html`<span class="price-tag">${vf.fmt.currency(amount, currency)}${
+    off ? vf.vsBadge({ label: '-' + off + '%', variant: 'danger' }) : ''}</span>`;
+}
+```
+
+- `vs*`는 `vf.html`로 만든 SafeHtml을, `vf*`는 `getValue()` / `setValue(v)`를 가진 인스턴스를 돌려줍니다. 콜백은 `{ sender, event, data }`를 받습니다.
+- 안에서 쓰는 공식 `vf*`는 `childs`(`{ targetId, component }`)에 넣습니다. 다시 그려도 유지되고 함께 정리됩니다.
+- 훅은 `id`·`data-ref`·`data-action`, 클래스는 내 블록 이름(`vf-*`는 공식), CSS는 토큰만 씁니다.
+- 여러 앱에서 쓰려면 `vf.ext.<이름>` 플러그인으로 묶습니다.
 
 ## 플러그인 — `vf.use`
 

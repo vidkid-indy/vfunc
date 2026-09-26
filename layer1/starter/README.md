@@ -28,11 +28,21 @@ python -m http.server 8080                          # any static server / 아무
 | `docs/llms.txt`, `docs/llms-full.txt` | the vfunc reference for AI tools / AI용 레퍼런스 |
 | `AGENTS.md` (`AGENTS.ko.md`) | rules for AI agents — fill in section 0 / AI 규칙, 0절을 채우세요 |
 | `version.json`, `tools/release.mjs`, `deploy/` | releases and cache headers / 릴리스와 캐시 |
+| `tools/design-check.mjs` | design rules check (optional) / 디자인 규칙 검사(선택) |
 
 ## Working with AI / AI와 작업하기
 
 Give your AI `AGENTS.md` and `docs/llms.txt`. Prompts for common tasks (scaffold, add a feature, convert published HTML, apply a design, deploy) are in the vfunc repository under `layer1/ai/en/` and `layer1/ai/ko/`, and in the npm package under `vfunc/ai/`.
 AI에 `AGENTS.md`와 `docs/llms.txt`를 주세요. 자주 하는 작업의 프롬프트는 vfunc 저장소의 `layer1/ai/ko/`(영어는 `en/`)에 있습니다.
+
+## Design check / 디자인 검사
+
+```bash
+node tools/design-check.mjs       # exit code 1 when something is wrong / 문제가 있으면 종료 코드 1
+```
+
+It reports raw colors outside the token file, JS selectors that find elements by class, `vf.unsafeHtml` without a comment saying why, and token colors below WCAG AA contrast in the light and dark themes. Add `design-check-ignore` to a line (or `design-check-ignore-file` to a file) that is right on purpose, with the reason.
+토큰 파일 밖의 원시 색, 클래스로 요소를 찾는 JS 셀렉터, 사유 주석 없는 `vf.unsafeHtml`, WCAG AA에 못 미치는 토큰 대비(라이트·다크)를 알려 줍니다. 의도한 곳은 이유와 함께 `design-check-ignore`(파일 전체는 `design-check-ignore-file`)를 적습니다.
 
 ## Release / 릴리스
 

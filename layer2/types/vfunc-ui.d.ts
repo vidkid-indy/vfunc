@@ -183,8 +183,19 @@ export interface VsAlertProps {
 /** A `<div class="vf-alert">`. */
 export declare function vsAlert(props: VsAlertProps): SafeHtml;
 
-/** A slot: text (escaped), vf.html markup, a vfunc instance or an array of them. */
-export type VsSlot = VsContent | { isvfunc: true } | Array<VsContent | { isvfunc: true }>;
+/**
+ * A slot of a vs* (markup only): text (escaped), vf.html markup, or an array of them. A vfunc
+ * instance put here would be a static copy without state or listeners: leave an empty element with
+ * an id instead and add the instance to your component's `childs` ({ targetId, component }).
+ */
+export type VsSlot = VsContent | VsContent[];
+
+/**
+ * A slot of a vf* that keeps instances alive (D-038): markup, or a vfunc instance given when the
+ * vf* is created. The instance joins the vf*'s childs: it keeps its state across re-renders, gets
+ * onMount with it and is destroyed with it.
+ */
+export type VfSlot = VsSlot | VfuncInstance;
 
 export interface VsCardProps {
   title?: VsContent;
@@ -338,8 +349,8 @@ export interface VfListViewProps<T = any> extends VsListViewProps<T> {
 export declare function vfListView<T = any>(props: VfListViewProps<T>): VfValueInstance<string | string[] | null, { setItems(items: T[]): void }>;
 
 export interface VfCarouselProps {
-  /** Markup, or an image (src through vf.safeUrl). */
-  items: Array<{ content?: VsSlot; src?: string; alt?: string }>;
+  /** Markup or a vfunc instance (kept alive in its slide), or an image (src through vf.safeUrl). */
+  items: Array<{ content?: VfSlot; src?: string; alt?: string }>;
   /** What the carousel shows (aria-label). */
   label: string;
   /** Default 0. */
@@ -418,7 +429,9 @@ export interface VsTabsProps {
 /** Tabs (data-action "tab") and their panels; inactive panels are hidden. */
 export declare function vsTabs(props: VsTabsProps): SafeHtml;
 
-export interface VfTabsProps extends VsTabsProps {
+export interface VfTabsProps extends Omit<VsTabsProps, 'tabs'> {
+  /** A tab's content may be a vfunc instance, kept alive in its panel. */
+  tabs: Array<{ id: string; label: VsContent; content?: VfSlot; disabled?: boolean }>;
   onChange?: (e: VfUiEvent<{ id: string; index: number }>) => void;
 }
 
@@ -440,7 +453,9 @@ export interface VsAccordionProps {
 /** Heading buttons (data-action "toggle", aria-expanded) with region panels. */
 export declare function vsAccordion(props: VsAccordionProps): SafeHtml;
 
-export interface VfAccordionProps extends VsAccordionProps {
+export interface VfAccordionProps extends Omit<VsAccordionProps, 'items'> {
+  /** An item's content may be a vfunc instance, kept alive in its panel. */
+  items: Array<{ id: string; title: VsContent; content?: VfSlot; open?: boolean; disabled?: boolean }>;
   /** Several items may be open. */
   multiple?: boolean;
   onToggle?: (e: VfUiEvent<{ id: string; open: boolean; openIds: string[] }>) => void;
@@ -538,8 +553,8 @@ export interface VfModalProps {
   title?: VsContent;
   /** aria-label when there is no title. */
   label?: string;
-  /** Markup, or a vfunc instance (appended as a child, destroyed with the modal). */
-  content?: VsSlot;
+  /** Markup, or a vfunc instance (kept alive as a child, destroyed with the modal). */
+  content?: VfSlot;
   /** Markup such as buttons with data-action (reported by onAction). */
   footer?: VsSlot;
   /** `data-size`. Default 'md'. */
@@ -640,7 +655,8 @@ export declare function vfDropdown(props: VfDropdownProps): VfuncInstance & { op
 export interface VfPopoverProps {
   /** vsButton props of the trigger. */
   trigger: Omit<VsButtonProps, 'id' | 'action' | 'aria'>;
-  content: VsSlot;
+  /** Markup, or a vfunc instance kept alive in the panel. */
+  content: VfSlot;
   /** Names the panel. */
   title?: VsContent;
   /** Names the panel when there is no title. */

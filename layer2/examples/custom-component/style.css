@@ -1,0 +1,80 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Tokens only. The page's own components (price-tag, cart-line) and two extension levels:
+   C1 — a token changed for this app; C2 — a rule outside the vf layers wins over vfunc-ui.css
+   without !important (vfunc-ui.css is in @layer vf.base, vf.components). */
+
+/* C1: the brand color. Declared after vfunc.tokens.css; set the hover shade with it. The darker
+   green (success-text) keeps 4.5:1 with white text and on the page background (design-check). */
+:root {
+  --vf-color-primary: var(--vf-color-success-text);
+  --vf-color-primary-hover: var(--vf-color-success);
+}
+
+/* C2: rounder buttons in this app. */
+.cart .vf-button { border-radius: var(--vf-radius-full); }
+
+body {
+  margin: 0;
+  font-family: var(--vf-font-body);
+  color: var(--vf-color-text);
+  background: var(--vf-color-bg);
+}
+
+.cart {
+  box-sizing: border-box;
+  max-inline-size: 40em;
+  margin-inline: auto;
+  padding: var(--vf-space-5);
+}
+
+.cart__title { margin: 0; font-size: var(--vf-font-size-2xl); }
+.cart__lead { color: var(--vf-color-text-muted); }
+
+.cart__lines {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-block-start: 1px solid var(--vf-color-border);
+}
+
+.cart-line {
+  display: grid;
+  grid-template-columns: 1fr auto 8em;
+  align-items: end;
+  gap: var(--vf-space-4);
+  padding-block: var(--vf-space-3);
+  border-block-end: 1px solid var(--vf-color-border);
+}
+
+.cart-line__name { align-self: center; font-weight: var(--vf-font-weight-strong); }
+
+.price-tag {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: var(--vf-space-2);
+  text-align: end;
+}
+
+.price-tag__amount { font-weight: var(--vf-font-weight-strong); }
+.price-tag__was { color: var(--vf-color-text-muted); font-size: var(--vf-font-size-sm); }
+
+.cart__summary {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--vf-space-4);
+  margin-block-start: var(--vf-space-4);
+}
+
+.cart__label { color: var(--vf-color-text-muted); }
+
+.cart__log {
+  min-block-size: 1.5em;
+  padding: var(--vf-space-2) var(--vf-space-3);
+  font-family: var(--vf-font-mono);
+  font-size: var(--vf-font-size-sm);
+  background: var(--vf-color-surface-muted);
+  border-radius: var(--vf-radius-md);
+}

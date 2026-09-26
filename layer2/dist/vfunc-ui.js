@@ -1784,10 +1784,40 @@
   }
   __name(vfListView, "vfListView");
 
+  // layer2/src/_internal/slots.js
+  function isInstance(value) {
+    return !!(value && value.isvfunc);
+  }
+  __name(isInstance, "isInstance");
+  function markupOnly(items, key) {
+    return slotChilds(items, key, function() {
+      return "";
+    }).items;
+  }
+  __name(markupOnly, "markupOnly");
+  function slotChilds(items, key, idOf) {
+    const out = [];
+    const childs = [];
+    for (let i = 0; i < (items || []).length; i++) {
+      const item = items[i];
+      if (!item || !isInstance(item[key])) {
+        out.push(item);
+        continue;
+      }
+      const copy = {};
+      for (const k in item) if (Object.prototype.hasOwnProperty.call(item, k)) copy[k] = item[k];
+      copy[key] = "";
+      out.push(copy);
+      childs.push({ targetId: idOf(i), component: item[key] });
+    }
+    return { items: out, childs };
+  }
+  __name(slotChilds, "slotChilds");
+
   // layer2/src/components/carousel.js
   var html32 = vf_default.html;
   function render2(s) {
-    const items = s.items || [];
+    const items = markupOnly(s.items || [], "content");
     const total = items.length;
     const slides = [];
     const dots = [];
@@ -1796,6 +1826,7 @@
       const content = present(item.src) ? html32`<img alt="${item.alt == null ? "" : item.alt}" ${attrs({ class: "vf-carousel__image", src: item.src })}>` : item.content;
       slides.push(html32`<div ${attrs({
         class: "vf-carousel__slide",
+        id: s.id + "-slide-" + i,
         role: "group",
         "aria-roledescription": msg("carousel.slide"),
         "aria-label": msg("carousel.position", null, { index: i + 1, total }),
@@ -1892,8 +1923,13 @@
       autoplay: Math.max(0, Number(p.autoplay) || 0),
       playing: false
     });
+    const slots = slotChilds(state.items, "content", function(i) {
+      return state.id + "-slide-" + i;
+    });
+    state.items = slots.items;
     return instance({
       state,
+      childs: slots.childs,
       render: render2,
       delegates: [
         { selector: '[data-action="prev"]', eventType: "click", onEvent: /* @__PURE__ */ __name(function(e) {
@@ -2137,12 +2173,17 @@
     }
     __name(move, "move");
     const state = stateOf(p, "tabs");
+    const slots = slotChilds(state.tabs, "content", function(i) {
+      return state.id + "-panel-" + i;
+    });
+    state.tabs = slots.items;
     const first = (state.tabs || [])[activeIndex(state.tabs || [], p.active)];
     state.active = first ? first.id : null;
     return instance({
       state,
+      childs: slots.childs,
       render: /* @__PURE__ */ __name(function(s) {
-        return vsTabs(s);
+        return vsTabs(extend({}, s, { tabs: markupOnly(s.tabs, "content") }));
       }, "render"),
       delegates: [
         {
@@ -2256,10 +2297,15 @@
     }
     const state = stateOf(p, "accordion", { items, openIds: openIds(given, p.open, true) });
     delete state.open;
+    const slots = slotChilds(state.items, "content", function(i) {
+      return state.id + "-panel-" + i;
+    });
+    state.items = slots.items;
     return instance({
       state,
+      childs: slots.childs,
       render: /* @__PURE__ */ __name(function(s) {
-        return vsAccordion(extend({}, s, { open: s.openIds }));
+        return vsAccordion(extend({}, s, { open: s.openIds, items: markupOnly(s.items, "content") }));
       }, "render"),
       delegates: [{
         selector: '[data-action="toggle"]',
@@ -2444,10 +2490,6 @@
   var SIZES6 = ["md", "sm", "lg"];
   var SIDES = ["end", "start", "bottom"];
   var OWN_ACTIONS = { close: 1, backdrop: 1 };
-  function isInstance(value) {
-    return !!(value && value.isvfunc);
-  }
-  __name(isInstance, "isInstance");
   function render3(s) {
     const base = s.id;
     const titleId = base + "-title";
@@ -3096,7 +3138,7 @@
       class: "vf-popover__close",
       "data-action": "close",
       "aria-label": msg("modal.close")
-    })}><span aria-hidden="true">&times;</span></button></div><div class="vf-popover__body">${s.content}</div></div></div>`;
+    })}><span aria-hidden="true">&times;</span></button></div><div ${attrs({ class: "vf-popover__body", id: s.id + "-body" })}>${isInstance(s.content) ? "" : s.content}</div></div></div>`;
   }
   __name(render5, "render");
   function vfPopover(props) {
@@ -3124,8 +3166,13 @@
     }
     __name(open, "open");
     const state = stateOf(p, "popover", { trigger: p.trigger || {}, expanded: false, placement: placementOf(p.placement) });
+    const slots = slotChilds([state], "content", function() {
+      return state.id + "-body";
+    });
+    state.content = slots.items[0].content;
     return instance({
       state,
+      childs: slots.childs,
       render: render5,
       delegates: [
         {

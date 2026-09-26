@@ -1,7 +1,7 @@
 # Extending vfunc.js / vfunc.js 확장하기
 
-> `vf.use` and `vf.ext` are implemented (stage 1, Phase 2). Component and adapter rules (C4) are added in stage 2.
-> `vf.use`와 `vf.ext`는 구현되었습니다(1단계 Phase 2). 컴포넌트·어댑터 규칙(C4)은 2단계에서 보강합니다.
+> Plugins (`vf.use`, `vf.ext`), your own components on top of layer 2 (C3) and third-party adapters (C4) are described here. Layer 2 is a preview until 1.0.0.
+> 플러그인(`vf.use`, `vf.ext`), layer2 위의 내 컴포넌트(C3), 서드파티 어댑터(C4)를 다룹니다. layer2는 1.0.0 전까지 미리 보기입니다.
 
 ## Writing a plugin / 플러그인 작성
 
@@ -33,9 +33,9 @@ vfunc 소스를 고치지 말고 **공개 API만으로** 확장하세요. 그래
 | Level | How / 방법 | Example / 예 |
 |---|---|---|
 | C1 Configure / 설정 | props, i18n messages, CSS tokens (`--vf-*`) | brand colors, labels |
-| C2 Style / 스타일 | Official CSS ships in `@layer vf.base, vf.components`; your CSS outside the layer wins | button shape |
-| C3 Compose / 조합 | Wrap official components in your own | `vsPriceTag` = `vsBadge` + formatting |
-| C4 Third-party / 서드파티 | Integration kit, levels L0 / L1 / L2 (stage 2) | a Leaflet map |
+| C2 Style / 스타일 | Official CSS ships in `@layer vf.base, vf.components`; your CSS outside the layer wins (the legacy CSS has no layers: load yours after it) | button shape |
+| C3 Compose / 조합 | Wrap official components in your own (below) | `vsPriceTag` = `vsBadge` + formatting |
+| C4 Third-party / 서드파티 | Integration kit, levels L0 / L1 / L2 (below) | a Leaflet map |
 | C5 Plugin / 플러그인 | `vf.use(plugin)` → `vf.ext.<name>` | shared company helpers |
 | C6 Fork / 포크 | Allowed by Apache-2.0, but you stop receiving updates. Ask in Discussions first. | — |
 
@@ -50,6 +50,36 @@ vfunc 소스를 고치지 말고 **공개 API만으로** 확장하세요. 그래
 6. **i18n and theme / 다국어와 테마** — Use `vf.t` keys for visible text and `--vf-*` tokens for colors and spacing.
 7. **IE** — If your extension supports IE, write ES5 or transpile it yourself, and state support in your README.
 8. **License / 라이선스** — You choose your extension's license. If you redistribute vfunc, keep its LICENSE and NOTICE. Do not use names or logos that suggest your extension is the official vfunc.js.
+
+## Your own components (C3) / 내 컴포넌트
+
+Build them from the official components and keep the layer 2 rules, so they read like the rest of your code. Working sample: `layer2/examples/custom-component`.
+공식 컴포넌트로 만들고 layer2 규칙을 지키면 나머지 코드와 같은 모양이 됩니다. 샘플: `layer2/examples/custom-component`.
+
+```js
+// shop-ui.js — your module, not the vf root / vf 루트가 아닌 내 모듈
+export function vsPriceTag({ amount, was, currency = 'USD' }) {
+  const off = was > amount ? Math.round((1 - amount / was) * 100) : 0;
+  return vf.html`<span class="price-tag">${vf.fmt.currency(amount, currency)}${
+    off ? vf.vsBadge({ label: '-' + off + '%', variant: 'danger' }) : ''}</span>`;
+}
+```
+
+- **Shape / 모양** — `vs*` returns SafeHtml (build it with `vf.html`); `vf*` returns an instance (`vf.vfunc`) with `getValue()` / `setValue(v)`, and `setValue` does not call `onChange`. Callbacks receive `{ sender, event, data }`. Never one function that returns either. / `vs*`는 SafeHtml, `vf*`는 인스턴스. 콜백은 `{ sender, event, data }`.
+- **Where / 위치** — In your module or app namespace. Shared across apps: a plugin under `vf.ext.<name>`. Never on the `vf` root. / 내 모듈이나 앱 네임스페이스, 여러 앱이 쓰면 `vf.ext.<name>` 플러그인.
+- **Official children / 공식 자식** — Put `vf*` instances you use inside yours in `childs` (`{ targetId, component }`): they survive your re-renders and are destroyed with you. / 안에서 쓰는 `vf*`는 `childs`에 넣습니다.
+- **Markup / 마크업** — Hooks on `id`, `data-ref`, `data-action`; your own class names as `<block>__<element>` (not `vf-*`, which is ours); state in `aria-*` or `data-state`. / 훅은 `id`·`data-ref`·`data-action`, 클래스는 내 블록 이름(`vf-*`는 공식).
+- **Design and text / 디자인과 문구** — CSS with `--vf-*` tokens only, no colors or sizes in JS; visible text from `vf.t` keys or props. / CSS는 토큰만, 문구는 `vf.t` 키나 props.
+
+## Third-party adapters (C4) / 서드파티 어댑터
+
+Bring a library (map, editor, chart, grid …) in at the level you need: **L0** direct use in one component, **L1** an app wrapper, **L2** an adapter that keeps a kind's contract so it can replace another by name.
+라이브러리를 필요한 수준으로 가져옵니다. L0 컴포넌트에서 직접, L1 앱 래퍼, L2 종류별 계약을 지켜 이름만 바꿔 교체되는 어댑터.
+
+- Start from `layer2/adapters/_template/vfunc-kind-vendor.js` (its `TODO(1)`–`TODO(14)` are the steps) and run the contract suites in `layer2/adapters/_contract` (node with a mock of the library; `contract.html` in browsers with the real one). / 템플릿과 계약 테스트에서 시작합니다.
+- The vendor library is never bundled: take it from the `lib` prop or its global. Its DOM lives only inside a `data-vf-keep` element; create it in `onMount`, release it in `onDestroy`. / 벤더는 번들하지 않고, DOM은 `data-vf-keep` 안에만 둡니다.
+- If the library injects `<style>` elements, say which CSP the page needs and prefer a nonce option when it has one. / 스타일을 주입하는 라이브러리는 필요한 CSP를 적고, nonce 옵션이 있으면 먼저 씁니다.
+- Guide: the website's "Third-party integration" page. AI prompt: `ai/en/prompt-integrate-third-party.md` (Korean: `ai/ko/`). Publish your own as `vfunc-adapter-<vendor>`; official adapters follow CONTRIBUTING.md. / 가이드와 프롬프트. 직접 만든 어댑터는 `vfunc-adapter-<vendor>`로 게시합니다.
 
 ## Our promises / 우리가 지키는 약속
 

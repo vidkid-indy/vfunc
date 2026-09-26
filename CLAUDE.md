@@ -131,6 +131,7 @@ npm run test:examples             # 예제·스타터·사이트 브라우저 �
 npm run site       # 사이트 → build/out/site/. 미리 보기: python -m http.server 8080 --directory build/out/site
 node layer1/ai/eval/tools/bundle.mjs              # LLM 평가 묶음 → build/out/eval/bundles/{en,ko}/
 node layer1/ai/eval/tools/grade.mjs <결과 폴더>    # 저장한 답 채점 → results.json, results.md (layer1/ai/eval/README.ko.md)
+node layer1/starter/tools/design-check.mjs         # 디자인 규칙·토큰 대비 검사(스타터용, layer2 예제는 경로와 --tokens를 줌)
 ```
 
 - CI(`.github/workflows/ci.yml`): `npm test`, `build:check`, `npm audit --omit=dev`, 세 엔진의 `test:examples`, gitleaks(실행 파일, 버전·체크섬 고정). 새 브라우저 테스트는 세 엔진에서 모두 통과해야 합니다. 엔진 차이로 실패하면 사용자 관점의 조작(키보드 등)으로 검사하고 제품 코드를 엔진별로 분기하지 않습니다.
@@ -144,7 +145,9 @@ node layer1/ai/eval/tools/grade.mjs <결과 폴더>    # 저장한 답 채점 �
 - LLM 평가 세트(`layer1/ai/eval`)는 npm 패키지와 사이트 `/ai/`에 넣지 않습니다. 과제의 검사를 바꾸면 기준 답안이 세 엔진에서 통과해야 합니다(`eval.e2e.js`). `results/`의 답과 결과는 고치지 않고, 킷이 바뀌면 새 폴더로 다시 실행합니다.
 - 사이트의 동작은 `site/assets/site.js`의 `vf.attach` 섬으로만 붙입니다. 배포는 `.github/workflows/pages.yml`(수동 실행, Actions는 SHA 고정)입니다.
 - 엔진 소스(`layer1/src/`)를 고치면 `npm run build`로 `dist/`를 다시 만들어 함께 커밋합니다. `dist/` 테스트는 커밋된 파일을 검사합니다.
-- layer2 컴포넌트를 추가하면 `layer2/src/index.js`, `layer2/catalog.json`, `layer2/types/vfunc-ui.d.ts`, 메시지(`locales/en.js`·`ko.js`)를 함께 고칩니다(`catalog.test.js`). 선택 속성은 `_internal/attrs.js`로만 만들고, `rules.test.js`가 클래스 셀렉터·JS 속 디자인 값·토큰 밖 CSS·물리 방향 속성을 막습니다. legacy CSS는 `build/ui-css.mjs`가 변환합니다.
+- layer2 컴포넌트를 추가하면 `layer2/src/index.js`, `layer2/catalog.json`, `layer2/types/vfunc-ui.d.ts`, 메시지(`locales/en.js`·`ko.js`)를 함께 고칩니다(`catalog.test.js`). 선택 속성은 `_internal/attrs.js`로만 만들고, `rules.test.js`가 클래스 셀렉터·JS 속 디자인 값·토큰 밖 CSS·물리 방향 속성을 막습니다. legacy CSS는 `build/ui-css.mjs`가 변환합니다. 슬롯을 가진 `vf*`는 `_internal/slots.js`로 인스턴스를 `childs`에 붙입니다(`slots.test.js`). `layer2/ai/{en,ko}/components.md`는 catalog와 d.ts에서 빌드가 생성하므로 손으로 고치지 않고, `llms.txt` 두 언어의 컴포넌트 목록과 사이트 `components` 표는 `build/components.test.js`가 검사합니다.
+- layer2 킷(`layer2/ai/{en,ko}`)은 npm 패키지와 사이트에서 layer1 킷과 같은 `ai/<언어>/` 폴더에 합쳐지므로 파일 이름이 layer1과 겹치면 안 됩니다(`layer2/test/ai-kit.test.js`).
+- layer2 예제(`layer2/examples/<이름>/`)는 README(첫 설명 줄 "영어 / 한국어", 사이트 목록에 쓰임), `layer2/examples/index.html` 링크, `layer2/test/e2e/examples.e2e.js` 검사를 함께 둡니다. `design-check`도 통과해야 합니다(`layer1/test/design-check.test.js`).
 - 빌드는 `vfunc.min.js` gzip 10KB 초과, min 파일에 남은 개발 경고, `third-party.json`에 없는 번들 모듈이 있으면 실패합니다.
 - npm 패키지는 `build/out/npm/`에서 조립합니다. 루트 `package.json`은 개발용이라 `"private": true`를 유지합니다.
 - 개발용 경고는 `if (DEV) warn(...)`으로 씁니다. 운영 빌드에서 문구까지 제거됩니다. 보안 차단 로직을 `DEV`에 의존시키지 않습니다.

@@ -8,6 +8,7 @@ import vf from '../_internal/vf.js';
 import { attrs } from '../_internal/attrs.js';
 import { cls, present, uid, hasValue, extend, emit } from '../_internal/common.js';
 import { stateOf, instance } from '../_internal/instance.js';
+import { slotChilds, markupOnly } from '../_internal/slots.js';
 import { heading } from './card.js';
 
 const html = vf.html;
@@ -53,7 +54,8 @@ export function vsAccordion(props) {
 
 /**
  * vsAccordion with behavior: the buttons open and close their panel; one at a time unless multiple.
- * @param {Object} props - vsAccordion props, plus:
+ * @param {Object} props - vsAccordion props (an item's content may also be a vfunc instance, kept
+ *   alive in its panel), plus:
  * @param {boolean} [props.multiple] - several items may be open
  * @param {function} [props.onToggle] - ({ sender, event, data: { id, open, openIds } })
  * @returns {Object} instance with getValue() → open ids, setValue(ids), open(id), close(id), toggle(id)
@@ -94,9 +96,13 @@ export function vfAccordion(props) {
   // State key `openIds`, not `open`: a state key would hide the open() method on the instance.
   const state = stateOf(p, 'accordion', { items: items, openIds: openIds(given, p.open, true) });
   delete state.open;
+  // Instances in an item's content stay alive in its panel (D-038).
+  const slots = slotChilds(state.items, 'content', function (i) { return state.id + '-panel-' + i; });
+  state.items = slots.items;
   return instance({
     state: state,
-    render: function (s) { return vsAccordion(extend({}, s, { open: s.openIds })); },
+    childs: slots.childs,
+    render: function (s) { return vsAccordion(extend({}, s, { open: s.openIds, items: markupOnly(s.items, 'content') })); },
     delegates: [{
       selector: '[data-action="toggle"]',
       eventType: 'click',

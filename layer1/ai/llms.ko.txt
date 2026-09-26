@@ -77,6 +77,21 @@ refresh: 루트 안쪽을 교체하고, `childs`는 다시 옮겨 붙이며(상�
 
 `const keys = vf.use(vfShortcut)` → `vf.ext.shortcut`: `const off = keys.add('mod+k', handler, { label, allowInInput: false, preventDefault: true })`, `keys.remove(combo, handler?)`, `keys.list()` → `[{ combo, label }]`(도움말 화면은 앱이 그림), `keys.destroy()`. `mod`는 Apple 기기에서 ⌘, 그 밖에서 Ctrl입니다. 키 이름은 KeyboardEvent.key를 따릅니다(`escape`, `enter`, `arrowup`, `?`). 입력칸 안의 키와 IME 조합 중인 키는 무시하고, 같은 조합은 가장 나중 것이 실행됩니다. 단축키용 document keydown 리스너를 직접 만들지 마세요.
 
+## 컴포넌트 (layer2: vfunc-ui)
+
+클래스 없는 선택형 컴포넌트입니다. `vfunc.js` → `dist/vfunc-ui.js`(+ 그리드·차트는 `dist/vfunc-ui-data.js`, 한국어는 `dist/vfunc-ui.locale.ko.js`)를 불러오고, CSS는 토큰 다음에 `css/vfunc-ui.css`. ESM은 `import 'vfunc/ui'` / `import 'vfunc/ui/data'`가 `vf`에 멤버를 더합니다. 모든 이름·props·메서드는 ai/ko/components.md(catalog와 d.ts에서 생성)에 있습니다. 수고를 덜어 주는 곳에만 쓰고, 나머지는 HTML 그대로 써도 됩니다.
+
+- `vf.vs*(props)`는 SafeHtml 마크업: `vf.html`·`render`에 그대로 넣습니다. `vf.vf*(props)`는 인스턴스: `.mount(el)` 또는 부모의 `childs`. 콜백은 `{ sender, event, data }`(`e.data`를 읽음), `getValue()` / `setValue(v)`(setValue는 onChange를 부르지 않음).
+- 슬롯: `vs*`의 슬롯(vsCard body 등)은 마크업만 받습니다. 인스턴스를 넣으면 동작 없는 정적 사본이 됩니다. 살아 있는 컴포넌트는 `<div id="x"></div>`를 두고 내 컴포넌트의 `childs`에 `{ targetId: 'x', component }`를 넣습니다. vfTabs, vfAccordion, vfCarousel, vfPopover, vfModal, vfDrawer의 content 슬롯은 인스턴스도 받아 살려 둡니다.
+- 공통 props: `id`, `ref`(data-ref), `action`(data-action), `className`, `describedBy`. 폼 컨트롤은 `name`, `value`, `disabled`, `readonly`, `required`에 `label` / `hint` / `error`를 주면 연결된 필드로 감쌉니다. 문자열 props는 이스케이프되니 마크업은 `vf.html`로 넘깁니다. 위임은 `data-action`에 걸고 `vf-*` 클래스에 걸지 않습니다.
+- 입력: vsField, vsInput, vsTextarea, vsSelect, vsCheckbox, vsRadioGroup, vsSwitch, vsSlider, vsProgress, vsNumberInput/vfNumberInput, vsSearchInput/vfSearchInput, vsPasswordInput/vfPasswordInput, vsChipsInput/vfChipsInput, vsRating/vfRating, vsSelectButton/vfSelectButton, vsMaskedInput/vfMaskedInput, vsDatePicker/vfDatePicker, vsTimePicker/vfTimePicker, vfDateRangePicker.
+- 표시: vsButton, vsButtonGroup, vsBadge, vsTag, vsAvatar, vsAlert, vsCard, vsDescriptions, vsStatCard, vsTimeline, vsEmptyState, vsSkeleton, vsSpinner, vsTooltip, vsListView/vfListView, vfCarousel.
+- 내비게이션: vsBreadcrumb, vsPagination/vfPagination, vsTabs/vfTabs, vsAccordion/vfAccordion, vsStepper/vfStepper, vsSplitButton/vfSplitButton.
+- 오버레이: vfModal, vfDrawer, vfConfirm(`await vf.vfConfirm({ title }).open()` → boolean), vfToast(알림 영역을 한 번 만들고 `toast.show({ message, variant })`), vfDropdown, vfPopover. document.body에 스스로 붙고 포커스를 가두며 닫으면 돌려줍니다.
+- 데이터: vsTable, vsSparkline(코어 파일). vfunc-ui-data.js에 vfGrid(정렬, 페이징, 선택, `total`·onSort·onPage와 함께 `mode: 'server'`), vsChart/vfChart(bar, line, area, pie, donut, sparkline, 색은 `--vf-chart-*`).
+- 어댑터(벤더 미포함. 벤더를 먼저 로드하고 `dist/vfunc-<kind>-<vendor>.js`): vfGridAg(AG Grid), vfGridTabulator, vfChartChartjs, vfChartEcharts — vfGrid / vfChart와 같은 props·메서드 + `lib`, `options`. `.instance`는 벤더 객체. 다른 라이브러리를 직접 감쌀 때는 ai/ko/prompt-integrate-third-party.md.
+- 문구는 메시지 키(`emptyState.title`, `confirm.ok` 등)에서 옵니다. props나 `vf.i18n.add(locale, { … })`로 바꿉니다. 어댑터는 IE11을 지원하지 않고, 코어와 데이터 파일에는 `.legacy.min.js`가 있습니다.
+
 ## 흔한 실수
 
 - 컴포넌트는 만드는 순간 렌더합니다. vf.t를 쓰는 컴포넌트는 `vf.i18n.setup()` 이후에 만드세요.
@@ -93,7 +108,9 @@ refresh: 루트 안쪽을 교체하고, `childs`는 다시 옮겨 붙이며(상�
 
 layer1/examples/에 샘플 21개(01~21)가 있습니다. 10 spa-app이 SPA 표준 구조(app.js + store.js + api.js + pages/*.js), 14는 퍼블리싱 대시보드를 prompt-html-to-vfunc.md로 변환한 전후입니다.
 
-layer1/starter/: 복사해서 쓰는 앱(라우터, store, 다국어, 토큰, update 플러그인, design/DESIGN.md, AGENTS.md, 버전 폴더 배포용 tools/release.mjs, deploy/ 캐시 설정). layer1/ai/{en,ko}/: AGENTS.template.md, 프롬프트(html-to-vfunc, spa-scaffold, migrate-from-react-vue, add-feature, debug, deploy-setup), anti-patterns.md, design/(DESIGN.template.md와 디자인 프롬프트 4종).
+layer2/examples/: dashboard(vfGrid / vfChart ↔ Tabulator·Chart.js 어댑터, 같은 props), settings-form(vs* 필드, `error`로 검증, vfConfirm, vfToast, 값은 컴포넌트 밖에), landing(HTML 페이지에 vsCard, vfCarousel, vfAccordion), legacy-ie(vfunc-all.legacy.min.js 위의 ES5), custom-component(공식 컴포넌트로 만든 내 vsPriceTag / vfCartLine, `vf`가 아닌 내 모듈에), gallery(모든 컴포넌트), third-party-custom(Leaflet L0, L1, L2).
+
+layer1/starter/: 복사해서 쓰는 앱(라우터, store, 다국어, 토큰, update 플러그인, design/DESIGN.md, AGENTS.md, 버전 폴더 배포용 tools/release.mjs, 디자인 규칙·WCAG AA 토큰 대비 검사용 tools/design-check.mjs, deploy/ 캐시 설정). layer1/ai/{en,ko}/: AGENTS.template.md, 프롬프트(html-to-vfunc, spa-scaffold, migrate-from-react-vue, add-feature, debug, deploy-setup), anti-patterns.md, design/(DESIGN.template.md와 디자인 프롬프트 4종). layer2는 같은 ai/{en,ko}/ 폴더에 components.md(생성된 컴포넌트 목록), prompt-html-to-components.md(직접 만든 UI → vs* / vf*), prompt-integrate-third-party.md를 더합니다.
 
 ## 확장
 

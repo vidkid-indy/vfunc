@@ -10,11 +10,12 @@ import { attrs } from '../_internal/attrs.js';
 import { msg } from '../_internal/messages.js';
 import { cls, present, emit } from '../_internal/common.js';
 import { stateOf, instance, idSelector } from '../_internal/instance.js';
+import { slotChilds, markupOnly } from '../_internal/slots.js';
 
 const html = vf.html;
 
 function render(s) {
-  const items = s.items || [];
+  const items = markupOnly(s.items || [], 'content');
   const total = items.length;
   const slides = [];
   const dots = [];
@@ -25,6 +26,7 @@ function render(s) {
       : item.content;
     slides.push(html`<div ${attrs({
       class: 'vf-carousel__slide',
+      id: s.id + '-slide-' + i,
       role: 'group',
       'aria-roledescription': msg('carousel.slide'),
       'aria-label': msg('carousel.position', null, { index: i + 1, total: total }),
@@ -83,7 +85,8 @@ function reducedMotion() {
 /**
  * Slides one at a time.
  * @param {Object} props
- * @param {Array<{content?: *, src?: string, alt?: string}>} props.items - markup, or an image
+ * @param {Array<{content?: *, src?: string, alt?: string}>} props.items - markup or a vfunc instance
+ *   (kept alive in its slide), or an image
  * @param {string} props.label - what the carousel shows (aria-label)
  * @param {number} [props.index=0]
  * @param {boolean} [props.loop=true] - next after the last goes to the first
@@ -135,8 +138,12 @@ export function vfCarousel(props) {
     autoplay: Math.max(0, Number(p.autoplay) || 0),
     playing: false
   });
+  // Instances in a slide's content stay alive in the slide (D-038).
+  const slots = slotChilds(state.items, 'content', function (i) { return state.id + '-slide-' + i; });
+  state.items = slots.items;
   return instance({
     state: state,
+    childs: slots.childs,
     render: render,
     delegates: [
       { selector: '[data-action="prev"]', eventType: 'click', onEvent: function (e) { go(e.sender, e.event, e.sender.state.index - 1); } },

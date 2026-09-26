@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>IE11 dashboard — vfunc-ui</title>
+  <link rel="icon" href="data:,">
+  <!-- IE11 has no CSS variables: vfunc-ui.legacy.css has the light token values built in, and this
+       page's own CSS uses plain values. / IE11은 CSS 변수가 없어 legacy CSS와 고정값 CSS를 씁니다. -->
+  <link rel="stylesheet" href="../../dist/vfunc-ui.legacy.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="ie">
+    <header class="ie__header">
+      <div>
+        <h1 class="ie__title" id="title">Branch report</h1>
+        <p class="ie__lead">ES5 app code with <code>vf.tpl</code> on <code>vfunc-all.legacy.min.js</code> (engine + components +
+          grid and charts in one file). Open it in Edge IE mode too. / ES5 앱 코드와 vf.tpl, 파일 하나(vfunc-all.legacy.min.js).
+          Edge IE 모드에서도 열어 보세요.</p>
+        <p class="ie__env" id="env"></p>
+      </div>
+      <div id="lang"></div>
+    </header>
+    <section class="ie__stats" id="stats" aria-label="Summary"></section>
+    <p class="ie__log" id="log" role="status" aria-live="polite"></p>
+    <section class="ie__panel" aria-labelledby="h-branches">
+      <h2 class="ie__heading" id="h-branches">Branches</h2>
+      <div id="grid"></div>
+    </section>
+    <section class="ie__panel" aria-labelledby="h-visits">
+      <h2 class="ie__heading" id="h-visits">Visits per quarter</h2>
+      <div id="chart"></div>
+    </section>
+  </main>
+  <!--
+    One legacy file for every browser (simple for IE-only intranets). A public site serves the modern
+    files to modern browsers (type="module" / nomodule, see layer1/examples/16-legacy-ie).
+    IE 전용 사내 시스템은 legacy 파일 하나로 충분합니다. 공개 사이트는 module/nomodule로 나눠 서빙합니다.
+  -->
+  <script src="../../dist/vfunc-all.legacy.min.js"></script>
+  <script src="../../dist/vfunc-ui.locale.ko.js"></script>
+  <script src="./app.es5.js"></script>
+</body>
+</html>

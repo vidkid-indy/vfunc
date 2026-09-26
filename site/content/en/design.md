@@ -41,3 +41,18 @@ An optional, neutral skin with light and dark themes. Token names are public API
 | Published HTML arrives for finished screens | `prompt-merge-published-html`: replace only the render markup, with a hook mapping table |
 
 The prompts and the `DESIGN.md` template are in [Working with AI](ai.md). With Tailwind, map `@theme` onto the tokens (example 13).
+
+## Design check — `design-check`
+
+The starter's `tools/design-check.mjs` checks the rules above with no build and no dependency (optional). It exits with code 1 when something is wrong, so it fits before a commit or in CI.
+
+```bash
+node tools/design-check.mjs          # this project
+node tools/design-check.mjs ../other --tokens css/vfunc.tokens.css
+```
+
+- Raw colors outside token declarations (`--x: …`), in CSS and JS
+- JS selectors that find elements by class (`selector: '.x'`, `querySelector('.x')`, `closest`, `vf.$`)
+- `vf.unsafeHtml` without a comment saying why
+- Token contrast (WCAG AA): 4.5:1 for text, 3:1 for the focus color, light and dark; the app's own `:root` overrides count.
+- Where a finding is intended, add `design-check-ignore` to the line (or `design-check-ignore-file` to the file) with the reason.
