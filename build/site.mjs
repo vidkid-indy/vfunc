@@ -16,6 +16,7 @@ import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { markdown, esc } from './markdown.mjs';
 import { manualTotal } from '../layer1/ai/eval/tools/report.mjs';
+import { VARIANTS as BENCH_VARIANTS, environmentLine, summaryRows } from '../layer1/bench/report.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = join(ROOT, 'site');
@@ -139,6 +140,22 @@ function evalBlock(lang) {
     rows.join('') + '</tbody></table></div>';
 }
 
+/** The latest performance benchmark (layer1/bench/results/<run>/, plan N2), Chromium as the representative engine. */
+function benchBlock(lang) {
+  const dir = join(ROOT, 'layer1/bench/results');
+  const runs = existsSync(dir) ? readdirSync(dir).filter((name) => existsSync(join(dir, name, 'results.json'))).sort().reverse() : [];
+  if (!runs.length) return '<p class="muted">' + (lang === 'ko' ? '아직 공개한 결과가 없습니다.' : 'No results published yet.') + '</p>';
+  const results = json('layer1/bench/results/' + runs[0] + '/results.json');
+  const engine = results.engines.chromium ? 'chromium' : Object.keys(results.engines)[0];
+  const head = [lang === 'ko' ? '조작(ms)' : 'Operation (ms)'].concat(BENCH_VARIANTS.map((v) => v[lang]));
+  const rows = summaryRows(results, engine, lang).map((r) => '<tr><th scope="row">' + esc(r[0]) + '</th>' +
+    r.slice(1).map((cell) => '<td>' + esc(cell) + '</td>').join('') + '</tr>');
+  return '<p class="muted">' + esc(engine + ' ' + results.engines[engine].browser + ' · ' + environmentLine(results, lang)) + '</p>' +
+    '<div class="table"><table><thead><tr>' + head.map((h) => '<th>' + esc(h) + '</th>').join('') + '</tr></thead><tbody>' +
+    rows.join('') + '</tbody></table></div><p><a href="https://github.com/vidkid-indy/vfunc/blob/main/layer1/bench/results/' +
+    esc(runs[0]) + '/results.md" rel="noopener">' + (lang === 'ko' ? 'Firefox·WebKit 결과와 최소·최대' : 'Firefox and WebKit results, min and max') + '</a></p>';
+}
+
 /** The layer 2 component list from layer2/catalog.json (D-036): one table, a row per category. */
 export function componentsBlock(lang) {
   const catalog = json('layer2/catalog.json');
@@ -221,6 +238,7 @@ export function buildSite(outDir) {
       prompts: promptsBlock(lang, t),
       licenses: licensesBlock(lang),
       eval: evalBlock(lang),
+      bench: benchBlock(lang),
       components: componentsBlock(lang),
       demo: demoBlock(lang)
     };

@@ -1,0 +1,45 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * The look shared by the three benchmark pages. Tokens only (rule 21); the selected row is data-state.
+ * 벤치마크 세 페이지의 공통 스타일입니다. 토큰만 쓰고, 선택된 행은 data-state로 표현합니다.
+ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--vf-color-bg);
+  color: var(--vf-color-text);
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-sm);
+  line-height: var(--vf-line-height);
+}
+
+.bench { padding: var(--vf-space-4); }
+.bench__title { margin: 0 0 var(--vf-space-3); font-size: var(--vf-font-size-lg); }
+.bench__toolbar { display: flex; flex-wrap: wrap; gap: var(--vf-space-2); margin-block-end: var(--vf-space-4); }
+
+.bench__toolbar button {
+  padding: var(--vf-space-1) var(--vf-space-3);
+  border: 1px solid var(--vf-color-border-strong);
+  border-radius: var(--vf-radius-md);
+  background: var(--vf-color-surface);
+  color: var(--vf-color-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.bench__table { border-collapse: collapse; inline-size: 100%; }
+.bench__table td { padding: var(--vf-space-1) var(--vf-space-2); border-block-end: 1px solid var(--vf-color-border); }
+.bench__table tr[data-state="selected"] { background: var(--vf-color-primary-soft); }
+.bench__id { color: var(--vf-color-text-muted); font-family: var(--vf-font-mono); }
+
+.bench__table button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--vf-color-primary);
+  font: inherit;
+  cursor: pointer;
+}
+
+button:focus-visible { outline: none; box-shadow: var(--vf-focus-ring); }

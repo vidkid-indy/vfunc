@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>bench: vanilla</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../../css/vfunc.tokens.css">
+  <link rel="stylesheet" href="../../bench.css">
+</head>
+<body>
+  <main class="bench">
+    <h1 class="bench__title">vanilla — hand-written DOM operations (baseline)</h1>
+    <div class="bench__toolbar" id="toolbar">
+      <button type="button" id="run" data-action="run">Create rows</button>
+      <button type="button" id="runlots" data-action="runlots">Create 10× rows</button>
+      <button type="button" id="add" data-action="add">Append rows</button>
+      <button type="button" id="update" data-action="update">Update every 10th row</button>
+      <button type="button" id="clear" data-action="clear">Clear</button>
+      <button type="button" id="swaprows" data-action="swap">Swap rows</button>
+    </div>
+    <table class="bench__table"><tbody id="tbody"></tbody></table>
+  </main>
+  <script src="../../data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
