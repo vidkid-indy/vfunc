@@ -142,7 +142,8 @@ node layer1/bench/run.mjs                          # 성능 벤치마크(세 엔
 - AI 프롬프트 킷(`layer1/ai/en`, `layer1/ai/ko`)은 같은 이름의 파일 쌍으로 두고, 한쪽을 고치면 다른 쪽도 같은 절 구성으로 고칩니다(`ai-kit.test.js`가 검사). `llms-full.txt`는 `llms.txt` + 사이트 영어 문서 + d.ts로 빌드가 생성합니다.
 - 스타터(`layer1/starter`)의 `lib/`, `styles/tokens.css`, `AGENTS*.md`, `design/DESIGN.md`, `docs/`는 빌드가 넣는 사본입니다. 원본을 고치고 `npm run build`를 실행합니다.
 - 사이트 문서의 원본은 `site/content/ko/*.md`(한국어)이고 `site/content/en/*.md`는 번역입니다. 두 언어는 같은 파일·같은 `##` 절·같은 `{{블록}}`을 가집니다(`build/site.test.js`). 페이지 목록은 `site/pages.json`. API 페이지는 d.ts의 모든 이름을 `### \`vf.이름\`` 제목으로 가져야 합니다.
-- 사이트의 마크다운은 `build/markdown.mjs`가 모두 이스케이프합니다. 원시 HTML은 쓸 수 없고, 생성 블록(`{{install}}`, `{{examples}}`, `{{prompts}}`, `{{licenses}}`, `{{eval}}`, `{{bench}}`, `{{demo}}`)과 `@VERSION@`만 빌드가 채웁니다.
+- 사이트의 마크다운은 `build/markdown.mjs`가 모두 이스케이프합니다. 원시 HTML은 쓸 수 없고, 생성 블록(`{{install}}`, `{{examples}}`, `{{prompts}}`, `{{licenses}}`, `{{eval}}`, `{{bench}}`, `{{demo}}`, `{{tutorial-NN-html|html-min|js|css}}`)과 `@VERSION@`만 빌드가 채웁니다. 이미지는 한 줄짜리 `![설명](상대 경로.png)`만 됩니다.
+- 따라하기(`tutorial`)의 코드는 `site/tutorial/<언어>/NN-*/` 단계 파일에서 빌드가 가져옵니다(사이트 사본 경로 → CDN + SRI). 단계를 고치면 `layer1/test/e2e/tutorial.e2e.js`에 검사를 맞추고, 화면이 바뀌면 `VF_TUTORIAL_SHOTS=1`(Chromium)로 테스트를 실행해 `site/tutorial/img/`의 캡처를 다시 만듭니다. 두 언어는 같은 단계를 가집니다.
 - LLM 평가 세트(`layer1/ai/eval`)는 npm 패키지와 사이트 `/ai/`에 넣지 않습니다. 과제의 검사를 바꾸면 기준 답안이 세 엔진에서 통과해야 합니다(`eval.e2e.js`). `results/`의 답과 결과는 고치지 않고, 킷이 바뀌면 새 폴더로 다시 실행합니다.
 - 사이트의 동작은 `site/assets/site.js`의 `vf.attach` 섬으로만 붙입니다. 배포는 `.github/workflows/pages.yml`(수동 실행, Actions는 SHA 고정)입니다.
 - 엔진 소스(`layer1/src/`)를 고치면 `npm run build`로 `dist/`를 다시 만들어 함께 커밋합니다. `dist/` 테스트는 커밋된 파일을 검사합니다.

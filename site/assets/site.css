@@ -77,6 +77,9 @@ a { color: var(--vf-color-primary); }
 .page code { font-family: var(--vf-font-mono); font-size: 0.88em; background: var(--vf-color-surface-muted); padding: 0.1em 0.35em; border-radius: var(--vf-radius-sm); }
 .page blockquote { margin: 0 0 var(--vf-space-4); padding: var(--vf-space-3) var(--vf-space-4); border-left: 4px solid var(--vf-color-primary); background: var(--vf-color-primary-soft); border-radius: var(--vf-radius-sm); }
 .page blockquote p { margin: 0; }
+.figure { margin: 0 0 var(--vf-space-5); }
+.figure img { display: block; max-width: 100%; height: auto; border: 1px solid var(--vf-color-border); border-radius: var(--vf-radius-md); box-shadow: var(--vf-shadow-1); }
+.figure figcaption { margin-top: var(--vf-space-2); color: var(--vf-color-text-muted); font-size: var(--vf-font-size-sm); }
 .page hr { border: 0; border-top: 1px solid var(--vf-color-border); margin: var(--vf-space-6) 0; }
 
 .code { position: relative; margin: 0 0 var(--vf-space-4); }

@@ -59,6 +59,46 @@ function installBlock(lang, version, t) {
   return code(html, 'html') + '\n' + code(npm, 'js');
 }
 
+/**
+ * The tutorial's step files (site/tutorial/<lang>/NN-name/) as code blocks {{tutorial-NN-html|js|css}}.
+ * The step pages load the site's own copies of the vfunc files; the code the reader copies loads
+ * the same files from the CDN with SRI, so the page shows exactly the code the tests run.
+ */
+export function tutorialBlocks(lang, version, t) {
+  const dir = join(SITE, 'tutorial', lang);
+  const blocks = {};
+  if (!existsSync(dir)) return blocks;
+  const cdn = 'https://cdn.jsdelivr.net/npm/vfunc@' + version + '/';
+  // Repository path → path in the npm package (both are the same bytes, so the SRI matches).
+  const packaged = (path) => path.replace(/^layer1\/dist\//, 'dist/').replace(/^layer1\/css\//, 'css/')
+    .replace(/^layer2\/dist\/(.+\.css)$/, 'css/$1').replace(/^layer2\/dist\//, 'dist/');
+  const code = (text, language) => '<div class="code" data-copy-root><button class="code__copy" type="button" data-action="copy">' +
+    esc(t.copy) + '</button><pre data-lang="' + language + '"><code>' + esc(text) + '</code></pre></div>';
+  for (const step of readdirSync(dir).filter((name) => /^\d\d-/.test(name)).sort()) {
+    const number = step.slice(0, 2);
+    const file = (name) => join(dir, step, name);
+    const text = (name) => readFileSync(file(name), 'utf8').replace(/\r\n/g, '\n');
+    // min: the production build of each script where there is one (…-html-min).
+    const page = (min) => text('index.html')
+      .replace(/script-src 'self'/, "script-src 'self' https://cdn.jsdelivr.net")
+      .replace(/style-src 'self'/, "style-src 'self' https://cdn.jsdelivr.net")
+      .replace(/(href|src)="\.\.\/\.\.\/\.\.\/(layer[12]\/(?:dist|css)\/[\w.-]+)"/g, (all, attr, path) => {
+        const minified = path.replace(/\.js$/, '.min.js');
+        const chosen = min && /\.js$/.test(path) && existsSync(join(ROOT, minified)) ? minified : path;
+        return attr + '="' + cdn + packaged(chosen) + '"\n        integrity="' + sri(chosen) + '" crossorigin="anonymous"';
+      });
+    if (existsSync(file('index.html'))) {
+      const html = page(false);
+      if (html.indexOf('../../../') >= 0) throw new Error('site: tutorial ' + lang + '/' + step + ' loads a file that is not in the package');
+      blocks['tutorial-' + number + '-html'] = code(html, 'html');
+      blocks['tutorial-' + number + '-html-min'] = code(page(true), 'html');
+    }
+    if (existsSync(file('app.js'))) blocks['tutorial-' + number + '-js'] = code(text('app.js'), 'js');
+    if (existsSync(file('style.css'))) blocks['tutorial-' + number + '-css'] = code(text('style.css'), 'css');
+  }
+  return blocks;
+}
+
 /** The examples of layer 1 (numbered folders) and layer 2 (every folder with a README), one table each. */
 function examplesBlock(lang) {
   const table = (base, names) => {
@@ -240,7 +280,8 @@ export function buildSite(outDir) {
       eval: evalBlock(lang),
       bench: benchBlock(lang),
       components: componentsBlock(lang),
-      demo: demoBlock(lang)
+      demo: demoBlock(lang),
+      ...tutorialBlocks(lang, version, t)
     };
     const search = [];
     mkdirSync(join(out, lang), { recursive: true });
@@ -290,6 +331,8 @@ export function buildSite(outDir) {
 
   // Assets, the files the islands and examples need, and the AI references at the root.
   copyDir(join(SITE, 'assets'), join(out, 'assets'));
+  // The tutorial's step pages and screenshots (they load ../../../layer1/… from the site root).
+  copyDir(join(SITE, 'tutorial'), join(out, 'tutorial'));
   for (const file of ['vfunc.esm.min.js', 'vfunc.esm.min.js.map']) {
     mkdirSync(join(out, 'lib'), { recursive: true });
     copyFileSync(join(ROOT, 'layer1/dist', file), join(out, 'lib', file));

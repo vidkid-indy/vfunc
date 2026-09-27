@@ -1,0 +1,65 @@
+/* 할 일 앱의 스타일. 색·간격·글꼴은 토큰(var(--vf-*))만 씁니다. */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--vf-color-bg);
+  color: var(--vf-color-text);
+  font-family: var(--vf-font-body);
+  font-size: var(--vf-font-size-md);
+  line-height: var(--vf-line-height);
+}
+
+.todo { max-width: 560px; margin: 0 auto; padding: var(--vf-space-6) var(--vf-space-4); }
+.todo__title { margin: 0 0 var(--vf-space-4); font-size: var(--vf-font-size-2xl); }
+.todo__label { display: block; margin-bottom: var(--vf-space-1); font-weight: var(--vf-font-weight-strong); }
+.todo__greeting { font-size: var(--vf-font-size-lg); }
+
+.todo__form { display: flex; gap: var(--vf-space-2); margin-bottom: var(--vf-space-4); }
+.todo__input {
+  flex: 1;
+  width: 100%;
+  padding: var(--vf-space-2) var(--vf-space-3);
+  border: 1px solid var(--vf-color-border-strong);
+  border-radius: var(--vf-radius-md);
+  background: var(--vf-color-surface);
+  color: var(--vf-color-text);
+  font: inherit;
+}
+.todo__button {
+  padding: var(--vf-space-2) var(--vf-space-4);
+  border: 0;
+  border-radius: var(--vf-radius-md);
+  background: var(--vf-color-primary);
+  color: var(--vf-color-on-primary);
+  font: inherit;
+  cursor: pointer;
+}
+.todo__button:hover { background: var(--vf-color-primary-hover); }
+.todo__input:focus-visible, .todo__button:focus-visible, .todo__remove:focus-visible {
+  outline: none;
+  box-shadow: var(--vf-focus-ring);
+}
+
+.todo__list { list-style: none; margin: 0; padding: 0; }
+.todo__item {
+  display: flex;
+  align-items: center;
+  gap: var(--vf-space-2);
+  padding: var(--vf-space-2) var(--vf-space-3);
+  margin-bottom: var(--vf-space-2);
+  border: 1px solid var(--vf-color-border);
+  border-radius: var(--vf-radius-md);
+  background: var(--vf-color-surface);
+}
+.todo__text { flex: 1; }
+.todo__item[data-state="done"] .todo__text { color: var(--vf-color-text-muted); text-decoration: line-through; }
+.todo__remove {
+  border: 0;
+  background: transparent;
+  color: var(--vf-color-text-muted);
+  font: inherit;
+  cursor: pointer;
+}
+.todo__remove:hover { color: var(--vf-color-danger-text); }
+.todo__footer { margin: var(--vf-space-3) 0 0; color: var(--vf-color-text-muted); font-size: var(--vf-font-size-sm); }

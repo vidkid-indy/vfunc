@@ -3,10 +3,12 @@
 // A small, safe Markdown converter for the site (build/site.mjs, D-020). No dependencies.
 // Everything is escaped; raw HTML in Markdown is shown as text. Links pass a scheme allow-list.
 // Supported: # headings (1-4), paragraphs, **bold**, *italic*, `code`, [links](url), - and 1. lists
-// (one nested level), > quotes, ``` fences, | tables |, --- rules, and {{block}} directives that
-// the caller fills with trusted, generated HTML.
+// (one nested level), > quotes, ``` fences, | tables |, --- rules, ![alt](image.png) on a line of its
+// own (relative image paths only), and {{block}} directives that the caller fills with trusted,
+// generated HTML.
 
 const ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const IMAGE_PATH = /^(\.\.?\/)*[\w-]+(\/[\w.-]+)*\.(png|jpe?g|webp|svg)$/;
 
 export function esc(text) {
   return String(text).replace(/[&<>"']/g, (c) => ESCAPES[c]);
@@ -84,6 +86,17 @@ export function markdown(source, options) {
         throw new Error('markdown: unknown block {{' + directive[1] + '}}');
       }
       out.push(o.blocks[directive[1]]);
+      i++;
+      continue;
+    }
+
+    // An image on its own line: a relative path to an image file in the site, never a URL.
+    const image = /^!\[([^\]]*)\]\(([^)\s]+)\)\s*$/.exec(line);
+    if (image) {
+      flushPara();
+      if (!IMAGE_PATH.test(image[2])) throw new Error('markdown: images must be relative paths to .png/.jpg/.webp/.svg files: ' + image[2]);
+      out.push('<figure class="figure"><img src="' + esc(image[2]) + '" alt="' + esc(image[1]) + '" loading="lazy" decoding="async">' +
+        (image[1] ? '<figcaption>' + esc(image[1]) + '</figcaption>' : '') + '</figure>');
       i++;
       continue;
     }

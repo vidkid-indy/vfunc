@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { markdown, safeHref, slug } from './markdown.mjs';
+import { tutorialBlocks } from './site.mjs';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const read = (path) => readFileSync(ROOT + path, 'utf8').replace(/\r\n/g, '\n');
@@ -56,7 +57,7 @@ test('every page exists in every language, with the same sections', () => {
       const path = 'site/content/' + lang + '/' + page.slug + '.md';
       assert.ok(existsSync(ROOT + path), path);
       const text = read(path);
-      return { h2: (text.match(/^## /gm) || []).length, blocks: (text.match(/^\{\{[a-z-]+\}\}$/gm) || []).sort().join(',') };
+      return { h2: (text.match(/^## /gm) || []).length, blocks: (text.match(/^\{\{[a-z0-9-]+\}\}$/gm) || []).sort().join(',') };
     });
     assert.deepEqual(counts[1], counts[0], page.slug);
   }
@@ -73,5 +74,44 @@ test('the API page documents every public export in both languages', () => {
     const api = read('site/content/' + lang + '/api.md');
     const missing = names.filter((name) => api.indexOf('### `vf.' + name) < 0);
     assert.deepEqual(missing, [], lang);
+  }
+});
+
+test('images: a line of its own, relative image paths only, alt escaped', () => {
+  const { html } = markdown('![A <b>step</b>](../tutorial/img/ko/01-hello.png)');
+  assert.equal(html, '<figure class="figure"><img src="../tutorial/img/ko/01-hello.png" alt="A &lt;b&gt;step&lt;/b&gt;" loading="lazy" decoding="async">' +
+    '<figcaption>A &lt;b&gt;step&lt;/b&gt;</figcaption></figure>');
+  for (const bad of ['https://example.com/x.png', '//example.com/x.png', 'javascript:x.png', 'data:image/png,x', 'x.html', '/abs/x.png']) {
+    assert.throws(() => markdown('![x](' + bad + ')'), /images must be relative/, bad);
+  }
+});
+
+test('tutorial: every step of both languages becomes CDN code with SRI, the same blocks in both', () => {
+  const t = { copy: 'Copy' };
+  const ko = tutorialBlocks('ko', '9.9.9', t);
+  const en = tutorialBlocks('en', '9.9.9', t);
+  assert.deepEqual(Object.keys(en).sort(), Object.keys(ko).sort());
+  assert.ok(ko['tutorial-01-html'] && ko['tutorial-01-js'] && ko['tutorial-01-css'] && ko['tutorial-05-html-min']);
+  for (const [name, html] of Object.entries(ko).concat(Object.entries(en))) {
+    assert.doesNotMatch(html, /\.\.\/\.\.\/\.\.\//, name + ' still loads a site path');
+    if (/-html/.test(name)) {
+      assert.match(html, /https:\/\/cdn\.jsdelivr\.net\/npm\/vfunc@9\.9\.9\/dist\/vfunc(\.min)?\.js&quot;\n\s+integrity=&quot;sha384-/, name);
+      assert.match(html, /script-src &#39;self&#39; https:\/\/cdn\.jsdelivr\.net/, name);
+    }
+  }
+  assert.match(ko['tutorial-05-html'], /vfunc@9\.9\.9\/css\/vfunc-ui\.css/);
+  assert.match(ko['tutorial-05-html-min'], /vfunc@9\.9\.9\/dist\/vfunc-ui\.min\.js/);
+  assert.doesNotMatch(ko['tutorial-05-html-min'], /vfunc\.js&quot;/);
+});
+
+test('tutorial: every screenshot the pages show exists', () => {
+  for (const lang of config.languages) {
+    const text = read('site/content/' + lang + '/tutorial.md');
+    const images = text.match(/^!\[[^\]]*\]\(\.\.\/([^)]+)\)$/gm) || [];
+    assert.ok(images.length >= 8, lang);
+    for (const line of images) {
+      const path = 'site/' + /\(\.\.\/([^)]+)\)/.exec(line)[1];
+      assert.ok(existsSync(ROOT + path), path);
+    }
   }
 });

@@ -4,6 +4,8 @@
   "pages": [
     { "slug": "index", "group": "start", "nav": { "ko": "홈", "en": "Home" } },
     { "slug": "getting-started", "group": "start" },
+    { "slug": "tutorial", "group": "start", "nav": { "ko": "따라하기", "en": "Tutorial" } },
+    { "slug": "starter", "group": "start", "nav": { "ko": "스타터와 AI", "en": "Starter and AI" } },
     { "slug": "compare", "group": "start" },
     { "slug": "guide", "group": "learn" },
     { "slug": "spa", "group": "learn" },
