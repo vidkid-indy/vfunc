@@ -2323,54 +2323,140 @@
     "date": "2026-09-26",
     "lang": "ko",
     "kit": "1.0.0-rc.8",
-    "settings": "Fourteen tasks with the Korean bundles (Korean kit: AGENTS ko, llms.ko.txt, ko prompts, Korean task texts; the layer 2 tasks add ai/ko/components.md and the layer 2 lib/ files). One new session per task, no follow-up messages, unedited answers. A session limit (HTTP 429) stopped the sessions of tasks 03, 05, 06, 07 and 08 after they had written their complete answers (each ends with REPORT.md and closes every code block); they were not run again. Manual scores are not filled in yet.",
+    "settings": "Fourteen tasks with the Korean bundles (Korean kit: AGENTS ko, llms.ko.txt, ko prompts, Korean task texts; the layer 2 tasks add ai/ko/components.md and the layer 2 lib/ files). One new session per task, no follow-up messages, unedited answers. A session limit (HTTP 429) stopped the sessions of tasks 03, 05, 06, 07 and 08 after they had written their complete answers (each ends with REPORT.md and closes every code block); they were not run again. Manual scores (rubric of each task.json, 0-2 per item) by the maintainer's AI assistant, reviewed by the maintainer (2026-09-27).",
     "tasks": {
       "10": {
         "followUps": 0,
-        "notes": "All seven bugs fixed; the comment list is vf.html items joined into innerHTML, and a timer is kept as inst._timer."
+        "manual": {
+          "causes": 2,
+          "minimal": 2,
+          "verify": 1,
+          "report": 2
+        },
+        "notes": "All seven bugs fixed; the comment list is vf.html items joined into innerHTML, and a timer is kept as inst._timer. Manual review: Lists the expected behaviour, but no way to verify each fix."
       },
       "11": {
-        "followUps": 0
+        "followUps": 0,
+        "manual": {
+          "spec": 2,
+          "components": 2,
+          "no-rebuild": 2,
+          "report": 2
+        }
       },
       "12": {
-        "followUps": 0
+        "followUps": 0,
+        "manual": {
+          "spec": 2,
+          "fields": 1,
+          "values": 2,
+          "report": 2
+        },
+        "notes": "Manual review: The required prop is left out on purpose (reason given)."
       },
       "13": {
-        "followUps": 0
+        "followUps": 0,
+        "manual": {
+          "spec": 2,
+          "overlays": 2,
+          "cleanup": 1,
+          "report": 2
+        },
+        "notes": "Manual review: A new vfConfirm on every click, never destroyed."
       },
       "14": {
         "followUps": 0,
-        "notes": "All behaviour checks pass; the page is attached through a class selector (document.querySelector('.page'))."
+        "manual": {
+          "lifecycle": 2,
+          "namespace": 2,
+          "xss-tokens": 2,
+          "report": 1
+        },
+        "notes": "All behaviour checks pass; the page is attached through a class selector (document.querySelector('.page')). Manual review: The page is attached through a class (.page) while the report says every kit rule was followed."
       },
       "01": {
         "followUps": 0,
-        "notes": "All behaviour checks pass; the new style.css uses raw colors instead of tokens."
+        "manual": {
+          "spec": 2,
+          "idiom": 1,
+          "report": 1
+        },
+        "notes": "All behaviour checks pass; the new style.css uses raw colors instead of tokens. Manual review: The input uses addEventListener (not a delegate); the report says tokens only, but style.css has raw sizes and fallback colors."
       },
       "02": {
-        "followUps": 0
+        "followUps": 0,
+        "manual": {
+          "spec": 2,
+          "minimal": 2,
+          "idiom": 2,
+          "report": 2
+        }
       },
       "03": {
         "followUps": 0,
-        "notes": "One console error (an empty interpolated tag name in vf.html); vf.attach targets found by class (vf.$('.topbar__user')); markup built by concatenation."
+        "manual": {
+          "html-kept": 2,
+          "smallest-tool": 1,
+          "area-table": 2,
+          "report": 0
+        },
+        "notes": "One console error (an empty interpolated tag name in vf.html); vf.attach targets found by class (vf.$('.topbar__user')); markup built by concatenation. Manual review: An extra vf.store duplicates the tab state and #summary uses vf.html as a string call (left with a comment saying it is wrong); the checklist claims no publisher class selectors and every value in vf.html, both false."
       },
       "04": {
-        "followUps": 0
+        "followUps": 0,
+        "manual": {
+          "spec": 2,
+          "adopt": 2,
+          "privacy": 2,
+          "report": 2
+        }
       },
       "05": {
-        "followUps": 0
+        "followUps": 0,
+        "manual": {
+          "spec": 2,
+          "structure": 2,
+          "untrusted": 2,
+          "report": 2
+        }
       },
       "06": {
         "followUps": 0,
-        "notes": "onMount reads a variable declared later (ReferenceError), so no page renders; raw colors in the new CSS files."
+        "manual": {
+          "structure": 2,
+          "lifecycle": 1,
+          "messages": 1,
+          "report": 1
+        },
+        "notes": "onMount reads a variable declared later (ReferenceError), so no page renders; raw colors in the new CSS files. Manual review: Unsubscribe variables declared after the attach (TDZ); a hard-coded \"region\" label and servers.title reused as a label; the checklist says tokens only while every value has a raw fallback. The Korean kit lists no token names."
       },
       "07": {
-        "followUps": 0
+        "followUps": 0,
+        "manual": {
+          "mapping": 1,
+          "design": 1,
+          "report": 2
+        },
+        "notes": "Manual review: Cleanup by assigning inst.onDestroy (a property on the instance); a token that does not exist (--vf-color-danger-bg). The Korean kit lists no token names."
       },
       "08": {
-        "followUps": 0
+        "followUps": 0,
+        "manual": {
+          "lifecycle": 2,
+          "ownership": 2,
+          "tokens": 2,
+          "report": 1
+        },
+        "notes": "Manual review: The report gives a wrong reason for calling vf.html with an array."
       },
       "09": {
-        "followUps": 0
+        "followUps": 0,
+        "manual": {
+          "token-table": 2,
+          "violations": 2,
+          "status": 2,
+          "report": 2
+        }
       }
     }
   }

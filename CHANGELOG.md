@@ -5,6 +5,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-09-27
+
+Documentation and AI kit only; the engine and the components are unchanged.
+
+### Fixed
+- `llms.ko.txt` now carries the same code examples (attach, router with `ctx.params` / `ctx.query`, store, i18n with `vf.i18n.subscribe` and `vf.fmt.currency(n, 'KRW')`) and the full token list as `llms.txt`. An evaluation run showed Korean answers guessing token names, adding raw fallback values and inventing router fields because these were missing. A test now keeps both files' code blocks, `vf.*` names and token names the same.
+- The `vf.vfConfirm` examples (`llms.txt` in both languages, `components.md` from the catalog, the gallery) create the dialog, await `open()` and `destroy()` it; the one-line form left an instance behind on every click. `llms.txt` lists it as a common mistake.
+- Common mistake and SPA prompt (both languages): on a locale change, refresh the current page as well as the header.
+- Website FAQ: the built-in `vfGrid` pages long data; virtual scrolling comes from the grid adapters (the FAQ said it would come with the grid).
+
+### Changed
+- LLM evaluation set (repository only): a regression run with the 1.0.0 kit in English and Korean, manual scores for the 1.0.0 runs and the stage 2 runs, and a manual score column in `results.md` and on the website. The rubric of task 11 names `setData` and `setPage`, as its reference answer does.
+
 ## [1.0.0] - 2026-09-26
 
 The first stable release: the engine (layer 1) and the components (layer 2) in one package. The sections below list everything since the start, including the changes made during the release candidates.

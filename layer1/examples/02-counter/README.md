@@ -6,4 +6,4 @@
 - Changes made in the same tick are rendered **once**: "+10" changes the state ten times and renders one time. / 같은 tick의 변경은 **한 번만** 렌더합니다.
 - The value's state is written to `data-state`, and CSS colors it. JS has no colors. / 상태는 `data-state`로, 색은 CSS가 정합니다.
 
-Production: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0/dist/vfunc.min.js" integrity="sha384-3rmVR+LCPl9RqreURnm808mUqrbUD2gVgo7P7mK20vIlp6mCO3JnbgiD9gJ+Gf3N" crossorigin="anonymous"></script>` · ESM: `import vf from 'vfunc'`
+Production: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.1/dist/vfunc.min.js" integrity="sha384-PWdyvJw4rbJQ2cZEJBdIy0OXqiGk2XxgReE8IYP98OKaTMBoIt4cE+wBY6A816gm" crossorigin="anonymous"></script>` · ESM: `import vf from 'vfunc'`

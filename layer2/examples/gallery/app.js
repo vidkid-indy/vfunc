@@ -160,8 +160,8 @@
         selector: '[data-action="confirm"]',
         eventType: 'click',
         onEvent: function () {
-          vf.vfConfirm({ title: 'Delete 3 items?', message: 'This cannot be undone.', variant: 'danger', confirmLabel: 'Delete' })
-            .open().then(function (ok) { log('confirm ' + ok); });
+          var dialog = vf.vfConfirm({ title: 'Delete 3 items?', message: 'This cannot be undone.', variant: 'danger', confirmLabel: 'Delete' });
+          dialog.open().then(function (ok) { dialog.destroy(); log('confirm ' + ok); });
         }
       }
     ]

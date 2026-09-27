@@ -36,7 +36,7 @@ layer2 과제는 `task.json`에 `"layer": 2`가 있습니다. 묶음은 킷에 `
 4. 모델이 답하지 않고 질문하면 정확히 `Proceed with your best assumptions and list them.`(한국어 묶음은 `가장 타당한 가정으로 진행하고 가정을 적어 주세요.`)로 답하고 추가 질문 1회로 셉니다. 그 밖의 말은 보내지 않습니다.
 5. 모델의 답 전체를 고치지 말고 `results/<yyyymmdd>-<모델>-<언어>/answers/<NN>.md`로 저장합니다(예: `answers/03.md`). 답이 잘리면 `Continue.`를 한 번 보내 나머지를 이어 붙이고 메모에 적습니다.
 6. 같은 폴더에 `run.json`(아래)을 쓰고 채점합니다: `node layer1/ai/eval/tools/grade.mjs layer1/ai/eval/results/<실행>`. 빨리 보려면 `--engines chromium`을 붙입니다. 공개하는 결과는 세 엔진을 모두 씁니다. 과제 08은 네트워크가 필요합니다(CDN의 Chart.js).
-7. `results.md`와 답의 `REPORT.md`를 읽고, 수동 점수(각 `task.json`의 `rubric`, 항목마다 0~2점)와 메모를 `run.json`에 적은 뒤 `grade.mjs <실행 폴더> --report`로 다시 채점하지 않고 `results.md`만 새로 만듭니다.
+7. `results.md`와 답의 `REPORT.md`를 읽고, 수동 점수(각 `task.json`의 `rubric`, 항목마다 0~2점)와 메모를 `run.json`에 적은 뒤 `grade.mjs <실행 폴더> --report`로 다시 채점하지 않고 `results.md`만 새로 만듭니다. 그러면 `results.md`와 사이트의 결과 표에 과제별·실행별 수동 점수가 나옵니다.
 
 세 엔진에서 과제 14개를 채점하는 데 좋은 답은 5분쯤, 실패한 검사가 많으면 15분까지 걸립니다(실패한 검사는 제한 시간까지 기다립니다).
 

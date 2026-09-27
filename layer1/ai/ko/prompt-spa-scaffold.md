@@ -23,6 +23,7 @@
 - 링크: `<a data-link href="${router.href('/orders')}">`. 코드에서 이동: `router.go('/orders')`.
 - 페이지마다 이벤트 종류당 위임 하나. 행은 `data-id`를 가집니다.
 - 페이지는 `onDestroy`에서 store 구독을 해제합니다.
+- 로케일이 바뀌면 화면 전체를 다시 그립니다: `vf.i18n.subscribe`에서 헤더만이 아니라 헤더와 현재 페이지를 refresh합니다.
 - `app.js`에 `vf.ext.update`를 유지하고, 릴리스 때 `APP_VERSION`/`version.json`을 올립니다.
 - 클라이언트 라우트는 접근 제어가 아닙니다. 보호가 필요한 API는 모두 서버에서 검사합니다.
 

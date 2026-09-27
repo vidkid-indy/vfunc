@@ -11,7 +11,7 @@ import { tmpdir } from 'node:os';
 import { EVAL, loadTasks, inputPath, parseAnswer, pathFrom, extractAnswer, readInputs, promptPath, libFor } from '../ai/eval/tools/extract.mjs';
 import { buildBundle, fenced, kitFiles, LANGS } from '../ai/eval/tools/bundle.mjs';
 import { staticCheck, scanJs, selectsByClass } from '../ai/eval/tools/static.mjs';
-import { report } from '../ai/eval/tools/report.mjs';
+import { report, manualScore, manualTotal } from '../ai/eval/tools/report.mjs';
 
 const read = (path) => readFileSync(path, 'utf8').replace(/\r\n/g, '\n');
 const tasks = loadTasks();
@@ -257,10 +257,24 @@ test('the report lists every task with its result', () => {
       results: [{ name: 'a', pass: true, failed: [] }, { name: 'b', pass: false, failed: ['chromium: boom'] }],
       static: [{ rule: 'csp', severity: 'error', file: 'index.html', line: 1, lines: [1], text: 'no CSP' }] }]
   });
-  assert.match(md, /\| 01-counter-greeting \| 2 \/ 3 \| 1 \| 1 \| \*\*no\*\* \|/);
+  assert.match(md, /\| 01-counter-greeting \| 2 \/ 3 \| 1 \| 1 \| 2 \/ 2 \| \*\*no\*\* \|/);
+  assert.match(md, /2 \/ 3 checks passed · manual review 2 \/ 2 points\*\*/);
   assert.match(md, /- b: chromium: boom/);
   assert.match(md, /- error `csp` index\.html:1 — no CSP/);
   assert.match(md, /- spec: 2/);
+});
+
+test('manual scores add up per task and per run', () => {
+  assert.equal(manualScore({ followUps: 0 }), null, 'not reviewed yet');
+  assert.deepEqual(manualScore({ manual: { spec: 2, idiom: 1, report: 0 } }), { points: 3, max: 6 });
+  assert.equal(manualTotal({ tasks: { '01': { followUps: 0 } } }), null);
+  assert.deepEqual(manualTotal({ tasks: { '01': { manual: { a: 2, b: 1 } }, '02': { followUps: 0 }, '03': { manual: { a: 2 } } } }),
+    { points: 5, max: 6, tasks: 2 });
+  const md = report({ run: { tasks: {} }, kit: '1.0.0', graded: 'x', engines: ['chromium'],
+    summary: { tasks: 1, tasksPassed: 1, checks: 1, checksPassed: 1 },
+    tasks: [{ id: '01-a', title: 'A', files: [], notes: [], pass: true, checks: { passed: 1, total: 1 }, staticErrors: 0, results: [], static: [] }] });
+  assert.match(md, /1 \/ 1 checks passed\*\*/, 'no manual total before the review');
+  assert.match(md, /\| 01-a \| 1 \/ 1 \| 0 \| — \| — \| yes \|/);
 });
 
 test('committed results are complete', () => {

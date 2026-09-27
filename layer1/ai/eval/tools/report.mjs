@@ -4,10 +4,32 @@
 
 const cell = (s) => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ');
 
+/** Manual points of one task (run.json `manual`, 0-2 per rubric item), or null before the review. */
+export function manualScore(info) {
+  const manual = info && info.manual;
+  if (!manual || !Object.keys(manual).length) return null;
+  const keys = Object.keys(manual);
+  return { points: keys.reduce((n, k) => n + Number(manual[k] || 0), 0), max: keys.length * 2 };
+}
+
+/** Manual points of a whole run, or null when no task has been reviewed. */
+export function manualTotal(run) {
+  const tasks = (run && run.tasks) || {};
+  let total = null;
+  for (const id of Object.keys(tasks)) {
+    const s = manualScore(tasks[id]);
+    if (!s) continue;
+    total = total || { points: 0, max: 0, tasks: 0 };
+    total.points += s.points; total.max += s.max; total.tasks += 1;
+  }
+  return total;
+}
+
 /** The markdown report of a graded run. */
 export function report(results) {
   const run = results.run || {};
   const tasks = (run.tasks || {});
+  const manual = manualTotal(run);
   const lines = [
     '# Evaluation results — ' + (run.model || 'unknown model'),
     '',
@@ -22,15 +44,18 @@ export function report(results) {
     '| Settings | ' + cell(run.settings || '—') + ' |',
     '',
     '**' + results.summary.tasksPassed + ' / ' + results.summary.tasks + ' tasks passed · ' +
-      results.summary.checksPassed + ' / ' + results.summary.checks + ' checks passed**',
+      results.summary.checksPassed + ' / ' + results.summary.checks + ' checks passed' +
+      (manual ? ' · manual review ' + manual.points + ' / ' + manual.max + ' points' : '') + '**',
     '',
-    '| Task | Checks | Static errors | Follow-ups | Pass |',
-    '|---|---|---|---|---|'
+    '| Task | Checks | Static errors | Follow-ups | Manual | Pass |',
+    '|---|---|---|---|---|---|'
   ];
   for (const t of results.tasks) {
     const info = tasks[t.id.slice(0, 2)] || {};
+    const score = manualScore(info);
     lines.push('| ' + cell(t.id) + ' | ' + t.checks.passed + ' / ' + t.checks.total + ' | ' + t.staticErrors + ' | ' +
-      (info.followUps === undefined ? '—' : info.followUps) + ' | ' + (t.pass ? 'yes' : '**no**') + ' |');
+      (info.followUps === undefined ? '—' : info.followUps) + ' | ' + (score ? score.points + ' / ' + score.max : '—') + ' | ' +
+      (t.pass ? 'yes' : '**no**') + ' |');
   }
   for (const t of results.tasks) {
     const info = tasks[t.id.slice(0, 2)] || {};

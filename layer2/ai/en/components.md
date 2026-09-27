@@ -1173,7 +1173,7 @@ A yes/no alertdialog; open() returns a Promise of the answer; danger starts on c
 Messages: `confirm.cancel`, `confirm.ok`
 
 ```js
-if (await vf.vfConfirm({ title: 'Delete 3 items?', variant: 'danger', confirmLabel: 'Delete' }).open()) remove();
+const c = vf.vfConfirm({ title: 'Delete 3 items?', variant: 'danger', confirmLabel: 'Delete' }); const ok = await c.open(); c.destroy(); if (ok) remove();
 ```
 
 ```ts

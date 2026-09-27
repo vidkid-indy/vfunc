@@ -23,6 +23,7 @@ You are creating a single-page app with vfunc.js on top of the starter template.
 - Links: `<a data-link href="${router.href('/orders')}">`. Navigation in code: `router.go('/orders')`.
 - One delegated listener per event type per page; rows carry `data-id`.
 - Pages release store subscriptions in `onDestroy`.
+- A locale change refreshes everything on the screen: in `vf.i18n.subscribe`, refresh the header and the current page, not only the header.
 - Keep `vf.ext.update` installed in `app.js` and bump `APP_VERSION` / `version.json` on release.
 - Client routes are not access control: every protected API call is checked on the server.
 

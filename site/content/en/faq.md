@@ -6,7 +6,7 @@ For most business screens, behaviour on published pages, intranet systems and sm
 
 ## What are the limits?
 
-- **Large lists**: a render replaces the inside of a component (no keyed diff). Very long lists that change often are slower. Split lists into smaller components and keep unchanged areas with `data-vf-keep`. Virtual scrolling comes with the grid in stage 2.
+- **Large lists**: a render replaces the inside of a component (no keyed diff). Very long lists that change often are slower. Split lists into smaller components and keep unchanged areas with `data-vf-keep`. The built-in `vfGrid` pages long data instead of scrolling it; for virtual scrolling use a grid adapter (`vfGridAg`, `vfGridTabulator`).
 - **Focus and caret**: after a render, focus and caret move back to the element with the same `id`, `data-ref` or `name`, else to the same `data-action` at the same position. Scroll positions are not restored. Do not render on every keystroke.
 - **Table rows**: a component that renders `<tr>` needs `tag: 'table'`.
 - **Ecosystem**: few component libraries and tools so far. Third-party libraries can be attached directly with `onMount` + `data-vf-keep`.

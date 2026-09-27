@@ -6,7 +6,7 @@ For vfunc.js 1.0. The full reference is llms-full.txt (this file + the website g
 
 ## Load
 
-- Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.0/dist/vfunc.min.js" integrity="sha384-3rmVR+LCPl9RqreURnm808mUqrbUD2gVgo7P7mK20vIlp6mCO3JnbgiD9gJ+Gf3N" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production; the integrity value differs per version and file (this one is 1.0.0 vfunc.min.js). `dist/vfunc.js` is the development build with warnings.
+- Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.1/dist/vfunc.min.js" integrity="sha384-PWdyvJw4rbJQ2cZEJBdIy0OXqiGk2XxgReE8IYP98OKaTMBoIt4cE+wBY6A816gm" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production; the integrity value differs per version and file (this one is 1.0.1 vfunc.min.js). `dist/vfunc.js` is the development build with warnings.
 - ES module: `import vf from 'vfunc'` or `import { vfunc, html, router } from 'vfunc'`; a copied file works the same (`import vf from './lib/vfunc.esm.min.js'`). The ES modules never touch `window.vf`.
 - IE11 / Edge IE mode: `dist/vfunc.legacy.min.js` (same API; includes only a Promise polyfill). The app code must be ES5: no arrow functions, const/let, template literals or classes; use `vf.tpl('<b>{name}</b>', data)` instead of vf.html template literals. Polyfill anything else the app needs (Object.assign, fetch, …) yourself. Load pattern: `<script type="module" src="app.js">` + `<script nomodule src="vfunc.legacy.min.js">` + `<script nomodule src="app.es5.js">`.
 
@@ -93,7 +93,7 @@ vf.fmt.number(n); vf.fmt.currency(n, 'KRW'); vf.fmt.date(d); vf.fmt.relative(-3,
 
 ## Design tokens (optional css/vfunc.tokens.css)
 
-Token names are public API: `--vf-color-primary|-hover|-active|-soft`, `--vf-color-on-primary`, `--vf-color-{success,warning,danger,info}` (+ `-soft`, `-text`), `--vf-color-bg|surface|surface-muted|overlay`, `--vf-color-text|text-muted|text-disabled|text-inverse`, `--vf-color-border|border-strong|focus`, `--vf-focus-ring`, `--vf-chart-1..8`, `--vf-shadow-1..3`, `--vf-radius-sm|md|lg|full`, `--vf-space-1..7`, `--vf-font-body|mono`, `--vf-font-size-xs|sm|md|lg|xl|2xl`, `--vf-font-weight-normal|strong`, `--vf-line-height`, `--vf-duration-fast|base`, `--vf-easing`, `--vf-z-dropdown|popover|drawer|modal|toast`. Dark theme follows the OS; `<html data-theme="light|dark">` forces one. Override tokens in your CSS after vfunc.tokens.css. Put state in `aria-*` / `data-state` and let CSS style it; read a token in JS with getComputedStyle only when a library needs a color.
+Token names are public API: `--vf-color-primary|-hover|-active|-soft`, `--vf-color-on-primary`, `--vf-color-{success,warning,danger,info}` (+ `-soft`, `-text`), `--vf-color-bg|surface|surface-muted|overlay`, `--vf-color-text|text-muted|text-disabled|text-inverse`, `--vf-color-border|border-strong|focus`, `--vf-focus-ring`, `--vf-chart-1..8`, `--vf-shadow-1..3`, `--vf-radius-sm|md|lg|full`, `--vf-space-1..7`, `--vf-font-body|mono`, `--vf-font-size-xs|sm|md|lg|xl|2xl`, `--vf-font-weight-normal|strong`, `--vf-line-height`, `--vf-duration-fast|base`, `--vf-easing`, `--vf-z-dropdown|popover|drawer|modal|toast`. There are no other names. Dark theme follows the OS; `<html data-theme="light|dark">` forces one. Override tokens in your CSS after vfunc.tokens.css. Put state in `aria-*` / `data-state` and let CSS style it; read a token in JS with getComputedStyle only when a library needs a color.
 
 ## Update plugin (dist/plugins/update.min.js → global vfUpdate; ESM `import vfUpdate from 'vfunc/plugins/update'`)
 
@@ -113,7 +113,7 @@ Optional components without classes. Load `vfunc.js` → `dist/vfunc-ui.js` (+ `
 - Input: vsField, vsInput, vsTextarea, vsSelect, vsCheckbox, vsRadioGroup, vsSwitch, vsSlider, vsProgress, vsNumberInput/vfNumberInput, vsSearchInput/vfSearchInput, vsPasswordInput/vfPasswordInput, vsChipsInput/vfChipsInput, vsRating/vfRating, vsSelectButton/vfSelectButton, vsMaskedInput/vfMaskedInput, vsDatePicker/vfDatePicker, vsTimePicker/vfTimePicker, vfDateRangePicker.
 - Display: vsButton, vsButtonGroup, vsBadge, vsTag, vsAvatar, vsAlert, vsCard, vsDescriptions, vsStatCard, vsTimeline, vsEmptyState, vsSkeleton, vsSpinner, vsTooltip, vsListView/vfListView, vfCarousel.
 - Navigation: vsBreadcrumb, vsPagination/vfPagination, vsTabs/vfTabs, vsAccordion/vfAccordion, vsStepper/vfStepper, vsSplitButton/vfSplitButton.
-- Overlay: vfModal, vfDrawer, vfConfirm (`await vf.vfConfirm({ title }).open()` → boolean), vfToast (create one region, then `toast.show({ message, variant })`), vfDropdown, vfPopover. They add themselves to document.body, trap focus and return it on close.
+- Overlay: vfModal, vfDrawer, vfConfirm (`const c = vf.vfConfirm({ title }); const ok = await c.open(); c.destroy();` — or create one and reuse it), vfToast (create one region, then `toast.show({ message, variant })`), vfDropdown, vfPopover. They add themselves to document.body, trap focus and return it on close.
 - Data: vsTable, vsSparkline (core file); vfGrid (sorting, paging, selection, `mode: 'server'` with `total`, onSort, onPage), vsChart/vfChart (bar, line, area, pie, donut, sparkline; colors from `--vf-chart-*`) in vfunc-ui-data.js.
 - Adapters (vendor not bundled; load the vendor, then `dist/vfunc-<kind>-<vendor>.js`): vfGridAg (AG Grid), vfGridTabulator, vfChartChartjs, vfChartEcharts — the same props and methods as vfGrid / vfChart plus `lib` and `options`; `.instance` is the vendor object. Your own wrapper for another library: ai/en/prompt-integrate-third-party.md.
 - Text comes from message keys (`emptyState.title`, `confirm.ok`, …): override with props or `vf.i18n.add(locale, { … })`. No IE11 for the adapters; the core and data files have `.legacy.min.js` builds.
@@ -122,6 +122,7 @@ Optional components without classes. Load `vfunc.js` → `dist/vfunc-ui.js` (+ `
 
 - A component renders when created: create components that use vf.t after `vf.i18n.setup()` resolves.
 - Re-rendering right after `vf.i18n.set(...)` (the messages may still be loading): re-render in `vf.i18n.subscribe`.
+- Refreshing only the header on a locale change: in `vf.i18n.subscribe`, refresh every instance on the screen — the header and the current page.
 - A `data-vf-keep` element keeps its old attributes; update changing attributes in `onUpdate`.
 - Give per-item buttons and checkboxes an `id` so focus survives a refresh.
 - Raw values in a new page's CSS (`color: #888`, `padding: 14px`): use tokens; if one is missing, add it to the token file instead of writing the value.
@@ -133,6 +134,7 @@ Optional components without classes. Load `vfunc.js` → `dist/vfunc-ui.js` (+ `
 - The target of `vf.attach` and `vf.$` is found like any hook: `'#id'` or `'[data-ref="x"]'`, never a class (`vf.$('.topbar__user')` breaks when the design changes).
 - A list of `vf.html` items goes into the template as is (`${items}`); `.join('')` turns it into a plain string, and putting that in `innerHTML` is string-built markup. Re-render with `render` instead.
 - No color literal in JS, not even as a fallback when a token is missing (`value || '#1d4ed8'`): the token file is always loaded.
+- A `vf.vfConfirm` created on every click and never destroyed stays in memory: `destroy()` it after `open()` resolves, or create one and reuse it.
 
 ## Examples, starter and prompt kit
 

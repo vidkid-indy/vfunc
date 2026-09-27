@@ -8,26 +8,26 @@
 | Language | ko |
 | Kit version (run) | 1.0.0-rc.8 |
 | Graded | 2026-09-26 with vfunc.js 1.0.0-rc.8 in chromium, firefox, webkit |
-| Settings | Fourteen tasks with the Korean bundles (Korean kit: AGENTS ko, llms.ko.txt, ko prompts, Korean task texts; the layer 2 tasks add ai/ko/components.md and the layer 2 lib/ files). One new session per task, no follow-up messages, unedited answers. A session limit (HTTP 429) stopped the sessions of tasks 03, 05, 06, 07 and 08 after they had written their complete answers (each ends with REPORT.md and closes every code block); they were not run again. Manual scores are not filled in yet. |
+| Settings | Fourteen tasks with the Korean bundles (Korean kit: AGENTS ko, llms.ko.txt, ko prompts, Korean task texts; the layer 2 tasks add ai/ko/components.md and the layer 2 lib/ files). One new session per task, no follow-up messages, unedited answers. A session limit (HTTP 429) stopped the sessions of tasks 03, 05, 06, 07 and 08 after they had written their complete answers (each ends with REPORT.md and closes every code block); they were not run again. Manual scores (rubric of each task.json, 0-2 per item) by the maintainer's AI assistant, reviewed by the maintainer (2026-09-27). |
 
-**9 / 14 tasks passed · 101 / 109 checks passed**
+**9 / 14 tasks passed · 101 / 109 checks passed · manual review 93 / 108 points**
 
-| Task | Checks | Static errors | Follow-ups | Pass |
-|---|---|---|---|---|
-| 01-counter-greeting | 8 / 8 | 1 | 0 | **no** |
-| 02-todo | 9 / 9 | 0 | 0 | yes |
-| 03-dashboard-conversion | 9 / 10 | 2 | 0 | **no** |
-| 04-signup-form | 8 / 8 | 0 | 0 | yes |
-| 05-server-list | 8 / 8 | 0 | 0 | yes |
-| 06-spa-scaffold | 1 / 8 | 4 | 0 | **no** |
-| 07-react-port | 9 / 9 | 0 | 0 | yes |
-| 08-chartjs | 6 / 6 | 0 | 0 | yes |
-| 09-design-apply | 8 / 8 | 0 | 0 | yes |
-| 10-bug-fix | 9 / 9 | 2 | 0 | **no** |
-| 11-admin-dashboard | 7 / 7 | 0 | 0 | yes |
-| 12-profile-form | 6 / 6 | 0 | 0 | yes |
-| 13-delete-confirm | 7 / 7 | 0 | 0 | yes |
-| 14-leaflet-places | 6 / 6 | 1 | 0 | **no** |
+| Task | Checks | Static errors | Follow-ups | Manual | Pass |
+|---|---|---|---|---|---|
+| 01-counter-greeting | 8 / 8 | 1 | 0 | 4 / 6 | **no** |
+| 02-todo | 9 / 9 | 0 | 0 | 8 / 8 | yes |
+| 03-dashboard-conversion | 9 / 10 | 2 | 0 | 5 / 8 | **no** |
+| 04-signup-form | 8 / 8 | 0 | 0 | 8 / 8 | yes |
+| 05-server-list | 8 / 8 | 0 | 0 | 8 / 8 | yes |
+| 06-spa-scaffold | 1 / 8 | 4 | 0 | 5 / 8 | **no** |
+| 07-react-port | 9 / 9 | 0 | 0 | 4 / 6 | yes |
+| 08-chartjs | 6 / 6 | 0 | 0 | 7 / 8 | yes |
+| 09-design-apply | 8 / 8 | 0 | 0 | 8 / 8 | yes |
+| 10-bug-fix | 9 / 9 | 2 | 0 | 7 / 8 | **no** |
+| 11-admin-dashboard | 7 / 7 | 0 | 0 | 8 / 8 | yes |
+| 12-profile-form | 6 / 6 | 0 | 0 | 7 / 8 | yes |
+| 13-delete-confirm | 7 / 7 | 0 | 0 | 7 / 8 | yes |
+| 14-leaflet-places | 6 / 6 | 1 | 0 | 7 / 8 | **no** |
 
 ## 01-counter-greeting — Counter and greeting
 
@@ -42,7 +42,10 @@ Static findings:
 
 Manual review:
 
-- notes: All behaviour checks pass; the new style.css uses raw colors instead of tokens.
+- spec: 2
+- idiom: 1
+- report: 1
+- notes: All behaviour checks pass; the new style.css uses raw colors instead of tokens. Manual review: The input uses addEventListener (not a delegate); the report says tokens only, but style.css has raw sizes and fallback colors.
 
 
 ## 02-todo — To-do list
@@ -50,6 +53,13 @@ Manual review:
 Answer: `answers/02.md` · files: `app.js`
 
 All checks passed.
+
+Manual review:
+
+- spec: 2
+- minimal: 2
+- idiom: 2
+- report: 2
 
 
 ## 03-dashboard-conversion — Convert a published dashboard
@@ -67,7 +77,11 @@ Static findings:
 
 Manual review:
 
-- notes: One console error (an empty interpolated tag name in vf.html); vf.attach targets found by class (vf.$('.topbar__user')); markup built by concatenation.
+- html-kept: 2
+- smallest-tool: 1
+- area-table: 2
+- report: 0
+- notes: One console error (an empty interpolated tag name in vf.html); vf.attach targets found by class (vf.$('.topbar__user')); markup built by concatenation. Manual review: An extra vf.store duplicates the tab state and #summary uses vf.html as a string call (left with a comment saying it is wrong); the checklist claims no publisher class selectors and every value in vf.html, both false.
 
 
 ## 04-signup-form — Sign-up form validation
@@ -76,12 +90,26 @@ Answer: `answers/04.md` · files: `index.html`, `app.js`, `style.css`
 
 All checks passed.
 
+Manual review:
+
+- spec: 2
+- adopt: 2
+- privacy: 2
+- report: 2
+
 
 ## 05-server-list — Server list: loading, error, empty and untrusted data
 
 Answer: `answers/05.md` · files: `app.js`, `style.css`
 
 All checks passed.
+
+Manual review:
+
+- spec: 2
+- structure: 2
+- untrusted: 2
+- report: 2
 
 
 ## 06-spa-scaffold — SPA scaffold: router, store, two languages
@@ -107,7 +135,11 @@ Static findings:
 
 Manual review:
 
-- notes: onMount reads a variable declared later (ReferenceError), so no page renders; raw colors in the new CSS files.
+- structure: 2
+- lifecycle: 1
+- messages: 1
+- report: 1
+- notes: onMount reads a variable declared later (ReferenceError), so no page renders; raw colors in the new CSS files. Manual review: Unsubscribe variables declared after the attach (TDZ); a hard-coded "region" label and servers.title reused as a label; the checklist says tokens only while every value has a raw fallback. The Korean kit lists no token names.
 
 
 ## 07-react-port — Port a React component
@@ -116,6 +148,13 @@ Answer: `answers/07.md` · files: `index.html`, `app.js`, `styles/product-filter
 
 All checks passed.
 
+Manual review:
+
+- mapping: 1
+- design: 1
+- report: 2
+- notes: Manual review: Cleanup by assigning inst.onDestroy (a property on the instance); a token that does not exist (--vf-color-danger-bg). The Korean kit lists no token names.
+
 
 ## 08-chartjs — Chart.js inside a component
 
@@ -123,12 +162,27 @@ Answer: `answers/08.md` · files: `app.js`, `style.css`
 
 All checks passed.
 
+Manual review:
+
+- lifecycle: 2
+- ownership: 2
+- tokens: 2
+- report: 1
+- notes: Manual review: The report gives a wrong reason for calling vf.html with an array.
+
 
 ## 09-design-apply — Apply a DESIGN.md without touching JS
 
 Answer: `answers/09.md` · files: `styles/tokens.css`, `styles/app.css`, `design/STATUS.md`
 
 All checks passed.
+
+Manual review:
+
+- token-table: 2
+- violations: 2
+- status: 2
+- report: 2
 
 
 ## 10-bug-fix — Fix seven bugs
@@ -144,7 +198,11 @@ Static findings:
 
 Manual review:
 
-- notes: All seven bugs fixed; the comment list is vf.html items joined into innerHTML, and a timer is kept as inst._timer.
+- causes: 2
+- minimal: 2
+- verify: 1
+- report: 2
+- notes: All seven bugs fixed; the comment list is vf.html items joined into innerHTML, and a timer is kept as inst._timer. Manual review: Lists the expected behaviour, but no way to verify each fix.
 
 
 ## 11-admin-dashboard — Admin dashboard with layer 2
@@ -153,6 +211,13 @@ Answer: `answers/11.md` · files: `app.js`
 
 All checks passed.
 
+Manual review:
+
+- spec: 2
+- components: 2
+- no-rebuild: 2
+- report: 2
+
 
 ## 12-profile-form — Profile form with vs* fields
 
@@ -160,12 +225,28 @@ Answer: `answers/12.md` · files: `app.js`
 
 All checks passed.
 
+Manual review:
+
+- spec: 2
+- fields: 1
+- values: 2
+- report: 2
+- notes: Manual review: The required prop is left out on purpose (reason given).
+
 
 ## 13-delete-confirm — Delete with a confirmation
 
 Answer: `answers/13.md` · files: `app.js`
 
 All checks passed.
+
+Manual review:
+
+- spec: 2
+- overlays: 2
+- cleanup: 1
+- report: 2
+- notes: Manual review: A new vfConfirm on every click, never destroyed.
 
 
 ## 14-leaflet-places — Leaflet as an app wrapper (L1)
@@ -180,4 +261,8 @@ Static findings:
 
 Manual review:
 
-- notes: All behaviour checks pass; the page is attached through a class selector (document.querySelector('.page')).
+- lifecycle: 2
+- namespace: 2
+- xss-tokens: 2
+- report: 1
+- notes: All behaviour checks pass; the page is attached through a class selector (document.querySelector('.page')). Manual review: The page is attached through a class (.page) while the report says every kit rule was followed.

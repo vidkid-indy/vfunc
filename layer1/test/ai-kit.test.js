@@ -70,6 +70,19 @@ test('the DESIGN.md template tokens block matches vfunc.tokens.css', () => {
   for (const name of Object.keys(data.dark)) assert.equal(data.dark[name], darkCss[name], 'dark ' + name);
 });
 
+test('llms.txt and llms.ko.txt carry the same code, API names and token names', () => {
+  const en = read(join(AI, 'llms.txt'));
+  const ko = read(join(AI, 'llms.ko.txt'));
+  // Code blocks are the same apart from their // comments (the Korean file translates those).
+  const code = (text) => (text.match(/^```js\n[\s\S]*?^```$/gm) || [])
+    .map((block) => block.split('\n').map((line) => line.replace(/\s*\/\/.*$/, '').trimEnd()).join('\n'));
+  const names = (text, pattern) => Array.from(new Set(text.match(pattern) || [])).sort();
+  assert.equal((ko.match(/^## /gm) || []).length, (en.match(/^## /gm) || []).length, 'sections');
+  assert.deepEqual(code(ko), code(en), 'code blocks');
+  assert.deepEqual(names(ko, /--vf-[a-z0-9-]+/g), names(en, /--vf-[a-z0-9-]+/g), 'token names');
+  assert.deepEqual(names(ko, /\bvf\.[A-Za-z_$][\w$]*/g), names(en, /\bvf\.[A-Za-z_$][\w$]*/g), 'vf.* names');
+});
+
 test('llms-full.txt is generated from its sources and up to date', () => {
   const current = read(join(AI, 'llms-full.txt'));
   assert.equal(current, generateLlmsFull(), 'run npm run build');

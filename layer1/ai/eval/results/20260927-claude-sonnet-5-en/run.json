@@ -1,0 +1,25 @@
+{
+  "model": "Claude Sonnet 5",
+  "modelVersion": "claude-sonnet-5",
+  "service": "Claude Code subagent (reads the bundle, writes the answer; no other tools)",
+  "date": "2026-09-27",
+  "lang": "en",
+  "kit": "1.0.0",
+  "settings": "Fourteen tasks with the 1.0.0 kit: a regression run after the kit additions of stage 2 Phase 6 (llms.txt common mistakes: never mount an attach instance, attach and vf.$ targets by hooks, no joined vf.html into innerHTML, no fallback colors in JS). One new session per task, no follow-up messages, unedited answers. Manual scores (rubric of each task.json, 0-2 per item) by the maintainer's AI assistant, reviewed by the maintainer (2026-09-27).",
+  "tasks": {
+    "01": { "followUps": 0, "manual": { "spec": 2, "idiom": 2, "report": 1 }, "notes": "Manual review: The checklist says px only for borders, but style.css has max-width: 480px." },
+    "02": { "followUps": 0, "manual": { "spec": 2, "minimal": 2, "idiom": 2, "report": 2 } },
+    "03": { "followUps": 0, "manual": { "html-kept": 2, "smallest-tool": 2, "area-table": 2, "report": 2 } },
+    "04": { "followUps": 0, "manual": { "spec": 2, "adopt": 1, "privacy": 2, "report": 2 }, "notes": "Manual review: The terms row markup was changed (field--check removed, a new wrapper), reported with the reason." },
+    "05": { "followUps": 0, "manual": { "spec": 2, "structure": 2, "untrusted": 2, "report": 2 } },
+    "06": { "followUps": 0, "manual": { "structure": 2, "lifecycle": 2, "messages": 1, "report": 2 }, "notes": "Manual review: After a locale switch only the header refreshes, so the page keeps English texts." },
+    "07": { "followUps": 0, "manual": { "mapping": 2, "design": 1, "report": 1 }, "notes": "Manual review: Sold out is styled through a modifier class; the report has no mapping table." },
+    "08": { "followUps": 0, "manual": { "lifecycle": 2, "ownership": 2, "tokens": 2, "report": 2 } },
+    "09": { "followUps": 0, "manual": { "token-table": 2, "violations": 2, "status": 2, "report": 2 } },
+    "10": { "followUps": 0, "manual": { "causes": 2, "minimal": 1, "verify": 1, "report": 2 }, "notes": "Manual review: Moved #notice in index.html (not needed); no way to verify each fix." },
+    "11": { "followUps": 0, "manual": { "spec": 2, "components": 2, "no-rebuild": 2, "report": 2 } },
+    "12": { "followUps": 0, "manual": { "spec": 2, "fields": 1, "values": 2, "report": 2 }, "notes": "Manual review: No required prop on the required fields." },
+    "13": { "followUps": 0, "manual": { "spec": 2, "overlays": 2, "cleanup": 2, "report": 2 } },
+    "14": { "followUps": 0, "manual": { "lifecycle": 2, "namespace": 2, "xss-tokens": 2, "report": 2 } }
+  }
+}

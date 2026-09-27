@@ -1,0 +1,25 @@
+{
+  "model": "Claude Sonnet 5",
+  "modelVersion": "claude-sonnet-5",
+  "service": "Claude Code subagent (reads the bundle, writes the answer; no other tools)",
+  "date": "2026-09-27",
+  "lang": "ko",
+  "kit": "1.0.0",
+  "settings": "Fourteen tasks with the Korean bundles and the 1.0.0 kit (Korean kit: AGENTS ko, llms.ko.txt, ko prompts, Korean task texts; the layer 2 tasks add ai/ko/components.md and the layer 2 lib/ files): a regression run after the kit additions of stage 2 Phase 6. One new session per task, no follow-up messages, unedited answers. A session limit (HTTP 429) stopped the sessions of tasks 03 to 07. The answers of 04, 05, 06 and 07 were complete (each ends with REPORT.md and closes every code block) and were kept; the answer of 03 had no REPORT.md, so task 03 was run again in a new session and only that answer is used. Manual scores (rubric of each task.json, 0-2 per item) by the maintainer's AI assistant, reviewed by the maintainer (2026-09-27).",
+  "tasks": {
+    "01": { "followUps": 0, "manual": { "spec": 2, "idiom": 1, "report": 1 }, "notes": "Manual review: The greeting skips state (textContent); style.css has raw values (system-ui, bold, 1.5rem) while the checklist says tokens only. The Korean kit lists no token names." },
+    "02": { "followUps": 0, "manual": { "spec": 2, "minimal": 2, "idiom": 2, "report": 2 } },
+    "03": { "followUps": 0, "manual": { "html-kept": 2, "smallest-tool": 2, "area-table": 2, "report": 2 }, "notes": "Second session: the first one stopped at a session limit (HTTP 429) before writing REPORT.md." },
+    "04": { "followUps": 0, "manual": { "spec": 2, "adopt": 2, "privacy": 2, "report": 2 } },
+    "05": { "followUps": 0, "manual": { "spec": 2, "structure": 2, "untrusted": 2, "report": 2 } },
+    "06": { "followUps": 0, "manual": { "structure": 2, "lifecycle": 1, "messages": 1, "report": 2 }, "notes": "Manual review: Guesses an undocumented ctx.route in the router onChange (marked VERIFY); nav.servers reused as the region label; guessed token names. The Korean kit has no router or i18n code example." },
+    "07": { "followUps": 0, "manual": { "mapping": 2, "design": 1, "report": 1 }, "notes": "Manual review: Raw fallback values on every token, a token that does not exist; Intl instead of vf.fmt.currency (the Korean kit shows no arguments); no mapping table." },
+    "08": { "followUps": 0, "manual": { "lifecycle": 2, "ownership": 2, "tokens": 2, "report": 2 } },
+    "09": { "followUps": 0, "manual": { "token-table": 2, "violations": 2, "status": 2, "report": 2 } },
+    "10": { "followUps": 0, "manual": { "causes": 2, "minimal": 2, "verify": 1, "report": 1 }, "notes": "Manual review: Keeps inst._timer and builds the comment list as a string for innerHTML with vf.esc; no way to verify each fix; the report says no rule was broken for the timer." },
+    "11": { "followUps": 0, "manual": { "spec": 2, "components": 2, "no-rebuild": 2, "report": 2 } },
+    "12": { "followUps": 0, "manual": { "spec": 2, "fields": 2, "values": 2, "report": 2 } },
+    "13": { "followUps": 0, "manual": { "spec": 0, "overlays": 2, "cleanup": 1, "report": 2 }, "notes": "Manual review: A syntax error (an extra parenthesis in render) leaves the list empty; a new vfConfirm on every click, never destroyed." },
+    "14": { "followUps": 0, "manual": { "lifecycle": 2, "namespace": 2, "xss-tokens": 2, "report": 1 }, "notes": "Manual review: No license verdict in the report." }
+  }
+}

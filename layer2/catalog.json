@@ -767,7 +767,7 @@
         "en": "A yes/no alertdialog; open() returns a Promise of the answer; danger starts on cancel.",
         "ko": "예/아니요 alertdialog. open()이 답의 Promise를 돌려주고, danger면 취소 버튼에서 시작."
       },
-      "example": "if (await vf.vfConfirm({ title: 'Delete 3 items?', variant: 'danger', confirmLabel: 'Delete' }).open()) remove();"
+      "example": "const c = vf.vfConfirm({ title: 'Delete 3 items?', variant: 'danger', confirmLabel: 'Delete' }); const ok = await c.open(); c.destroy(); if (ok) remove();"
     },
     {
       "id": "toast",

@@ -12,18 +12,18 @@
 
 **6 / 10 tasks passed · 71 / 83 checks passed**
 
-| Task | Checks | Static errors | Follow-ups | Pass |
-|---|---|---|---|---|
-| 01-counter-greeting | 8 / 8 | 1 | 0 | **no** |
-| 02-todo | 9 / 9 | 0 | 0 | yes |
-| 03-dashboard-conversion | 6 / 10 | 0 | 0 | **no** |
-| 04-signup-form | 7 / 8 | 0 | 0 | **no** |
-| 05-server-list | 8 / 8 | 0 | 0 | yes |
-| 06-spa-scaffold | 1 / 8 | 0 | 0 | **no** |
-| 07-react-port | 9 / 9 | 0 | 0 | yes |
-| 08-chartjs | 6 / 6 | 0 | 0 | yes |
-| 09-design-apply | 8 / 8 | 0 | 0 | yes |
-| 10-bug-fix | 9 / 9 | 0 | 0 | yes |
+| Task | Checks | Static errors | Follow-ups | Manual | Pass |
+|---|---|---|---|---|---|
+| 01-counter-greeting | 8 / 8 | 1 | 0 | — | **no** |
+| 02-todo | 9 / 9 | 0 | 0 | — | yes |
+| 03-dashboard-conversion | 6 / 10 | 0 | 0 | — | **no** |
+| 04-signup-form | 7 / 8 | 0 | 0 | — | **no** |
+| 05-server-list | 8 / 8 | 0 | 0 | — | yes |
+| 06-spa-scaffold | 1 / 8 | 0 | 0 | — | **no** |
+| 07-react-port | 9 / 9 | 0 | 0 | — | yes |
+| 08-chartjs | 6 / 6 | 0 | 0 | — | yes |
+| 09-design-apply | 8 / 8 | 0 | 0 | — | yes |
+| 10-bug-fix | 9 / 9 | 0 | 0 | — | yes |
 
 ## 01-counter-greeting — Counter and greeting
 

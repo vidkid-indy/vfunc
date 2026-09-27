@@ -15,6 +15,7 @@ import { createHash } from 'node:crypto';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { markdown, esc } from './markdown.mjs';
+import { manualTotal } from '../layer1/ai/eval/tools/report.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = join(ROOT, 'site');
@@ -120,16 +121,18 @@ function evalBlock(lang) {
   const runs = existsSync(dir) ? readdirSync(dir).filter((name) => existsSync(join(dir, name, 'results.json'))).sort().reverse() : [];
   if (!runs.length) return '<p class="muted">' + (lang === 'ko' ? '아직 공개한 결과가 없습니다.' : 'No results published yet.') + '</p>';
   const head = lang === 'ko'
-    ? ['모델', '실행 방식', '날짜', '킷 버전', '언어', '통과한 과제', '통과한 검사', '추가 질문', '']
-    : ['Model', 'How it ran', 'Date', 'Kit version', 'Language', 'Tasks passed', 'Checks passed', 'Follow-ups', ''];
+    ? ['모델', '실행 방식', '날짜', '킷 버전', '언어', '통과한 과제', '통과한 검사', '수동 점수', '추가 질문', '']
+    : ['Model', 'How it ran', 'Date', 'Kit version', 'Language', 'Tasks passed', 'Checks passed', 'Manual score', 'Follow-ups', ''];
   const rows = runs.map((name) => {
     const results = json('layer1/ai/eval/results/' + name + '/results.json');
     const run = json('layer1/ai/eval/results/' + name + '/run.json');
     const followUps = Object.keys(run.tasks || {}).reduce((n, k) => n + (run.tasks[k].followUps || 0), 0);
+    const manual = manualTotal(run);
     const s = results.summary;
     return '<tr><td>' + esc(run.model + (run.modelVersion ? ' (' + run.modelVersion + ')' : '')) + '</td><td>' + esc(run.service) +
       '</td><td>' + esc(run.date) + '</td><td>' + esc(run.kit) + '</td><td>' + esc(run.lang) + '</td><td>' + s.tasksPassed + ' / ' + s.tasks +
-      '</td><td>' + s.checksPassed + ' / ' + s.checks + '</td><td>' + followUps + '</td><td><a href="https://github.com/vidkid-indy/vfunc/blob/main/layer1/ai/eval/results/' +
+      '</td><td>' + s.checksPassed + ' / ' + s.checks + '</td><td>' + (manual ? manual.points + ' / ' + manual.max : '—') +
+      '</td><td>' + followUps + '</td><td><a href="https://github.com/vidkid-indy/vfunc/blob/main/layer1/ai/eval/results/' +
       esc(name) + '/results.md" rel="noopener">' + (lang === 'ko' ? '자세히' : 'details') + '</a></td></tr>';
   });
   return '<div class="table"><table><thead><tr>' + head.map((h) => '<th>' + h + '</th>').join('') + '</tr></thead><tbody>' +

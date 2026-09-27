@@ -36,7 +36,7 @@ Layer 2 tasks have `"layer": 2` in `task.json`: their bundle adds `components.md
 4. If the model asks a question instead of answering, reply exactly `Proceed with your best assumptions and list them.` (Korean bundle: `가장 타당한 가정으로 진행하고 가정을 적어 주세요.`) and count it as a follow-up. Send nothing else.
 5. Save the model's whole reply, unedited, as `results/<yyyymmdd>-<model>-<lang>/answers/<NN>.md` (for example `answers/03.md`). If the reply is cut off, ask `Continue.` once, append the rest, and note it.
 6. Write `run.json` in the same folder (below), then grade: `node layer1/ai/eval/tools/grade.mjs layer1/ai/eval/results/<run>`. Add `--engines chromium` for a quick look; a published result uses all three. Task 08 needs network access (Chart.js from the CDN).
-7. Read `results.md` and the answers' `REPORT.md`, fill in the manual scores (the `rubric` of each `task.json`, 0–2 points each) and notes in `run.json`, then run `grade.mjs <run folder> --report` to rewrite `results.md` without grading again.
+7. Read `results.md` and the answers' `REPORT.md`, fill in the manual scores (the `rubric` of each `task.json`, 0–2 points each) and notes in `run.json`, then run `grade.mjs <run folder> --report` to rewrite `results.md` without grading again. `results.md` and the site's results table then show the manual points of each task and of the run.
 
 Grading all fourteen tasks in three engines takes about 5 minutes for good answers and up to 15 minutes when many checks fail (a failing check waits for its time limit).
 
