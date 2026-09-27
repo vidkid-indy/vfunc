@@ -75,6 +75,26 @@ off();         // remove one shortcut; keys.destroy() removes all
 
 The newest shortcut of a combo wins, so a dialog can take `escape` while it is open and give it back with `off()`. The plugin draws no UI.
 
+## Official plugin — `vf.ext.list`
+
+A keyed list. A component's `render` redraws its whole inside, which is slow for long lists where a few rows change often (update, swap, remove). This plugin keeps one element per item, draws only the rows that changed and only moves rows when the order changes. The numbers are in the [FAQ](faq.md#how-slow-are-large-lists).
+
+```js
+import vfList from 'vfunc/plugins/list';   // <script>: dist/plugins/list.min.js → global vfList
+const list = vf.use(vfList);
+const rows = list.create('#tbody', {       // the direct parent of the rows (tbody, ul, div …); nothing else in it
+  key: (item) => item.id,
+  render: (item) => vf.html`<tr><td>${item.name}</td><td><button type="button" data-action="remove">Remove</button></td></tr>`
+});
+rows.set(items);                            // same key and same object: kept; a new object: only that row is drawn
+rows.set(rows.items().filter((x) => x.id !== id));   // remove: only that row goes
+```
+
+- Make a new object when an item changes. If you changed one in place, call `rows.refresh(key)`.
+- Each row carries `data-vf-key`; a delegated handler finds the item with `e.target.closest('[data-vf-key]')`.
+- Inside a component, mark the container with `data-vf-keep` so the component's render leaves the rows alone, create the list in `onMount` and call `rows.destroy()` in `onDestroy`. A `vf.attach` target without render works too.
+- `render` returns one element built with `vf.html`. A plain string is escaped as text and does not become a row.
+
 ## IE11 / Edge IE mode
 
 One engine, several files. `vfunc.legacy.min.js` is transpiled to ES5 with a single Promise polyfill (about 10 KB gzip).

@@ -10,10 +10,11 @@ FAQ가 말로 적은 한계(렌더가 요소 안쪽을 통째로 교체, keyed d
 |---|---|
 | `pages/naive/` | One component draws the toolbar and the table from one state; every operation, even selecting a row, redraws everything. / 컴포넌트 하나가 도구 막대와 표를 모두 그리고, 행 선택까지 모든 조작이 전체를 다시 그림 |
 | `pages/recommended/` | What the kit teaches: the toolbar is adopted with `vf.attach` and no render, `render` sits on the `<tbody>` only, and selecting a row changes two `data-state` attributes without a render. / 킷의 안내대로: 도구 막대는 render 없이 `vf.attach`, `render`는 `<tbody>`에만, 행 선택은 render 없이 `data-state` 속성 두 개만 바꿈 |
+| `pages/keyed/` | The recommended page with the official list plugin `vfList` (1.1.0): one element per row; only new or changed rows are drawn, rows are moved on a new order, and selecting draws the two rows again. / 권장형 + 공식 list 플러그인(`vfList`): 행마다 요소 하나, 새 행과 바뀐 행만 그리고 순서가 바뀌면 옮기며, 선택은 두 행만 다시 그림 |
 | `pages/vanilla/` | Hand-written DOM operations that touch only the changed rows (the baseline). / 바뀐 행만 건드리는 손으로 쓴 DOM 조작(기준선) |
 
-The three pages share the markup, `bench.css` (tokens only), the data generator `data.js` (same seed) and a strict CSP. The vfunc pages load `dist/vfunc.min.js`.
-세 페이지는 같은 마크업, `bench.css`(토큰만), 같은 시드의 `data.js`, 엄격한 CSP를 씁니다. vfunc 페이지는 `dist/vfunc.min.js`를 불러옵니다.
+The pages share the markup, `bench.css` (tokens only), the data generator `data.js` (same seed) and a strict CSP. The vfunc pages load `dist/vfunc.min.js` (and `dist/plugins/list.min.js`). Results made before 1.1.0 have three variants (no `keyed`).
+페이지들은 같은 마크업, `bench.css`(토큰만), 같은 시드의 `data.js`, 엄격한 CSP를 씁니다. vfunc 페이지는 `dist/vfunc.min.js`(와 `dist/plugins/list.min.js`)를 불러옵니다. 1.1.0 전의 결과에는 `keyed`가 없습니다.
 
 ## Run / 실행
 

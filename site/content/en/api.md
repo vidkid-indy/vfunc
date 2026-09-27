@@ -110,3 +110,5 @@ The build version (for example `@VERSION@`); `0.0.0-dev` when the source is impo
 `vfunc/plugins/update` (`dist/plugins/update.min.js` → global `vfUpdate`): `vf.use(vfUpdate, { url, current, policy, interval, minGap, onAvailable, onError })` → `check(force)`, `status()`, `navigated()`, `apply()`, `stop()`. See [Extensions](extend.md#official-plugin-vfextupdate).
 
 `vfunc/plugins/shortcut` (`dist/plugins/shortcut.min.js` → global `vfShortcut`): `vf.use(vfShortcut, { target, apple })` → `add(combo, handler, { label, allowInInput, preventDefault })` (returns a remover), `remove(combo, handler?)`, `list()`, `parse(combo)`, `destroy()`. See [Extensions](extend.md#official-plugin-vfextshortcut).
+
+`vfunc/plugins/list` (`dist/plugins/list.min.js` → global `vfList`, since 1.1.0): `vf.use(vfList)` → `create(container, { key, render, items })` → `set(items)`, `refresh(key?)`, `items()`, `element(key)`, `destroy()`. `null` when the container is not found. See [Extensions](extend.md#official-plugin-vfextlist).

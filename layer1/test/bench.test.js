@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ENGINES, FOLDER_NAME, OPS, VARIANTS, cpuSlug, renderMarkdown, stats, summaryRows } from '../bench/report.mjs';
+import { ENGINES, FOLDER_NAME, OPS, VARIANTS, cpuSlug, renderMarkdown, stats, summaryRows, variantsOf } from '../bench/report.mjs';
 
 const BENCH = fileURLToPath(new URL('../bench/', import.meta.url));
 
@@ -48,7 +48,8 @@ test('summary rows: every operation, startup, memory and size, with ratios to va
   assert.deepEqual(rows[0], ['create rows', '40.0 (4.0×)', '20.0 (2.0×)', '10.0']);
   assert.deepEqual(rows[rows.length - 1], ['script size (gzip)', '4.00 KB', '4.00 KB', '1.00 KB']);
   assert.equal(summaryRows(sample(), 'chromium', 'ko')[0][0], '행 만들기');
-  for (const row of rows) assert.equal(row.length, VARIANTS.length + 1);
+  for (const row of rows) assert.equal(row.length, variantsOf(sample()).length + 1);
+  assert.deepEqual(variantsOf(sample()).map((v) => v.key), ['naive', 'recommended', 'vanilla'], 'a result without the keyed variant keeps three columns');
 });
 
 test('results.md names the environment, every operation and every engine that ran', () => {
@@ -68,7 +69,7 @@ test('committed results are complete and results.md is up to date', () => {
     assert.equal(results.format, 1, name);
     for (const engine of Object.keys(results.engines)) {
       assert.ok(ENGINES.includes(engine), name + ' ' + engine);
-      for (const op of OPS) for (const v of VARIANTS) assert.equal(typeof results.engines[engine].ops[op.key][v.key].median, 'number', name + ' ' + engine + ' ' + op.key + ' ' + v.key);
+      for (const op of OPS) for (const v of variantsOf(results)) assert.equal(typeof results.engines[engine].ops[op.key][v.key].median, 'number', name + ' ' + engine + ' ' + op.key + ' ' + v.key);
     }
     assert.equal(readFileSync(join(dir, name, 'results.md'), 'utf8'), renderMarkdown(results), name + ': run `node layer1/bench/run.mjs` again or regenerate results.md');
   }

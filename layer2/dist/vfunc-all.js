@@ -1,10 +1,10 @@
-/*! vfunc-ui (vfunc.js layer 2) v1.0.1 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
+/*! vfunc-ui (vfunc.js layer 2) v1.1.0 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
 (() => {
   var __defProp = Object.defineProperty;
   var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
   // layer1/src/vfunc.js
-  var VERSION = false ? "0.0.0-dev" : "1.0.1";
+  var VERSION = false ? "0.0.0-dev" : "1.1.0";
   var DEV = false ? true : true;
   var hasOwn = Object.prototype.hasOwnProperty;
   function ownValue(obj, key) {
@@ -96,7 +96,9 @@
   __name(unsafe, "unsafe");
   function esc(value) {
     if (value == null) return "";
-    return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    const text = String(value);
+    if (!/[&<>"']/.test(text)) return text;
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
   __name(esc, "esc");
   function nl2br(value) {
@@ -113,8 +115,9 @@
     return text.trim();
   }
   __name(safeUrl, "safeUrl");
-  function SafeHtml(value) {
+  function SafeHtml(value, text) {
     this.value = value;
+    if (text) this._text = true;
   }
   __name(SafeHtml, "SafeHtml");
   SafeHtml.prototype.toString = function() {
@@ -334,7 +337,55 @@
     return "";
   }
   __name(tagNameValue, "tagNameValue");
+  var contextCache = typeof WeakMap === "function" ? /* @__PURE__ */ new WeakMap() : null;
+  function templateContexts(strings) {
+    let entry = contextCache.get(strings);
+    if (entry !== void 0) return entry;
+    const scanner = new MarkupScanner();
+    const contexts = [];
+    entry = contexts;
+    scanner.feed(strings[0]);
+    for (let i = 1; i < strings.length; i++) {
+      const state = scanner.state;
+      const ctx = scanner.context();
+      if (state !== "text" && state !== "value" || state === "value" && hasOwn.call(URL_ATTRS, ctx.name) && i > 1 && contexts[i - 2].kind === "attr" && strings[i - 1].indexOf(scanner.quote) < 0) {
+        entry = false;
+        break;
+      }
+      contexts.push(ctx);
+      scanner.feed(strings[i]);
+    }
+    if (entry) entry.text = scanner.state === "text";
+    contextCache.set(strings, entry);
+    return entry;
+  }
+  __name(templateContexts, "templateContexts");
+  function endsInText(value) {
+    if (value == null || typeof value !== "object") return typeof value !== "function";
+    if (value instanceof SafeHtml) return value._text === true;
+    if (!Array.isArray(value)) return false;
+    for (let i = 0; i < value.length; i++) if (!endsInText(value[i])) return false;
+    return true;
+  }
+  __name(endsInText, "endsInText");
   function html(strings) {
+    const n = strings.length;
+    if (contextCache && strings.raw) {
+      let primitive = true;
+      for (let i = 1; i < n && primitive; i++) {
+        const type = typeof arguments[i];
+        primitive = arguments[i] == null || type === "string" || type === "number" || type === "boolean";
+      }
+      const contexts = primitive && templateContexts(strings);
+      if (contexts) {
+        let fast = strings[0];
+        for (let i = 1; i < n; i++) {
+          const ctx = contexts[i - 1];
+          fast += (ctx.kind === "text" ? textValue(arguments[i]) : attrValue(ctx, arguments[i])) + strings[i];
+        }
+        return new SafeHtml(fast, contexts.text);
+      }
+    }
     const scanner = new MarkupScanner();
     let out = strings[0];
     scanner.feed(strings[0]);
@@ -350,11 +401,11 @@
         unsafe(DEV && (ctx.kind === "unquoted" ? 'vf.html: quote the value of attribute "' + ctx.name + '" (unquoted interpolation is not allowed).' : "vf.html: interpolation inside <" + ctx.kind + "> is not allowed."));
         piece = "";
       }
-      scanner.feed(piece);
+      if (!(scanner.state === "text" && endsInText(value))) scanner.feed(piece);
       scanner.feed(strings[i]);
       out += piece + strings[i];
     }
-    return new SafeHtml(out);
+    return new SafeHtml(out, scanner.state === "text");
   }
   __name(html, "html");
   function tpl(template, data) {
@@ -757,7 +808,7 @@
       rootReplaced = true;
     } else {
       const root2 = this.$node;
-      while (root2.firstChild) root2.removeChild(root2.firstChild);
+      root2.textContent = "";
       while (holder.firstChild) root2.appendChild(holder.firstChild);
     }
     const keepRoot = rootReplaced ? null : this.$node;

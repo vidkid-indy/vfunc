@@ -5,6 +5,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-27
+
+### Added
+- Official plugin `vf.ext.list` (`dist/plugins/list.min.js` → global `vfList`, `vfunc/plugins/list` for ES modules): a keyed list for long lists where a few rows change often. `create(container, { key, render, items })` → `set(items)` keeps the element of every unchanged item, draws only new or changed items, moves rows to a new order and removes missing ones; `refresh(key?)`, `items()`, `element(key)`, `destroy()`. Rows carry `data-vf-key`. Works in IE11. In the benchmark, updating, swapping, removing and appending rows stay within 1.5 times hand-written DOM code in Chromium, Firefox and WebKit (drawn with render: up to 37 times).
+- Performance benchmark (repository only, `layer1/bench`): the operations of js-framework-benchmark for vfunc (naive, recommended, with vfList) and hand-written DOM code in Chromium, Firefox and WebKit; the latest table is on the website FAQ.
+
+### Changed
+- `vf.html` builds large lists much faster (1000 rows: about 28 ms → 1.4 ms in Chromium on a 2016 laptop) with the same output: it remembers the context of every interpolation of a template literal and reuses it when all values are primitives (strings, numbers, booleans, null), and it no longer scans again markup made by `vf.html` that ends in element text, such as a list of rows. Anything else still takes the full scan; tests compare both paths with hostile values.
+- `vf.esc` returns text with nothing to escape as it is, and a render empties its element in one step.
+- The legacy build may reference `WeakMap` (IE11 has it); `vf.html` uses it only when it exists.
+
 ## [1.0.1] - 2026-09-27
 
 Documentation and AI kit only; the engine and the components are unchanged.

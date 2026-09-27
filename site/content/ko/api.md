@@ -110,3 +110,5 @@
 `vfunc/plugins/update`(`dist/plugins/update.min.js` → 전역 `vfUpdate`): `vf.use(vfUpdate, { url, current, policy, interval, minGap, onAvailable, onError })` → `check(force)`, `status()`, `navigated()`, `apply()`, `stop()`. [확장](extend.md#공식-플러그인-vfextupdate)을 보세요.
 
 `vfunc/plugins/shortcut`(`dist/plugins/shortcut.min.js` → 전역 `vfShortcut`): `vf.use(vfShortcut, { target, apple })` → `add(combo, handler, { label, allowInInput, preventDefault })`(해제 함수를 돌려줌), `remove(combo, handler?)`, `list()`, `parse(combo)`, `destroy()`. [확장](extend.md#공식-플러그인-vfextshortcut)을 보세요.
+
+`vfunc/plugins/list`(`dist/plugins/list.min.js` → 전역 `vfList`, 1.1.0부터): `vf.use(vfList)` → `create(container, { key, render, items })` → `set(items)`, `refresh(key?)`, `items()`, `element(key)`, `destroy()`. 컨테이너를 찾지 못하면 `null`. [확장](extend.md#공식-플러그인-vfextlist)을 보세요.

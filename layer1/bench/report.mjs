@@ -18,8 +18,14 @@ export const OPS = [
 export const VARIANTS = [
   { key: 'naive', en: 'vfunc naive', ko: 'vfunc 단순형' },
   { key: 'recommended', en: 'vfunc recommended', ko: 'vfunc 권장형' },
+  { key: 'keyed', en: 'vfunc + vfList', ko: 'vfunc + vfList' }, // D-044; results before it have three variants
   { key: 'vanilla', en: 'vanilla', ko: 'vanilla' }
 ];
+
+/** The variants a result has, in table order (older results lack later variants). */
+export function variantsOf(results) {
+  return VARIANTS.filter((v) => results.size && Object.prototype.hasOwnProperty.call(results.size, v.key));
+}
 
 export const ENGINES = ['chromium', 'firefox', 'webkit'];
 
@@ -52,17 +58,18 @@ const mb = (bytes) => (bytes / 1048576).toFixed(1) + ' MB';
  */
 export function summaryRows(results, engine, lang) {
   const e = results.engines[engine];
+  const variants = variantsOf(results);
   const rows = [];
   for (const op of OPS) {
     const byVariant = e.ops[op.key] || {};
-    rows.push([op[lang]].concat(VARIANTS.map((v) => {
+    rows.push([op[lang]].concat(variants.map((v) => {
       const s = byVariant[v.key];
       return v.key === 'vanilla' ? fmtMs(s) : fmtMs(s) + ' (' + ratio(s, byVariant.vanilla) + ')';
     })));
   }
-  rows.push([lang === 'ko' ? '시작' : 'startup'].concat(VARIANTS.map((v) => fmtMs(e.startup && e.startup[v.key]))));
-  if (e.memory) rows.push([lang === 'ko' ? '메모리(행 만든 뒤)' : 'memory (after create)'].concat(VARIANTS.map((v) => (e.memory[v.key] ? mb(e.memory[v.key]) : '—'))));
-  rows.push([lang === 'ko' ? '스크립트 크기(gzip)' : 'script size (gzip)'].concat(VARIANTS.map((v) => kb(results.size[v.key]))));
+  rows.push([lang === 'ko' ? '시작' : 'startup'].concat(variants.map((v) => fmtMs(e.startup && e.startup[v.key]))));
+  if (e.memory) rows.push([lang === 'ko' ? '메모리(행 만든 뒤)' : 'memory (after create)'].concat(variants.map((v) => (e.memory[v.key] ? mb(e.memory[v.key]) : '—'))));
+  rows.push([lang === 'ko' ? '스크립트 크기(gzip)' : 'script size (gzip)'].concat(variants.map((v) => kb(results.size[v.key]))));
   return rows;
 }
 
@@ -78,6 +85,7 @@ export function environmentLine(results, lang) {
 /** results.md for a result folder. */
 export function renderMarkdown(results) {
   const n = results.settings.size;
+  const variants = variantsOf(results);
   const out = [];
   out.push('# Benchmark results / 벤치마크 결과 — ' + results.date, '');
   out.push('- ' + environmentLine(results, 'en'));
@@ -92,13 +100,13 @@ export function renderMarkdown(results) {
     const e = results.engines[engine];
     if (!e) continue;
     out.push('## ' + engine + ' ' + e.browser, '');
-    out.push('| | ' + VARIANTS.map((v) => v.en).join(' | ') + ' |', '|---|' + VARIANTS.map(() => '---:').join('|') + '|');
+    out.push('| | ' + variants.map((v) => v.en).join(' | ') + ' |', '|---|' + variants.map(() => '---:').join('|') + '|');
     for (const row of summaryRows(results, engine, 'en')) out.push('| ' + row.join(' | ') + ' |');
     out.push('');
     out.push('<details><summary>min – max</summary>', '');
-    out.push('| | ' + VARIANTS.map((v) => v.en).join(' | ') + ' |', '|---|' + VARIANTS.map(() => '---:').join('|') + '|');
+    out.push('| | ' + variants.map((v) => v.en).join(' | ') + ' |', '|---|' + variants.map(() => '---:').join('|') + '|');
     for (const op of OPS) {
-      out.push('| ' + op.en + ' | ' + VARIANTS.map((v) => {
+      out.push('| ' + op.en + ' | ' + variants.map((v) => {
         const s = e.ops[op.key] && e.ops[op.key][v.key];
         return s ? s.min.toFixed(1) + ' – ' + s.max.toFixed(1) : '—';
       }).join(' | ') + ' |');

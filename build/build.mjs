@@ -49,10 +49,11 @@ const NPM_OUT = 'build/out/npm';
 const TMP = 'build/out/tmp';
 
 /**
- * Built-ins beyond ES5 that the legacy file may reference because it ships its own polyfill.
- * Anything else found by es-check --checkFeatures fails the build.
+ * Built-ins beyond ES5 that the legacy file may reference: Promise because it ships its own polyfill,
+ * WeakMap because IE11 has it natively (get/set) and vf.html only uses it after `typeof WeakMap`
+ * (D-044: the template context cache). Anything else found by es-check --checkFeatures fails the build.
  */
-const LEGACY_POLYFILLED = ['Promise', 'PromiseResolve'];
+const LEGACY_POLYFILLED = ['Promise', 'PromiseResolve', 'WeakMap'];
 
 /** [source, path inside layer1/starter]. Sources under layer1/dist come from this build. */
 const STARTER_COPIES = [
@@ -171,6 +172,8 @@ const TARGETS = [
   { file: 'plugins/update.min.js', entry: 'build/plugin-update-entry.js', format: 'iife', minify: true, plugin: 'update', legacy: true },
   { file: 'plugins/shortcut.esm.js', entry: 'layer1/plugins/shortcut.js', format: 'esm', minify: false, plugin: 'shortcut' },
   { file: 'plugins/shortcut.min.js', entry: 'build/plugin-shortcut-entry.js', format: 'iife', minify: true, plugin: 'shortcut', legacy: true },
+  { file: 'plugins/list.esm.js', entry: 'layer1/plugins/list.js', format: 'esm', minify: false, plugin: 'list' },
+  { file: 'plugins/list.min.js', entry: 'build/plugin-list-entry.js', format: 'iife', minify: true, plugin: 'list', legacy: true, budget: 2 * 1024 }, // D-044
   // Layer 2 (D-029). `ui` says how it reaches the engine (see uiEngine).
   { dist: UI_DIST, file: 'vfunc-ui.js', entry: UI_SOURCE, format: 'iife', minify: false, ui: 'global' },
   { dist: UI_DIST, file: 'vfunc-ui.min.js', entry: UI_SOURCE, format: 'iife', minify: true, ui: 'global', budget: 24 * 1024 },
@@ -451,7 +454,7 @@ function assembleNpmPackage() {
   for (const file of ['vfunc-ui.d.ts', 'vfunc-ui-data.d.ts']) copyFlat(join(ROOT, 'layer2/types', file), join(out, 'types', file));
   for (const file of readdirSync(join(ROOT, 'layer2/types/adapters'))) copyFlat(join(ROOT, 'layer2/types/adapters', file), join(out, 'types/adapters', file));
   for (const file of ['vfunc-ui.css', 'vfunc-ui.legacy.css']) copy(join(ROOT, UI_DIST, file), join(out, 'css', file));
-  for (const file of ['vfunc.d.ts', 'global.d.ts', 'plugins/update.d.ts', 'plugins/shortcut.d.ts']) copy(join(ROOT, 'layer1/types', file), join(out, 'types', file));
+  for (const file of ['vfunc.d.ts', 'global.d.ts', 'plugins/update.d.ts', 'plugins/shortcut.d.ts', 'plugins/list.d.ts']) copy(join(ROOT, 'layer1/types', file), join(out, 'types', file));
   // Optional design tokens (D-011). Not generated: the file in layer1/css is the source.
   copy(join(ROOT, 'layer1/css/vfunc.tokens.css'), join(out, 'css', 'vfunc.tokens.css'));
   // The AI kit (D-019): llms*.txt, AGENTS templates, prompts and design kit in en/ and ko/.
@@ -521,16 +524,20 @@ function assembleNpmPackage() {
         types: './types/plugins/shortcut.d.ts',
         default: './dist/plugins/shortcut.esm.js'
       },
+      './plugins/list': {
+        types: './types/plugins/list.d.ts',
+        default: './dist/plugins/list.esm.js'
+      },
       './css/*': './css/*',
       './ai/*': './ai/*',
       './dist/*': './dist/*',
       './types/*': './types/*',
       './package.json': './package.json'
     },
-    // The <script> builds write window.vf / window.vfUpdate / window.vfShortcut. The engine module has no side effects;
-    // the layer 2 modules add their members to the engine's vf object when imported.
+    // The <script> builds write window.vf / window.vfUpdate / window.vfShortcut / window.vfList. The engine module has no
+    // side effects; the layer 2 modules add their members to the engine's vf object when imported.
     sideEffects: ['./dist/vfunc.js', './dist/vfunc.min.js', './dist/vfunc.legacy.min.js', './dist/plugins/update.min.js',
-      './dist/plugins/shortcut.min.js', './dist/vfunc-ui*.js', './dist/vfunc-all*.js', './css/*.css'],
+      './dist/plugins/shortcut.min.js', './dist/plugins/list.min.js', './dist/vfunc-ui*.js', './dist/vfunc-all*.js', './css/*.css'],
     files: ['dist/', 'types/', 'css/', 'ai/', 'README.md', 'README.ko.md', 'LICENSE', 'NOTICE', 'CHANGELOG.md', OUTPUTS.text]
   };
   writeFileSync(join(out, 'package.json'), JSON.stringify(manifest, null, 2) + '\n');

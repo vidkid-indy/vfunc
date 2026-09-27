@@ -75,6 +75,26 @@ off();         // 단축키 하나 해제. keys.destroy()는 모두 해제
 
 같은 조합은 가장 나중에 등록한 단축키가 실행됩니다. 대화상자가 열려 있는 동안 `escape`를 가져갔다가 `off()`로 돌려줄 수 있습니다. 플러그인은 화면을 그리지 않습니다.
 
+## 공식 플러그인 — `vf.ext.list`
+
+키가 있는 목록입니다. 컴포넌트의 `render`는 안쪽을 통째로 다시 그리므로 행이 많고 몇 행만 자주 바뀌는 목록(갱신, 교환, 삭제)에서는 느립니다. 이 플러그인은 항목마다 요소 하나를 유지하고 바뀐 행만 다시 그리며, 순서가 바뀌면 요소를 옮기기만 합니다. 수치는 [FAQ](faq.md#큰-목록은-얼마나-느린가요)에 있습니다.
+
+```js
+import vfList from 'vfunc/plugins/list';   // <script>는 dist/plugins/list.min.js → 전역 vfList
+const list = vf.use(vfList);
+const rows = list.create('#tbody', {       // 행의 직접 부모(tbody, ul, div…). 다른 요소를 넣지 않습니다
+  key: (item) => item.id,
+  render: (item) => vf.html`<tr><td>${item.name}</td><td><button type="button" data-action="remove">삭제</button></td></tr>`
+});
+rows.set(items);                            // 같은 키·같은 객체는 그대로, 새 객체는 그 행만 다시 그림
+rows.set(rows.items().filter((x) => x.id !== id));   // 삭제: 그 행만 제거
+```
+
+- 항목을 바꿀 때는 새 객체를 만듭니다. 객체를 제자리에서 고쳤으면 `rows.refresh(key)`를 부릅니다.
+- 각 행에는 `data-vf-key`가 붙습니다. 위임 핸들러에서 `e.target.closest('[data-vf-key]')`로 항목을 찾습니다.
+- 컴포넌트 안에서는 컨테이너에 `data-vf-keep`을 붙여 컴포넌트의 render가 행을 지우지 않게 하고, `onMount`에서 만들어 `onDestroy`에서 `rows.destroy()`합니다. render 없는 `vf.attach` 대상에 만들어도 됩니다.
+- `render`는 `vf.html`로 요소 하나를 돌려줍니다. 문자열은 텍스트로 이스케이프되어 행이 되지 않습니다.
+
 ## IE11·Edge IE 모드
 
 엔진은 하나이고 배포 파일만 다릅니다. `vfunc.legacy.min.js`는 ES5로 변환되고 Promise 폴리필 하나를 담습니다(gzip 약 10KB).

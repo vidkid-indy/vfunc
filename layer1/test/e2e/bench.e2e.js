@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 // Smoke test of the benchmark pages (layer1/bench) in the VF_BROWSER engine: with 100 rows, every
-// operation runs with no console problems and the three variants end with the same table.
+// operation runs with no console problems and the four variants end with the same table.
 // The timings themselves are not checked (they depend on the machine; see layer1/bench/README.md).
 
 import { test, before, after } from 'node:test';
@@ -62,11 +62,12 @@ async function runAll(variant) {
   }
 }
 
-test('bench pages: every operation works and the three variants draw the same table', async () => {
+test('bench pages: every operation works and the four variants draw the same table', async () => {
   const naive = await runAll('naive');
   const recommended = await runAll('recommended');
+  const keyed = await runAll('keyed');
   const vanilla = await runAll('vanilla');
-  for (const [name, r] of [['naive', naive], ['recommended', recommended], ['vanilla', vanilla]]) assert.deepEqual(r.problems, [], name);
+  for (const [name, r] of [['naive', naive], ['recommended', recommended], ['keyed', keyed], ['vanilla', vanilla]]) assert.deepEqual(r.problems, [], name);
   const edited = vanilla.states.edited;
   assert.equal(edited.length, 199);
   assert.equal(edited.filter((row) => row[2]).length, 1, 'one selected row');
@@ -74,4 +75,5 @@ test('bench pages: every operation works and the three variants draw the same ta
   assert.equal(edited[1][0], 99, 'row 2 swapped with row 99');
   assert.deepEqual(naive.states, vanilla.states);
   assert.deepEqual(recommended.states, vanilla.states);
+  assert.deepEqual(keyed.states, vanilla.states);
 });

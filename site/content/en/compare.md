@@ -65,7 +65,7 @@ function Todo() {
 | Size (gzip) | 0 | about 9 KB | about 34–45 KB + app |
 | Escaping | by hand | automatic, by position | automatic (JSX / templates) |
 | Behaviour on existing HTML | by hand | `vf.attach` | hard |
-| Large lists | optimize by hand | weaker (full replace, [measured](faq.md#how-slow-are-large-lists)) | strong |
+| Large lists | optimize by hand | weaker with render (full replace), close with `vf.ext.list` ([measured](faq.md#how-slow-are-large-lists)) | strong |
 | IE11 | by hand | legacy file | practically no |
 | Ecosystem, hiring | — | small | large |
 

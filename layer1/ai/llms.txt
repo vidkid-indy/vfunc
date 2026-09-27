@@ -6,7 +6,7 @@ For vfunc.js 1.0. The full reference is llms-full.txt (this file + the website g
 
 ## Load
 
-- Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.1/dist/vfunc.min.js" integrity="sha384-PWdyvJw4rbJQ2cZEJBdIy0OXqiGk2XxgReE8IYP98OKaTMBoIt4cE+wBY6A816gm" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production; the integrity value differs per version and file (this one is 1.0.1 vfunc.min.js). `dist/vfunc.js` is the development build with warnings.
+- Script tag: `<script src="https://cdn.jsdelivr.net/npm/vfunc@1.1.0/dist/vfunc.min.js" integrity="sha384-faJthESaYhJ1P0QFHwJ/SiMS/Z0KxQ4mwPnKqz0cwnTx+Ygs53COGDXp5LIAwm+4" crossorigin="anonymous"></script>` → global `vf`. Pin the exact version and add SRI in production; the integrity value differs per version and file (this one is 1.1.0 vfunc.min.js). `dist/vfunc.js` is the development build with warnings.
 - ES module: `import vf from 'vfunc'` or `import { vfunc, html, router } from 'vfunc'`; a copied file works the same (`import vf from './lib/vfunc.esm.min.js'`). The ES modules never touch `window.vf`.
 - IE11 / Edge IE mode: `dist/vfunc.legacy.min.js` (same API; includes only a Promise polyfill). The app code must be ES5: no arrow functions, const/let, template literals or classes; use `vf.tpl('<b>{name}</b>', data)` instead of vf.html template literals. Polyfill anything else the app needs (Object.assign, fetch, …) yourself. Load pattern: `<script type="module" src="app.js">` + `<script nomodule src="vfunc.legacy.min.js">` + `<script nomodule src="app.es5.js">`.
 
@@ -103,6 +103,10 @@ Token names are public API: `--vf-color-primary|-hover|-active|-soft`, `--vf-col
 
 `const keys = vf.use(vfShortcut)` → `vf.ext.shortcut`: `const off = keys.add('mod+k', handler, { label, allowInInput: false, preventDefault: true })`, `keys.remove(combo, handler?)`, `keys.list()` → `[{ combo, label }]` for your own help screen, `keys.destroy()`. `mod` is ⌘ on Apple devices and Ctrl elsewhere; key names follow KeyboardEvent.key (`escape`, `enter`, `arrowup`, `?`). Keys typed in inputs and during IME composition are ignored; the newest shortcut of a combo wins. Do not write your own document keydown listener for shortcuts.
 
+## List plugin (dist/plugins/list.min.js → global vfList; ESM `import vfList from 'vfunc/plugins/list'`; since 1.1.0)
+
+For long lists where a few rows change often (update, swap, remove): a render redraws the whole inside, this keeps one element per item. `const rows = vf.use(vfList).create('#tbody', { key: (item) => item.id, render: (item) => vf.html\`<tr>…</tr>\` })` → `rows.set(items)` (same key and same object: kept; new object: only that row is drawn; new order: moved; missing: removed), `rows.refresh(key?)` after an in-place change, `rows.items()`, `rows.element(key)`, `rows.destroy()`. The container is the direct parent of the rows and holds nothing else; inside a component mark it `data-vf-keep` and create the list in `onMount`, or use a `vf.attach` target without render. Rows carry `data-vf-key`: find the item with `e.target.closest('[data-vf-key]')`. `render` returns one element built with `vf.html`.
+
 ## Components (layer 2: vfunc-ui)
 
 Optional components without classes. Load `vfunc.js` → `dist/vfunc-ui.js` (+ `dist/vfunc-ui-data.js` for the grid and charts, + `dist/vfunc-ui.locale.ko.js` for Korean) and `css/vfunc-ui.css` after the tokens; ESM `import 'vfunc/ui'` / `import 'vfunc/ui/data'` add the members to `vf`. Every name, prop and method: ai/en/components.md (generated from the catalog and d.ts). Use a component where it saves work; plain HTML stays fine.
@@ -135,6 +139,7 @@ Optional components without classes. Load `vfunc.js` → `dist/vfunc-ui.js` (+ `
 - A list of `vf.html` items goes into the template as is (`${items}`); `.join('')` turns it into a plain string, and putting that in `innerHTML` is string-built markup. Re-render with `render` instead.
 - No color literal in JS, not even as a fallback when a token is missing (`value || '#1d4ed8'`): the token file is always loaded.
 - A `vf.vfConfirm` created on every click and never destroyed stays in memory: `destroy()` it after `open()` resolves, or create one and reuse it.
+- A long list (hundreds of rows or more) whose rows are updated, swapped or removed often, drawn by `render`: every change redraws all rows (several to tens of times slower). Use the list plugin (vfList) for it; short lists are fine with `render`.
 
 ## Examples, starter and prompt kit
 

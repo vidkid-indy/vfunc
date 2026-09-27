@@ -22,8 +22,8 @@ Script tag (pin the exact version and keep the SRI hash):
 
 ```html
 <div id="counter"></div>
-<script src="https://cdn.jsdelivr.net/npm/vfunc@1.0.1/dist/vfunc.min.js"
-        integrity="sha384-PWdyvJw4rbJQ2cZEJBdIy0OXqiGk2XxgReE8IYP98OKaTMBoIt4cE+wBY6A816gm"
+<script src="https://cdn.jsdelivr.net/npm/vfunc@1.1.0/dist/vfunc.min.js"
+        integrity="sha384-faJthESaYhJ1P0QFHwJ/SiMS/Z0KxQ4mwPnKqz0cwnTx+Ygs53COGDXp5LIAwm+4"
         crossorigin="anonymous"></script>
 <script src="app.js"></script>
 ```

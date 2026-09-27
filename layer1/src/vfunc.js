@@ -145,7 +145,9 @@ function unsafe(message) {
  */
 function esc(value) {
   if (value == null) return '';
-  return String(value)
+  const text = String(value);
+  if (!/[&<>"']/.test(text)) return text; // nothing to escape: the common case, one test instead of five replaces
+  return text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -191,8 +193,11 @@ function safeUrl(url) {
  * @constructor
  * @param {string} value
  */
-function SafeHtml(value) {
+function SafeHtml(value, text) {
   this.value = value;
+  // Set by vf.html when the markup ends in element text, as it started: inserting it there again
+  // cannot change where the next interpolation lands, so vf.html need not scan it (D-044).
+  if (text) this._text = true;
 }
 SafeHtml.prototype.toString = function () { return this.value; };
 
@@ -387,6 +392,48 @@ function tagNameValue(value) {
   return '';
 }
 
+/** Contexts per template literal (its strings array), or false when the fast path does not apply. */
+const contextCache = typeof WeakMap === 'function' ? new WeakMap() : null;
+
+/**
+ * The context of every interpolation of `strings`, scanned once with empty values, or false.
+ * Only element text (not a comment) and quoted attribute values qualify: there an escaped
+ * primitive contains no "<" or quote and leaves the scanner where it was. A URL attribute with an
+ * earlier interpolation in the same value is refused, because its check reads the value so far.
+ */
+function templateContexts(strings) {
+  let entry = contextCache.get(strings);
+  if (entry !== undefined) return entry;
+  const scanner = new MarkupScanner();
+  const contexts = [];
+  entry = contexts;
+  scanner.feed(strings[0]);
+  for (let i = 1; i < strings.length; i++) {
+    const state = scanner.state;
+    const ctx = scanner.context();
+    if ((state !== 'text' && state !== 'value') ||
+        (state === 'value' && hasOwn.call(URL_ATTRS, ctx.name) && i > 1 &&
+         contexts[i - 2].kind === 'attr' && strings[i - 1].indexOf(scanner.quote) < 0)) {
+      entry = false;
+      break;
+    }
+    contexts.push(ctx);
+    scanner.feed(strings[i]);
+  }
+  if (entry) entry.text = scanner.state === 'text';
+  contextCache.set(strings, entry);
+  return entry;
+}
+
+/** True when `value`, inserted in element text, leaves the scanner in element text. */
+function endsInText(value) {
+  if (value == null || typeof value !== 'object') return typeof value !== 'function'; // escaped: no "<"
+  if (value instanceof SafeHtml) return value._text === true;
+  if (!Array.isArray(value)) return false;
+  for (let i = 0; i < value.length; i++) if (!endsInText(value[i])) return false;
+  return true;
+}
+
 /**
  * Tagged template that escapes every interpolated value for where it lands:
  * - element content: HTML-escaped; arrays are joined; vf.html results, vf.unsafeHtml values and
@@ -401,6 +448,26 @@ function tagNameValue(value) {
  * @returns {SafeHtml}
  */
 function html(strings) {
+  const n = strings.length;
+  // Fast path: a template literal whose values are all primitives reuses the contexts found the
+  // first time. An escaped primitive cannot change the scanner's state, so the result is the same
+  // as the full scan below (templateContexts refuses every case where that is not certain).
+  if (contextCache && strings.raw) {
+    let primitive = true;
+    for (let i = 1; i < n && primitive; i++) {
+      const type = typeof arguments[i];
+      primitive = arguments[i] == null || type === 'string' || type === 'number' || type === 'boolean';
+    }
+    const contexts = primitive && templateContexts(strings);
+    if (contexts) {
+      let fast = strings[0];
+      for (let i = 1; i < n; i++) {
+        const ctx = contexts[i - 1];
+        fast += (ctx.kind === 'text' ? textValue(arguments[i]) : attrValue(ctx, arguments[i])) + strings[i];
+      }
+      return new SafeHtml(fast, contexts.text);
+    }
+  }
   const scanner = new MarkupScanner();
   let out = strings[0];
   scanner.feed(strings[0]);
@@ -418,11 +485,12 @@ function html(strings) {
         : 'vf.html: interpolation inside <' + ctx.kind + '> is not allowed.'));
       piece = '';
     }
-    scanner.feed(piece);
+    // In element text, a piece that ends in element text leaves the scanner where it is: skip it.
+    if (!(scanner.state === 'text' && endsInText(value))) scanner.feed(piece);
     scanner.feed(strings[i]);
     out += piece + strings[i];
   }
-  return new SafeHtml(out);
+  return new SafeHtml(out, scanner.state === 'text');
 }
 
 /**
@@ -966,7 +1034,7 @@ proto.refresh = function () {
     rootReplaced = true;
   } else {
     const root = this.$node;
-    while (root.firstChild) root.removeChild(root.firstChild);
+    root.textContent = ''; // faster than removing the children one by one in all three engines
     while (holder.firstChild) root.appendChild(holder.firstChild);
   }
 

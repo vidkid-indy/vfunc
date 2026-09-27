@@ -6,20 +6,20 @@ For most business screens, behaviour on published pages, intranet systems and sm
 
 ## What are the limits?
 
-- **Large lists**: a render replaces the inside of a component (no keyed diff). Very long lists that change often are slower. Split lists into smaller components and keep unchanged areas with `data-vf-keep`. The built-in `vfGrid` pages long data instead of scrolling it; for virtual scrolling use a grid adapter (`vfGridAg`, `vfGridTabulator`). For numbers, see [the measurements below](#how-slow-are-large-lists).
+- **Large lists**: a component's render replaces its whole inside (no keyed diff). For long lists where a few rows change often, draw only the changed rows with the official plugin [`vf.ext.list`](extend.md#official-plugin-vfextlist) (since 1.1.0). Keep unchanged areas with `data-vf-keep`. The built-in `vfGrid` pages long data instead of scrolling it; for virtual scrolling use a grid adapter (`vfGridAg`, `vfGridTabulator`). For numbers, see [the measurements below](#how-slow-are-large-lists).
 - **Focus and caret**: after a render, focus and caret move back to the element with the same `id`, `data-ref` or `name`, else to the same `data-action` at the same position. Scroll positions are not restored. Do not render on every keystroke.
 - **Table rows**: a component that renders `<tr>` needs `tag: 'table'`.
 - **Ecosystem**: few component libraries and tools so far. Third-party libraries can be attached directly with `onMount` + `data-vf-keep`.
 
 ## How slow are large lists?
 
-The operations of js-framework-benchmark, measured three ways. Naive: one component redraws the whole screen. Recommended: as the kit teaches, only the `<tbody>` is redrawn, and selecting a row changes an attribute without a render. Vanilla: hand-written code that touches only the changed rows. The numbers are the time from the click to the end of style and layout after the render; in parentheses, the ratio to vanilla.
+The operations of js-framework-benchmark, measured four ways. Naive: one component redraws the whole screen. Recommended: as the kit teaches, only the `<tbody>` is redrawn, and selecting a row changes an attribute without a render. vfList: the recommended page with the official list plugin, which draws and moves only the changed rows. Vanilla: hand-written code that touches only the changed rows. The numbers are the time from the click to the end of style and layout after the render; in parentheses, the ratio to vanilla.
 
 {{bench}}
 
-- Creating rows and clearing them are close to vanilla.
-- Operations that change a few rows (partial update, swap, remove) redraw the whole list and are several to tens of times slower: the cost of having no keyed diff. At about 0.1 s per operation on 1,000 rows this is fine for occasional changes, but not for screens with many rows that change often.
-- Operations that change only attributes (selection, expanding) are as fast as vanilla when you change the attribute without a render.
+- Creating rows and clearing them are close to vanilla in all four.
+- Operations that change a few rows (partial update, swap, remove) redraw the whole list when drawn with render, several to tens of times slower: the cost of having no keyed diff. With vfList they stay within 1.5 times vanilla in all three engines.
+- For operations that change only attributes (selection, expanding), change the attribute instead of drawing the row again (the recommended page): a new row element makes the browser lay out the whole table again.
 - The numbers depend on the machine and the browser. How they are measured and how to run them yourself: `layer1/bench/README.md` in the repository. To compare with other frameworks, see the [js-framework-benchmark results](https://krausest.github.io/js-framework-benchmark/).
 
 ## What about server rendering and SEO?

@@ -137,3 +137,68 @@ test('strictRender warns when render returns a plain string', () => {
   assert.equal(messages.length, 1);
   assert.match(messages[0], /plain string/);
 });
+
+// ---- the context cache of template literals (D-044): the same output as the full scan ----------
+
+const strings = (s) => s;
+const CACHE_TEMPLATES = [
+  strings`<tr data-id="${0}" data-state="${0}"><td>${0}</td><td><button type="button" data-action="select">${0}</button></td></tr>`,
+  strings`<a href="${0}" title='${0}'>${0}</a>`,
+  strings`<a href="${0}${0}">x</a>`,
+  strings`<a href="/u/${0}?tab=${0}">x</a>`,
+  strings`<img src='${0}' alt="${0}">`,
+  strings`<p>${0}</p><!-- a -${0}> <b>${0}</b>`,
+  strings`<input ${0} value="${0}">`,
+  strings`<div class=${0}>${0}</div>`,
+  strings`<${0}>${0}</div>`,
+  strings`<style>${0}</style><p>${0}</p>`,
+  strings`<button onclick="${0}" aria-pressed="${0}">${0}</button>`,
+  strings`<i data-on="${0}" aria-selected="${0}" hidden>${0}${0}</i>`,
+  strings`${0}`
+];
+const CACHE_VALUES = ['<img src=x onerror=alert(1)>', '" onmouseover="x', "' autofocus '", 'javascript:alert(1)', 'java', 'script:alert(1)',
+  ' JaVa\tScRiPt:alert(1)', 'https://example.com/?a=1&b=2', '--', '-->', '->', '</style><script>x</script>', 'disabled', 'a b', '&amp;', '',
+  0, 42, -1.5, true, false, null, undefined];
+
+test('template literals with primitive values give the same markup as the full scan, first and later calls', () => {
+  quiet(() => {
+    let seed = 7;
+    const pick = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return CACHE_VALUES[seed % CACHE_VALUES.length]; };
+    for (const template of CACHE_TEMPLATES) {
+      for (let round = 0; round < 60; round++) {
+        const values = [];
+        for (let i = 1; i < template.length; i++) values.push(pick());
+        const full = String(html(Array.prototype.slice.call(template), ...values)); // no .raw: always the full scan
+        assert.equal(String(html(template, ...values)), full, template.join('${}') + ' ' + JSON.stringify(values));
+      }
+    }
+  });
+});
+
+test('a URL split over two interpolations is still checked as a whole', () => {
+  const t = strings`<a href="${0}${0}">x</a>`;
+  for (let i = 0; i < 2; i++) assert.equal(String(html(t, 'java', 'script:alert(1)')), '<a href="java">x</a>');
+});
+
+test('non-primitive values in a cached template take the full scan', () => {
+  const t = strings`<p title="${0}">${0}</p>`;
+  assert.equal(String(html(t, 'a', 'b')), '<p title="a">b</p>');
+  assert.equal(String(html(t, 'a', html`<b>${'c'}</b>`)), '<p title="a"><b>c</b></p>');
+  assert.equal(String(html(t, ['x', 'y'], ['<', html`<i></i>`])), '<p title="x y">&lt;<i></i></p>');
+});
+
+test('inserted markup that does not end in element text is still scanned', () => {
+  quiet(() => {
+    // Ends inside an attribute value: the next value is an attribute value (escaped), not text.
+    const open = html`<i title="${'a'}`;
+    assert.equal(String(html`<p>${open}${'<b>'}"></i></p>`), '<p><i title="a&lt;b&gt;"></i></p>');
+    // Ends inside a tag: the next value is refused like any interpolation inside a tag.
+    const tag = html`<i ${'hidden'}`;
+    assert.equal(String(html`<p>${tag}${'x" onclick="alert(1)'}></i></p>`), '<p><i hidden></i></p>');
+    // unsafeHtml carries no mark: it is always scanned.
+    assert.equal(String(html`<p>${unsafeHtml('<a href="')}${'javascript:alert(1)'}">x</a></p>`), '<p><a href="#">x</a></p>');
+    // Lists of rows end in text: the markup is the same as before.
+    const rows = ['<1>', '2'].map((x) => html`<li>${x}</li>`);
+    assert.equal(String(html`<ul>${rows}</ul><b>${'<'}</b>`), '<ul><li>&lt;1&gt;</li><li>2</li></ul><b>&lt;</b>');
+  });
+});
