@@ -94,6 +94,7 @@ rows.set(rows.items().filter((x) => x.id !== id));   // 삭제: 그 행만 제�
 - 각 행에는 `data-vf-key`가 붙습니다. 위임 핸들러에서 `e.target.closest('[data-vf-key]')`로 항목을 찾습니다.
 - 컴포넌트 안에서는 컨테이너에 `data-vf-keep`을 붙여 컴포넌트의 render가 행을 지우지 않게 하고, `onMount`에서 만들어 `onDestroy`에서 `rows.destroy()`합니다. render 없는 `vf.attach` 대상에 만들어도 됩니다.
 - `render`는 `vf.html`로 요소 하나를 돌려줍니다. 문자열은 텍스트로 이스케이프되어 행이 되지 않습니다.
+- `vfunc-ui.js`(1.2.0부터)에는 이 플러그인이 들어 있어 `vf.vfListView`는 이미 행을 키별로 유지합니다. `list.min.js`는 목록을 직접 만들 때만 불러옵니다.
 
 ## IE11·Edge IE 모드
 

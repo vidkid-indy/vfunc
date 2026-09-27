@@ -64,7 +64,7 @@
 - 공개 API(`d.ts`, CSS 토큰 이름 포함)는 semver를 따릅니다.
 - 변경 시 `CHANGELOG.md`, `types/vfunc.d.ts`, `layer1/ai/llms.txt`(두 언어), `EXTENDING.md`, 사이트 문서(두 언어의 `api.md`와 관련 가이드)를 **함께** 갱신합니다.
 - 제거는 최소 한 번의 MINOR 동안 deprecated 경고를 거친 뒤 MAJOR에서만 합니다.
-- 크기 예산: `vfunc.min.js` gzip 10KB 이하, `vfunc.legacy.min.js` 14KB 이하. layer2는 `vfunc-ui.min.js` 24KB, `vfunc-ui.legacy.min.js` 30KB, `vfunc-ui.css` 12KB 이하.
+- 크기 예산: `vfunc.min.js` gzip 10KB 이하, `vfunc.legacy.min.js` 14KB 이하. layer2는 `vfunc-ui.min.js` 25KB, `vfunc-ui.legacy.min.js` 30KB, `vfunc-ui.css` 12KB 이하. `vfunc-ui.min.js`의 24KB를 넘는 1KB는 버그 수정·접근성 보완에만 쓰고, 새 컴포넌트는 코어 ui가 아니라 선택 파일(`vfunc-ui-data.*` 같은)에 넣습니다.
 
 ### 19. IE 호환
 - 엔진 소스는 하나이고 배포 파일만 나눕니다(`vfunc.min.js` / `vfunc.legacy.min.js`).

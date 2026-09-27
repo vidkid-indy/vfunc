@@ -94,6 +94,7 @@ rows.set(rows.items().filter((x) => x.id !== id));   // remove: only that row go
 - Each row carries `data-vf-key`; a delegated handler finds the item with `e.target.closest('[data-vf-key]')`.
 - Inside a component, mark the container with `data-vf-keep` so the component's render leaves the rows alone, create the list in `onMount` and call `rows.destroy()` in `onDestroy`. A `vf.attach` target without render works too.
 - `render` returns one element built with `vf.html`. A plain string is escaped as text and does not become a row.
+- `vfunc-ui.js` (since 1.2.0) contains this plugin, so `vf.vfListView` already keeps its rows by key. Load `list.min.js` only for lists you build yourself.
 
 ## IE11 / Edge IE mode
 

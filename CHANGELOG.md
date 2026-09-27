@@ -5,6 +5,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Changed
+- Size budget of `vfunc-ui.min.js`: 25 KB gzip (was 24 KB). The extra kilobyte is for fixes and accessibility only; new components go into optional files such as `vfunc-ui-data.js`, not the core file (`CONTRIBUTING.md`).
+- Docs: `vfunc-ui.js` contains the list plugin, so `vf.vfListView` is already keyed; load `plugins/list.min.js` only for lists you build yourself.
+
 ## [1.2.0] - 2026-09-27
 
 ### Changed

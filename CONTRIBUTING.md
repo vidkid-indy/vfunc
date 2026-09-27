@@ -34,8 +34,8 @@ git commit -s -m "fix: ..."
 
 ## Components / 컴포넌트 기여 (layer 2)
 
-Open a Discussion first: the component list is kept small on purpose. When it is agreed, one pull request carries all of these (`layer2/test/catalog.test.js` checks that they match):
-목록은 일부러 작게 유지하므로 먼저 Discussions에서 논의해 주세요. 합의되면 아래를 한 PR에 담습니다(`catalog.test.js`가 일치를 검사).
+Open a Discussion first: the component list is kept small on purpose. The core file `vfunc-ui.js` is full (its size budget is kept for fixes), so a new component goes into an optional file such as `vfunc-ui-data.js`; we decide which in the Discussion. When it is agreed, one pull request carries all of these (`layer2/test/catalog.test.js` checks that they match):
+목록은 일부러 작게 유지하므로 먼저 Discussions에서 논의해 주세요. 코어 파일 `vfunc-ui.js`는 크기 예산을 수정용으로 남겨 두므로, 새 컴포넌트는 `vfunc-ui-data.js` 같은 선택 파일에 들어갑니다(어느 파일인지는 논의에서 정합니다). 합의되면 아래를 한 PR에 담습니다(`catalog.test.js`가 일치를 검사).
 
 1. `layer2/src/components/<id>.js` — decide the tier first (S: `vs*` only, P: `vs*` + `vf*` that renders with the `vs*`, F: `vf*` only). Optional attributes go through `_internal/attrs.js`, form controls through `_internal/field.js`, `vf*` through `_internal/instance.js`. No ES2015+ built-ins (the legacy build polyfills only Promise).
 2. `layer2/css/components/<id>.css` — tokens only, logical properties (`margin-inline-start`), classes `vf-<block>__<element>`, state in `aria-*` / `data-state`.

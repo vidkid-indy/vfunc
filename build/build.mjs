@@ -9,7 +9,7 @@
 // and the data file vfunc-ui-data.* (grid and charts, D-031, D-033; budgets 12 KB / 15 KB gzip),
 // and the official adapters vfunc-<kind>-<vendor>.{js,min.js,esm.js} (D-034: no vendor inside, no
 // legacy file because the vendors do not support IE11)
-// (budgets 24 KB / 30 KB gzip), vfunc-ui.locale.ko.*, vfunc-all.{js,min.js,legacy.min.js}
+// (budgets 25 KB / 30 KB gzip), vfunc-ui.locale.ko.*, vfunc-all.{js,min.js,legacy.min.js}
 // (layers 1 + 2), vfunc-ui.css (12 KB) and vfunc-ui.legacy.css (build/ui-css.mjs).
 //
 // Layer 1 outputs (layer1/dist/):
@@ -176,7 +176,7 @@ const TARGETS = [
   { file: 'plugins/list.min.js', entry: 'build/plugin-list-entry.js', format: 'iife', minify: true, plugin: 'list', legacy: true, budget: 2 * 1024 }, // D-044
   // Layer 2 (D-029). `ui` says how it reaches the engine (see uiEngine).
   { dist: UI_DIST, file: 'vfunc-ui.js', entry: UI_SOURCE, format: 'iife', minify: false, ui: 'global' },
-  { dist: UI_DIST, file: 'vfunc-ui.min.js', entry: UI_SOURCE, format: 'iife', minify: true, ui: 'global', budget: 24 * 1024 },
+  { dist: UI_DIST, file: 'vfunc-ui.min.js', entry: UI_SOURCE, format: 'iife', minify: true, ui: 'global', budget: 25 * 1024 }, // D-046: +1 KB for fixes only
   { dist: UI_DIST, file: 'vfunc-ui.esm.js', entry: UI_SOURCE, format: 'esm', minify: false, ui: 'esm' },
   { dist: UI_DIST, file: 'vfunc-ui.esm.min.js', entry: UI_SOURCE, format: 'esm', minify: true, ui: 'esm.min' },
   { dist: UI_DIST, file: 'vfunc-ui.legacy.min.js', entry: UI_SOURCE, format: 'iife', minify: true, legacy: true, ui: 'global', budget: 30 * 1024 },
