@@ -5,6 +5,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-09-27
+
+### Changed
+- `vf.vfListView` keeps its rows by key with the list plugin (`vf.ext.list`, bundled in `vfunc-ui`): `setItems` draws only new or changed items and moves the rest, and selecting (click, keys, `setValue`) changes `aria-selected` and `tabindex` without drawing the list again. Give a changed item a new object; a `render` that takes the index draws a row again when its position changes.
+- **Markup:** the options of `vfListView` no longer have `id="<id>-option-<n>"` or `data-index` (they would change with the position); find an option by `data-value`. The static `vsListView` markup is unchanged.
+- `vf.ext.list` shorter warning texts.
+
 ## [1.1.0] - 2026-09-27
 
 ### Added

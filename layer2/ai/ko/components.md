@@ -916,7 +916,7 @@ function vsListView<T = any>(props: VsListViewProps<T>): SafeHtml;
 interface VfListViewProps<T = any> extends VsListViewProps<T> {
   onSelect?: (e: VfUiEvent<{ value: string | string[]; items: T[] }>) => void;
 }
-// Click, Space or Enter selects; Up, Down, Home, End move the focus.
+// Click, Space or Enter selects; Up, Down, Home, End move the focus. Since 1.2.0 the rows are kept by key (itemKey, else the position): setItems draws only new or changed items (give a changed item a new object), and selecting changes aria-selected and tabindex without drawing the list again. Its options have no id or data-index; find one by data-value. A render that takes the index draws a row again when its position changes.
 function vfListView<T = any>(props: VfListViewProps<T>): VfValueInstance<string | string[] | null, { setItems(items: T[]): void }>;
 ```
 

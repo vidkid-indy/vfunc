@@ -55,7 +55,7 @@ test('a plain string from render is text, not markup: it is refused as a row', (
   });
   assert.equal(tbody.children.length, 0);
   assert.equal(warnings.length, 2);
-  assert.match(warnings[0], /exactly one element/);
+  assert.match(warnings[0], /one element/);
 });
 
 test('set keeps the element of every unchanged item and redraws only changed ones', () => {

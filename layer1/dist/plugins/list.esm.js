@@ -1,4 +1,4 @@
-/*! vfunc.js list plugin (vfunc v1.1.0) | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
+/*! vfunc.js list plugin (vfunc v1.2.0) | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
@@ -37,7 +37,7 @@ function install(vf) {
       return null;
     }
     if (!options || typeof options.key !== "function" || typeof options.render !== "function") {
-      throw new TypeError("vf.ext.list.create: options.key and options.render must be functions");
+      throw new TypeError("[vfunc] list: key and render must be functions");
     }
     var keyOf = options.key;
     var render = options.render;
@@ -66,7 +66,7 @@ function install(vf) {
             entry.el = found;
             drawn.push(entry);
           } else if (entry) {
-            warn("render must return exactly one element (key " + entry.key + ")");
+            warn("render must give one element, key " + entry.key);
           }
           found = null;
           count = 0;
@@ -105,12 +105,12 @@ function install(vf) {
       for (i = 0; i < items2.length; i++) {
         var k = keyOf(items2[i]);
         if (k == null || k === "") {
-          warn("item without a key at index " + i);
+          warn("no key at index " + i);
           continue;
         }
         k = String(k);
         if (nextByKey[k]) {
-          warn("duplicate key " + k + "; only the first item is shown");
+          warn("duplicate key " + k);
           continue;
         }
         var old = byKey[k];
@@ -120,45 +120,40 @@ function install(vf) {
         if (!old) fresh.push(entry);
         else if (force || old.item !== items2[i]) redraw.push(entry);
       }
+      var shown = [];
       if (next.length === fresh.length) {
         container.textContent = "";
-        var drawnAll = draw(next);
+        shown = draw(next);
         var frag = document.createDocumentFragment();
-        for (i = 0; i < drawnAll.length; i++) frag.appendChild(drawnAll[i].el);
+        for (i = 0; i < shown.length; i++) frag.appendChild(shown[i].el);
         container.appendChild(frag);
-        commit(drawnAll);
-        return;
+      } else {
+        for (i = 0; i < entries.length; i++) {
+          if (!nextByKey[entries[i].key]) container.removeChild(entries[i].el);
+        }
+        var changed = draw(redraw);
+        for (i = 0; i < changed.length; i++) replace(byKey[changed[i].key].el, changed[i].el);
+        draw(fresh);
+        var kept = [];
+        for (i = 0; i < next.length; i++) kept.push(next[i].el ? next[i].old : -1);
+        var stay = increasing(kept);
+        var ref = null;
+        for (i = next.length - 1; i >= 0; i--) {
+          var e = next[i];
+          if (!e.el) continue;
+          if (!stay[i] || e.el.parentNode !== container) container.insertBefore(e.el, ref);
+          ref = e.el;
+        }
+        for (i = 0; i < next.length; i++) if (next[i].el && next[i].el.parentNode === container) shown.push(next[i]);
       }
-      for (i = 0; i < entries.length; i++) {
-        if (!nextByKey[entries[i].key]) container.removeChild(entries[i].el);
+      entries = shown;
+      byKey = /* @__PURE__ */ Object.create(null);
+      for (i = 0; i < shown.length; i++) {
+        shown[i].index = i;
+        byKey[shown[i].key] = shown[i];
       }
-      var changed = draw(redraw);
-      for (i = 0; i < changed.length; i++) replace(byKey[changed[i].key].el, changed[i].el);
-      draw(fresh);
-      var kept = [];
-      for (i = 0; i < next.length; i++) kept.push(next[i].el ? next[i].old : -1);
-      var stay = increasing(kept);
-      var ref = null;
-      for (i = next.length - 1; i >= 0; i--) {
-        var e = next[i];
-        if (!e.el) continue;
-        if (!stay[i] || e.el.parentNode !== container) container.insertBefore(e.el, ref);
-        ref = e.el;
-      }
-      var shown = [];
-      for (i = 0; i < next.length; i++) if (next[i].el && next[i].el.parentNode === container) shown.push(next[i]);
-      commit(shown);
     }
     __name(update, "update");
-    function commit(list) {
-      entries = list;
-      byKey = /* @__PURE__ */ Object.create(null);
-      for (var i = 0; i < list.length; i++) {
-        list[i].index = i;
-        byKey[list[i].key] = list[i];
-      }
-    }
-    __name(commit, "commit");
     function refresh(key) {
       if (destroyed) return;
       if (!arguments.length) {

@@ -1,4 +1,4 @@
-/*! vfunc-ui (vfunc.js layer 2) v1.1.0 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
+/*! vfunc-ui (vfunc.js layer 2) v1.2.0 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
@@ -208,9 +208,9 @@ function cls(block, className) {
 __name(cls, "cls");
 function normalizeOptions(options) {
   const out = [];
-  const list2 = options || [];
-  for (let i = 0; i < list2.length; i++) {
-    const o = list2[i];
+  const list3 = options || [];
+  for (let i = 0; i < list3.length; i++) {
+    const o = list3[i];
     if (o != null && typeof o === "object") {
       if (o.options) out.push({ label: o.label, options: normalizeOptions(o.options), disabled: !!o.disabled });
       else out.push({ value: o.value == null ? "" : String(o.value), label: o.label == null ? o.value : o.label, disabled: !!o.disabled });
@@ -486,9 +486,9 @@ var SIZES3 = ["md", "sm", "lg"];
 function vsButtonGroup(props) {
   const p = props || {};
   const size = oneOf("vsButtonGroup size", p.size, SIZES3);
-  const list2 = p.buttons || [];
+  const list3 = p.buttons || [];
   const buttons = [];
-  for (let i = 0; i < list2.length; i++) buttons.push(vsButton(extend({ size }, list2[i])));
+  for (let i = 0; i < list3.length; i++) buttons.push(vsButton(extend({ size }, list3[i])));
   return html10`<div ${attrs({
     class: cls("vf-button-group", p.className),
     role: "group",
@@ -610,10 +610,10 @@ var html16 = default2.html;
 function vsDescriptions(props) {
   const p = props || {};
   const columns = Math.max(1, Math.min(4, Math.floor(Number(p.columns) || 1)));
-  const list2 = p.items || [];
+  const list3 = p.items || [];
   const items = [];
-  for (let i = 0; i < list2.length; i++) {
-    items.push(html16`<div class="vf-descriptions__item"><dt class="vf-descriptions__label">${list2[i].label}</dt><dd class="vf-descriptions__value">${list2[i].value}</dd></div>`);
+  for (let i = 0; i < list3.length; i++) {
+    items.push(html16`<div class="vf-descriptions__item"><dt class="vf-descriptions__label">${list3[i].label}</dt><dd class="vf-descriptions__value">${list3[i].value}</dd></div>`);
   }
   const title = present(p.title) ? html16`<p class="vf-descriptions__title">${p.title}</p>` : "";
   return html16`<div ${attrs({ class: cls("vf-descriptions", p.className), id: p.id, "data-ref": p.ref, "data-columns": columns })}>${title}<dl class="vf-descriptions__list">${items}</dl></div>`;
@@ -652,10 +652,10 @@ function timeOf(value, format) {
 __name(timeOf, "timeOf");
 function vsTimeline(props) {
   const p = props || {};
-  const list2 = p.items || [];
+  const list3 = p.items || [];
   const items = [];
-  for (let i = 0; i < list2.length; i++) {
-    const item = list2[i] || {};
+  for (let i = 0; i < list3.length; i++) {
+    const item = list3[i] || {};
     items.push(html18`<li ${attrs({ class: "vf-timeline__item", "data-variant": oneOf("vsTimeline variant", item.variant, TONES) })}><span class="vf-timeline__marker" aria-hidden="true"></span><div class="vf-timeline__content"><p class="vf-timeline__title">${item.title}</p>${timeOf(item.time, p.timeFormat)}${present(item.description) ? html18`<p class="vf-timeline__description">${item.description}</p>` : ""}</div></li>`);
   }
   return html18`<ol ${attrs({ class: cls("vf-timeline", p.className), id: p.id, "data-ref": p.ref })}>${items}</ol>`;
@@ -1640,6 +1640,215 @@ function vfDateRangePicker(props) {
 }
 __name(vfDateRangePicker, "vfDateRangePicker");
 
+// layer1/plugins/list.js
+var MARK = "vf-list";
+function warn2(message) {
+  if (typeof console !== "undefined" && console.warn) console.warn("[vfunc] list: " + message);
+}
+__name(warn2, "warn");
+function increasing(seq) {
+  var tails = [];
+  var prev = [];
+  for (var i = 0; i < seq.length; i++) {
+    var v = seq[i];
+    if (v < 0) continue;
+    var lo = 0;
+    var hi = tails.length;
+    while (lo < hi) {
+      var mid = lo + hi >> 1;
+      if (seq[tails[mid]] < v) lo = mid + 1;
+      else hi = mid;
+    }
+    prev[i] = lo > 0 ? tails[lo - 1] : -1;
+    tails[lo] = i;
+  }
+  var out = {};
+  for (var k = tails.length ? tails[tails.length - 1] : -1; k >= 0; k = prev[k]) out[k] = true;
+  return out;
+}
+__name(increasing, "increasing");
+function install(vf) {
+  function create(target, options) {
+    var container = typeof target === "string" ? vf.$(target) : target;
+    if (!container || container.nodeType !== 1) {
+      warn2("container not found: " + target);
+      return null;
+    }
+    if (!options || typeof options.key !== "function" || typeof options.render !== "function") {
+      throw new TypeError("[vfunc] list: key and render must be functions");
+    }
+    var keyOf2 = options.key;
+    var render6 = options.render;
+    var entries = [];
+    var byKey = /* @__PURE__ */ Object.create(null);
+    var destroyed = false;
+    function draw(list3) {
+      if (!list3.length) return list3;
+      var parts = [];
+      for (var i = 0; i < list3.length; i++) {
+        var markup = render6(list3[i].item);
+        parts.push(markup instanceof vf.SafeHtml ? String(markup) : vf.esc(markup));
+      }
+      var holder = document.createElement(container.tagName);
+      holder.innerHTML = parts.join("<!--" + MARK + "-->");
+      var drawn = [];
+      var n = 0;
+      var found = null;
+      var count = 0;
+      for (var node = holder.firstChild; ; node = holder.firstChild) {
+        if (node) holder.removeChild(node);
+        if (!node || node.nodeType === 8 && node.nodeValue === MARK) {
+          var entry = list3[n++];
+          if (count === 1) {
+            found.setAttribute("data-vf-key", entry.key);
+            entry.el = found;
+            drawn.push(entry);
+          } else if (entry) {
+            warn2("render must give one element, key " + entry.key);
+          }
+          found = null;
+          count = 0;
+          if (!node) break;
+        } else if (node.nodeType === 1) {
+          found = node;
+          count++;
+        }
+      }
+      return drawn;
+    }
+    __name(draw, "draw");
+    function replace(oldEl, newEl) {
+      var active = typeof document !== "undefined" ? document.activeElement : null;
+      var action = active && oldEl.contains(active) ? active.getAttribute("data-action") : null;
+      oldEl.parentNode.replaceChild(newEl, oldEl);
+      if (action) {
+        var list3 = newEl.querySelectorAll("[data-action]");
+        for (var i = 0; i < list3.length; i++) {
+          if (list3[i].getAttribute("data-action") === action) {
+            list3[i].focus();
+            break;
+          }
+        }
+      }
+    }
+    __name(replace, "replace");
+    function update(items2, force) {
+      if (destroyed) return;
+      items2 = items2 || [];
+      var next = [];
+      var nextByKey = /* @__PURE__ */ Object.create(null);
+      var redraw = [];
+      var fresh = [];
+      var i;
+      for (i = 0; i < items2.length; i++) {
+        var k = keyOf2(items2[i]);
+        if (k == null || k === "") {
+          warn2("no key at index " + i);
+          continue;
+        }
+        k = String(k);
+        if (nextByKey[k]) {
+          warn2("duplicate key " + k);
+          continue;
+        }
+        var old = byKey[k];
+        var entry = { key: k, item: items2[i], el: old ? old.el : null, old: old ? old.index : -1 };
+        nextByKey[k] = entry;
+        next.push(entry);
+        if (!old) fresh.push(entry);
+        else if (force || old.item !== items2[i]) redraw.push(entry);
+      }
+      var shown = [];
+      if (next.length === fresh.length) {
+        container.textContent = "";
+        shown = draw(next);
+        var frag = document.createDocumentFragment();
+        for (i = 0; i < shown.length; i++) frag.appendChild(shown[i].el);
+        container.appendChild(frag);
+      } else {
+        for (i = 0; i < entries.length; i++) {
+          if (!nextByKey[entries[i].key]) container.removeChild(entries[i].el);
+        }
+        var changed = draw(redraw);
+        for (i = 0; i < changed.length; i++) replace(byKey[changed[i].key].el, changed[i].el);
+        draw(fresh);
+        var kept = [];
+        for (i = 0; i < next.length; i++) kept.push(next[i].el ? next[i].old : -1);
+        var stay = increasing(kept);
+        var ref = null;
+        for (i = next.length - 1; i >= 0; i--) {
+          var e = next[i];
+          if (!e.el) continue;
+          if (!stay[i] || e.el.parentNode !== container) container.insertBefore(e.el, ref);
+          ref = e.el;
+        }
+        for (i = 0; i < next.length; i++) if (next[i].el && next[i].el.parentNode === container) shown.push(next[i]);
+      }
+      entries = shown;
+      byKey = /* @__PURE__ */ Object.create(null);
+      for (i = 0; i < shown.length; i++) {
+        shown[i].index = i;
+        byKey[shown[i].key] = shown[i];
+      }
+    }
+    __name(update, "update");
+    function refresh(key) {
+      if (destroyed) return;
+      if (!arguments.length) {
+        update(items(), true);
+        return;
+      }
+      var entry = byKey[String(key)];
+      if (!entry) return;
+      var next = { key: entry.key, item: entry.item, el: null };
+      if (draw([next]).length) {
+        replace(entry.el, next.el);
+        entry.el = next.el;
+      }
+    }
+    __name(refresh, "refresh");
+    function items() {
+      var out = [];
+      for (var i = 0; i < entries.length; i++) out.push(entries[i].item);
+      return out;
+    }
+    __name(items, "items");
+    function element(key) {
+      var e = byKey[String(key)];
+      return e ? e.el : null;
+    }
+    __name(element, "element");
+    function destroy() {
+      if (destroyed) return;
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].el.parentNode === container) container.removeChild(entries[i].el);
+      }
+      entries = [];
+      byKey = /* @__PURE__ */ Object.create(null);
+      destroyed = true;
+    }
+    __name(destroy, "destroy");
+    if (options.items) update(options.items, null);
+    return {
+      set: /* @__PURE__ */ __name(function(list3) {
+        update(list3, null);
+      }, "set"),
+      refresh,
+      items,
+      element,
+      destroy
+    };
+  }
+  __name(create, "create");
+  return { create };
+}
+__name(install, "install");
+var vfList = { name: "list", version: "1.0.0", requires: "^1.0.0", install };
+var list_default = vfList;
+
+// layer2/src/_internal/list.js
+var list2 = list_default.install(default2);
+
 // layer2/src/components/list-view.js
 var html31 = default2.html;
 var SELECTABLE = ["none", "single", "multiple"];
@@ -1653,12 +1862,29 @@ function defaultItem(item) {
   return html31`<span class="vf-list-view__title">${item.title != null ? item.title : item.label}</span>${present(item.description) ? html31`<span class="vf-list-view__description">${item.description}</span>` : ""}${present(item.meta) ? html31`<span class="vf-list-view__meta">${item.meta}</span>` : ""}`;
 }
 __name(defaultItem, "defaultItem");
+function itemMarkup(content, option) {
+  return option ? html31`<li ${attrs(extend({ class: "vf-list-view__item", role: "option", "data-action": "select" }, option))}>${content}</li>` : html31`<li class="vf-list-view__item">${content}</li>`;
+}
+__name(itemMarkup, "itemMarkup");
+function emptyMarkup(p) {
+  return html31`<div ${attrs({ class: cls("vf-list-view", p.className), id: p.id, "data-ref": p.ref, "data-state": "empty" })}>${vsEmptyState({ title: p.emptyText })}</div>`;
+}
+__name(emptyMarkup, "emptyMarkup");
+function listMarkup(p, mode, id, rows) {
+  return html31`<ul ${attrs({
+    class: cls("vf-list-view", p.className),
+    id,
+    "data-ref": p.ref,
+    role: mode === "none" ? null : "listbox",
+    "aria-multiselectable": mode === "multiple" ? true : null,
+    "aria-label": p.label
+  })}>${rows}</ul>`;
+}
+__name(listMarkup, "listMarkup");
 function vsListView(props) {
   const p = props || {};
   const items = p.items || [];
-  if (!items.length) {
-    return html31`<div ${attrs({ class: cls("vf-list-view", p.className), id: p.id, "data-ref": p.ref, "data-state": "empty" })}>${vsEmptyState({ title: p.emptyText })}</div>`;
-  }
+  if (!items.length) return emptyMarkup(p);
   const mode = oneOf("vsListView selectable", p.selectable, SELECTABLE);
   const itemKey = p.itemKey || "id";
   const render6 = typeof p.render === "function" ? p.render : defaultItem;
@@ -1675,46 +1901,93 @@ function vsListView(props) {
   const rows = [];
   for (let i = 0; i < items.length; i++) {
     const key = keyOf(items[i], i, itemKey);
-    rows.push(mode === "none" ? html31`<li class="vf-list-view__item">${render6(items[i], i)}</li>` : html31`<li ${attrs({
-      class: "vf-list-view__item",
-      role: "option",
+    rows.push(itemMarkup(render6(items[i], i), mode === "none" ? null : {
       id: base + "-option-" + i,
       "aria-selected": hasValue(p.selected, key),
       tabindex: i === focusIndex ? 0 : -1,
-      "data-action": "select",
       "data-value": key,
       "data-index": i
-    })}>${render6(items[i], i)}</li>`);
+    }));
   }
-  return html31`<ul ${attrs({
-    class: cls("vf-list-view", p.className),
-    id: base,
-    "data-ref": p.ref,
-    role: mode === "none" ? null : "listbox",
-    "aria-multiselectable": mode === "multiple" ? true : null,
-    "aria-label": p.label
-  })}>${rows}</ul>`;
+  return listMarkup(p, mode, base, rows);
 }
 __name(vsListView, "vsListView");
 function vfListView(props) {
   const p = props || {};
   const itemKey = p.itemKey || "id";
-  function selectedItems(s) {
+  const render6 = typeof p.render === "function" ? p.render : defaultItem;
+  const usesIndex = typeof p.render === "function" && p.render.length > 1;
+  let rows = null;
+  let rowsRoot = null;
+  let wrapped = /* @__PURE__ */ Object.create(null);
+  function entries(items) {
+    const next = /* @__PURE__ */ Object.create(null);
     const out = [];
-    for (let i = 0; i < s.items.length; i++) if (hasValue(s.selected, keyOf(s.items[i], i, itemKey))) out.push(s.items[i]);
+    for (let i = 0; i < items.length; i++) {
+      const key = keyOf(items[i], i, itemKey);
+      const old = wrapped[key];
+      const entry = old && old.item === items[i] && (!usesIndex || old.index === i) ? old : { key, item: items[i], index: i };
+      next[key] = entry;
+      out.push(entry);
+    }
+    wrapped = next;
     return out;
   }
-  __name(selectedItems, "selectedItems");
+  __name(entries, "entries");
+  function sync(sender, focusKey) {
+    const s = sender.state;
+    const list3 = sender.$node.querySelectorAll('[data-action="select"]');
+    let target = null;
+    for (let i = 0; i < list3.length; i++) {
+      const key = list3[i].getAttribute("data-value");
+      const on = hasValue(s.selected, key);
+      if (list3[i].getAttribute("aria-selected") !== String(on)) list3[i].setAttribute("aria-selected", String(on));
+      if (!target && (focusKey != null ? key === focusKey : on)) target = list3[i];
+    }
+    if (!target) target = list3[0] || null;
+    const current = sender.$node.querySelector('[data-action="select"][tabindex="0"]');
+    if (current !== target) {
+      if (current) current.setAttribute("tabindex", "-1");
+      if (target) target.setAttribute("tabindex", "0");
+    }
+    return target;
+  }
+  __name(sync, "sync");
+  function build(sender) {
+    if (rowsRoot === sender.$node) return;
+    if (rows) rows.destroy();
+    rows = null;
+    rowsRoot = sender.$node;
+    wrapped = /* @__PURE__ */ Object.create(null);
+    const s = sender.state;
+    if (!s.items.length) return;
+    const plain = s.selectable !== "single" && s.selectable !== "multiple";
+    rows = list2.create(sender.$node, {
+      key: /* @__PURE__ */ __name(function(e) {
+        return e.key;
+      }, "key"),
+      render: /* @__PURE__ */ __name(function(e) {
+        return itemMarkup(render6(e.item, e.index), plain ? null : {
+          "aria-selected": hasValue(sender.state.selected, e.key),
+          tabindex: -1,
+          "data-value": e.key
+        });
+      }, "render"),
+      items: entries(s.items)
+    });
+    sync(sender);
+  }
+  __name(build, "build");
   function choose(sender, event, key) {
     const s = sender.state;
     let next;
     if (s.selectable === "multiple") {
       next = [];
       let found = false;
-      const list2 = s.selected || [];
-      for (let i = 0; i < list2.length; i++) {
-        if (String(list2[i]) === key) found = true;
-        else next.push(list2[i]);
+      const chosen = s.selected || [];
+      for (let i = 0; i < chosen.length; i++) {
+        if (String(chosen[i]) === key) found = true;
+        else next.push(chosen[i]);
       }
       if (!found) next.push(key);
     } else {
@@ -1722,20 +1995,22 @@ function vfListView(props) {
       next = key;
     }
     s.selected = next;
-    sender.refresh();
-    const option = sender.$node.querySelector('[data-value="' + key.replace(/["\\]/g, "\\$&") + '"]');
+    const option = sync(sender, key);
     if (option) option.focus();
-    emit(p.onSelect, sender, event, { value: s.selectable === "multiple" ? next.slice() : next, items: selectedItems(s) });
+    const items = [];
+    for (let i = 0; i < s.items.length; i++) if (hasValue(next, keyOf(s.items[i], i, itemKey))) items.push(s.items[i]);
+    emit(p.onSelect, sender, event, { value: s.selectable === "multiple" ? next.slice() : next, items });
   }
   __name(choose, "choose");
   const state = stateOf(p, "list", {
     items: (p.items || []).slice(),
     selected: p.selectable === "multiple" ? Object.prototype.toString.call(p.selected) === "[object Array]" ? p.selected.slice() : [] : p.selected == null ? null : String(p.selected)
   });
-  return instance({
+  const self = instance({
     state,
+    // The root only; the rows belong to the list plugin (drawn in onMount / onUpdate).
     render: /* @__PURE__ */ __name(function(s) {
-      return vsListView(extend({}, s, { render: p.render }));
+      return s.items.length ? listMarkup(s, oneOf("vsListView selectable", s.selectable, SELECTABLE), s.id, "") : emptyMarkup(s);
     }, "render"),
     delegates: [
       { selector: '[data-action="select"]', eventType: "click", onEvent: /* @__PURE__ */ __name(function(e) {
@@ -1751,18 +2026,18 @@ function vfListView(props) {
             choose(e.sender, e.event, e.target.getAttribute("data-value"));
             return;
           }
-          const options = e.sender.$node.querySelectorAll('[data-action="select"]');
-          const from = Number(e.target.getAttribute("data-index"));
+          const list3 = e.sender.$node.querySelectorAll('[data-action="select"]');
+          const from = Array.prototype.indexOf.call(list3, e.target);
           let to = null;
-          if (key === "ArrowDown" || key === "Down") to = Math.min(options.length - 1, from + 1);
+          if (key === "ArrowDown" || key === "Down") to = Math.min(list3.length - 1, from + 1);
           else if (key === "ArrowUp" || key === "Up") to = Math.max(0, from - 1);
           else if (key === "Home") to = 0;
-          else if (key === "End") to = options.length - 1;
-          if (to == null) return;
+          else if (key === "End") to = list3.length - 1;
+          if (to == null || to < 0) return;
           e.event.preventDefault();
           e.target.setAttribute("tabindex", "-1");
-          options[to].setAttribute("tabindex", "0");
-          options[to].focus();
+          list3[to].setAttribute("tabindex", "0");
+          list3[to].focus();
         }, "onEvent")
       }
     ],
@@ -1771,13 +2046,29 @@ function vfListView(props) {
         return this.state.selected;
       }, "getValue"),
       setValue: /* @__PURE__ */ __name(function(selected) {
-        this.setState({ selected });
+        this.state.selected = selected;
+        sync(this);
       }, "setValue"),
       setItems: /* @__PURE__ */ __name(function(items) {
-        this.setState({ items: (items || []).slice() });
+        const s = this.state;
+        const next = (items || []).slice();
+        if (!rows || !next.length) {
+          this.setState({ items: next });
+          return;
+        }
+        s.items = next;
+        rows.set(entries(next));
+        sync(this);
       }, "setItems")
-    }
+    },
+    onMount: build,
+    onUpdate: build,
+    onDestroy: /* @__PURE__ */ __name(function() {
+      if (rows) rows.destroy();
+    }, "onDestroy")
   });
+  build(self);
+  return self;
 }
 __name(vfListView, "vfListView");
 
@@ -2001,11 +2292,11 @@ __name(vfCarousel, "vfCarousel");
 var html33 = default2.html;
 function vsBreadcrumb(props) {
   const p = props || {};
-  const list2 = p.items || [];
+  const list3 = p.items || [];
   const items = [];
-  for (let i = 0; i < list2.length; i++) {
-    const item = list2[i] || {};
-    const last = i === list2.length - 1;
+  for (let i = 0; i < list3.length; i++) {
+    const item = list3[i] || {};
+    const last = i === list3.length - 1;
     const inner = last || !present(item.href) ? html33`<span ${attrs({ class: "vf-breadcrumb__current", "aria-current": last ? "page" : null })}>${item.label}</span>` : html33`<a ${attrs({ class: "vf-breadcrumb__link", href: item.href })}>${item.label}</a>`;
     items.push(html33`<li class="vf-breadcrumb__item">${inner}</li>`);
   }
@@ -2054,9 +2345,9 @@ function vsPagination(props) {
   }
   __name(button, "button");
   const items = [button(page - 1, html34`<span aria-hidden="true">&lsaquo;</span>`, msg("pagination.previous"))];
-  const list2 = pageList(page, pages, siblings);
-  for (let i = 0; i < list2.length; i++) {
-    const n = list2[i];
+  const list3 = pageList(page, pages, siblings);
+  for (let i = 0; i < list3.length; i++) {
+    const n = list3[i];
     items.push(n === 0 ? html34`<li><span class="vf-pagination__gap" aria-hidden="true">&hellip;</span></li>` : button(n, n, msg("pagination.page", null, { page: n }), n === page));
   }
   items.push(button(page + 1, html34`<span aria-hidden="true">&rsaquo;</span>`, msg("pagination.next")));
@@ -2234,10 +2525,10 @@ function vsAccordion(props) {
   const p = props || {};
   const base = present(p.id) ? String(p.id) : uid("accordion");
   const h = heading(p.headingLevel);
-  const list2 = p.items || [];
+  const list3 = p.items || [];
   const items = [];
-  for (let i = 0; i < list2.length; i++) {
-    const item = list2[i];
+  for (let i = 0; i < list3.length; i++) {
+    const item = list3[i];
     const open = !!item.open || hasValue(p.open, String(item.id));
     items.push(html36`<div ${attrs({ class: "vf-accordion__item", "data-state": open ? "open" : "closed" })}><${h} class="vf-accordion__heading"><button ${attrs({
       type: "button",
@@ -2439,9 +2730,9 @@ function unlockScroll() {
 __name(unlockScroll, "unlockScroll");
 function focusables(root) {
   const out = [];
-  const list2 = root.querySelectorAll(FOCUSABLE);
-  for (let i = 0; i < list2.length; i++) {
-    const el = list2[i];
+  const list3 = root.querySelectorAll(FOCUSABLE);
+  for (let i = 0; i < list3.length; i++) {
+    const el = list3[i];
     if (el.disabled || el.getAttribute("tabindex") === "-1") continue;
     if (el.tagName === "INPUT" && el.type === "hidden") continue;
     if (el.tagName === "A" && !el.getAttribute("href")) continue;
@@ -2459,14 +2750,14 @@ function focusables(root) {
 __name(focusables, "focusables");
 function trapTab(event, root) {
   if (event.key !== "Tab") return;
-  const list2 = focusables(root);
-  if (!list2.length) {
+  const list3 = focusables(root);
+  if (!list3.length) {
     event.preventDefault();
     root.focus();
     return;
   }
-  const first = list2[0];
-  const last = list2[list2.length - 1];
+  const first = list3[0];
+  const last = list3[list3.length - 1];
   const active = document.activeElement;
   if (event.shiftKey && (active === first || active === root)) {
     event.preventDefault();
@@ -2526,9 +2817,9 @@ function createModal(p, kind, extra) {
     if (!d) return;
     const wanted = present(sender.state.initialFocus) ? sender.refs[sender.state.initialFocus] : null;
     if (wanted) return wanted.focus();
-    const list2 = focusables(d);
-    for (let i = 0; i < list2.length; i++) {
-      if (list2[i].getAttribute("data-action") !== "close") return list2[i].focus();
+    const list3 = focusables(d);
+    for (let i = 0; i < list3.length; i++) {
+      if (list3[i].getAttribute("data-action") !== "close") return list3[i].focus();
     }
     d.focus();
   }
@@ -2936,10 +3227,10 @@ __name(floatControl, "floatControl");
 var html41 = default2.html;
 function menuMarkup(base, items, open, label) {
   const out = [];
-  const list2 = items || [];
+  const list3 = items || [];
   let index = 0;
-  for (let i = 0; i < list2.length; i++) {
-    const item = list2[i] || {};
+  for (let i = 0; i < list3.length; i++) {
+    const item = list3[i] || {};
     if (item.separator) {
       out.push(html41`<div class="vf-menu__separator" role="separator"></div>`);
       continue;
@@ -2984,10 +3275,10 @@ function menuBehavior(onSelect) {
   }
   __name(items, "items");
   function focusAt(sender, index) {
-    const list2 = items(sender);
-    if (!list2.length) return;
-    const i = (index % list2.length + list2.length) % list2.length;
-    list2[i].focus();
+    const list3 = items(sender);
+    if (!list3.length) return;
+    const i = (index % list3.length + list3.length) % list3.length;
+    list3[i].focus();
   }
   __name(focusAt, "focusAt");
   function openAt(sender, index) {
@@ -3003,10 +3294,10 @@ function menuBehavior(onSelect) {
   }
   __name(choose, "choose");
   function typeahead(sender, from, letter) {
-    const list2 = items(sender);
-    for (let n = 1; n <= list2.length; n++) {
-      const i = (from + n) % list2.length;
-      if ((list2[i].textContent || "").replace(/^\s+/, "").charAt(0).toLowerCase() === letter) return focusAt(sender, i);
+    const list3 = items(sender);
+    for (let n = 1; n <= list3.length; n++) {
+      const i = (from + n) % list3.length;
+      if ((list3[i].textContent || "").replace(/^\s+/, "").charAt(0).toLowerCase() === letter) return focusAt(sender, i);
     }
   }
   __name(typeahead, "typeahead");
@@ -3156,8 +3447,8 @@ function vfPopover(props) {
     ctrl.open(sender);
     const panel = sender.ids[sender.state.id + "-panel"];
     if (panel) {
-      const list2 = focusables(panel);
-      (list2.length > 1 ? list2[1] : panel).focus();
+      const list3 = focusables(panel);
+      (list3.length > 1 ? list3[1] : panel).focus();
     }
     emit(p.onOpen, sender, event, {});
   }
@@ -3319,9 +3610,9 @@ var W = 100;
 var H = 24;
 function numbers(data) {
   const out = [];
-  const list2 = data || [];
-  for (let i = 0; i < list2.length; i++) {
-    const n = Number(list2[i]);
+  const list3 = data || [];
+  for (let i = 0; i < list3.length; i++) {
+    const n = Number(list3[i]);
     if (!isNaN(n)) out.push(n);
   }
   return out;

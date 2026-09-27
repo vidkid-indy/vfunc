@@ -211,6 +211,69 @@ test('vfListView: click and keys select, arrows move the focus, onSelect gives k
   list.destroy();
 });
 
+test('vfListView keeps rows by key (D-045): setItems draws only changed items, selecting draws nothing', () => {
+  const a = { id: 'a', title: 'A' };
+  const b = { id: 'b', title: 'B' };
+  const c = { id: 'c', title: 'C' };
+  const list = mounted(vfListView({ items: [a, b, c], selectable: 'single', selected: 'b' }));
+  const option = (k) => list.$node.querySelector('[data-value="' + k + '"]');
+  const first = option('a');
+  assert.equal(first.id, '', 'no position-based id');
+  assert.equal(first.getAttribute('data-index'), null);
+  assert.equal(option('b').getAttribute('aria-selected'), 'true');
+  assert.equal(option('b').getAttribute('tabindex'), '0', 'the selected option is in the tab order');
+  assert.equal(first.getAttribute('tabindex'), '-1');
+
+  click(option('c'));
+  assert.equal(option('a'), first, 'selecting keeps the elements');
+  assert.equal(option('b').getAttribute('aria-selected'), 'false');
+  assert.equal(option('c').getAttribute('aria-selected'), 'true');
+  assert.equal(option('c').getAttribute('tabindex'), '0');
+
+  const keptC = option('c');
+  list.setItems([c, { id: 'b', title: 'B2' }, { id: 'd', title: 'D' }]);
+  assert.deepEqual(Array.from(list.$node.querySelectorAll('[data-value]'), (el) => el.getAttribute('data-value')), ['c', 'b', 'd']);
+  assert.equal(option('c'), keptC, 'the same item keeps its element when it moves');
+  assert.match(option('b').textContent, /B2/);
+  assert.equal(option('c').getAttribute('aria-selected'), 'true');
+  assert.equal(option('c').getAttribute('tabindex'), '0');
+
+  list.setValue('d');
+  assert.equal(option('d').getAttribute('aria-selected'), 'true');
+  assert.equal(option('c').getAttribute('aria-selected'), 'false');
+
+  list.setItems([]);
+  return flush().then(() => {
+    assert.equal(list.$node.getAttribute('data-state'), 'empty');
+    list.setItems([a]);
+    return flush();
+  }).then(() => {
+    assert.equal(list.$node.tagName, 'UL');
+    assert.equal(list.$node.querySelectorAll('[data-value]').length, 1);
+    list.setState({ label: 'Users' }); // any state change draws the root again: the rows come back
+    return flush();
+  }).then(() => {
+    assert.equal(list.$node.getAttribute('aria-label'), 'Users');
+    assert.equal(list.$node.querySelectorAll('[data-value]').length, 1);
+    list.destroy();
+  });
+});
+
+test('vfListView: multiple selection toggles attributes; a render that takes the index redraws moved rows', () => {
+  const onSelect = recorder();
+  const items = ['x', 'y', 'z'].map((id) => ({ id, title: id.toUpperCase() }));
+  const list = mounted(vfListView({ items, selectable: 'multiple', onSelect, render: (item, index) => vf.html`<b>${index + 1}. ${item.title}</b>` }));
+  click(list.$node.querySelector('[data-value="x"]'));
+  click(list.$node.querySelector('[data-value="z"]'));
+  assert.deepEqual(list.getValue(), ['x', 'z']);
+  click(list.$node.querySelector('[data-value="x"]'));
+  assert.deepEqual(onSelect.calls.map((e) => e.data.value), [['x'], ['x', 'z'], ['z']]);
+  list.setItems([items[2], items[0], items[1]]);
+  assert.deepEqual(Array.from(list.$node.querySelectorAll('b'), (el) => el.textContent), ['1. Z', '2. X', '3. Y']);
+  assert.equal(list.$node.getAttribute('aria-multiselectable'), 'true');
+  list.destroy();
+});
+
 test('vfCarousel: slides, controls and messages, loop, onChange, autoplay paused on hover, released on destroy', async () => {
   const onChange = recorder();
   const c = mounted(vfCarousel({ label: 'News', items: [{ content: 'one' }, { content: 'two' }, { src: 'javascript:x' }], onChange }));

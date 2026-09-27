@@ -99,12 +99,13 @@ test('vfTabs: arrow keys skip the disabled tab and move the focus', async () => 
 });
 
 test('vfListView: arrow keys move, Space selects', async () => {
-  await page.click('#users-option-0');
+  await page.click('#users [data-value="a"]');
   await waitLog('list a');
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press(' ');
   await waitLog('list b');
-  assert.equal(await page.getAttribute('#users-option-1', 'aria-selected'), 'true');
+  assert.equal(await page.getAttribute('#users [data-value="b"]', 'aria-selected'), 'true');
+  assert.equal(await page.getAttribute('#users [data-value="a"]', 'aria-selected'), 'false');
 });
 
 test('vfAccordion, vfStepper, vfPagination, vfCarousel respond to clicks', async () => {

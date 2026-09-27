@@ -61,7 +61,7 @@ function install(vf) {
       return null;
     }
     if (!options || typeof options.key !== 'function' || typeof options.render !== 'function') {
-      throw new TypeError('vf.ext.list.create: options.key and options.render must be functions');
+      throw new TypeError('[vfunc] list: key and render must be functions');
     }
     var keyOf = options.key;
     var render = options.render;
@@ -94,7 +94,7 @@ function install(vf) {
             entry.el = found;
             drawn.push(entry);
           } else if (entry) {
-            warn('render must return exactly one element (key ' + entry.key + ')');
+            warn('render must give one element, key ' + entry.key);
           }
           found = null;
           count = 0;
@@ -134,9 +134,9 @@ function install(vf) {
       var i;
       for (i = 0; i < items.length; i++) {
         var k = keyOf(items[i]);
-        if (k == null || k === '') { warn('item without a key at index ' + i); continue; }
+        if (k == null || k === '') { warn('no key at index ' + i); continue; }
         k = String(k);
-        if (nextByKey[k]) { warn('duplicate key ' + k + '; only the first item is shown'); continue; }
+        if (nextByKey[k]) { warn('duplicate key ' + k); continue; }
         var old = byKey[k];
         var entry = { key: k, item: items[i], el: old ? old.el : null, old: old ? old.index : -1 };
         nextByKey[k] = entry;
@@ -145,46 +145,39 @@ function install(vf) {
         else if (force || old.item !== items[i]) redraw.push(entry);
       }
 
-      // Nothing kept: start from an empty container (the fast path for create and clear).
-      if (next.length === fresh.length) {
-        container.textContent = '';
-        var drawnAll = draw(next);
-        var frag = document.createDocumentFragment();
-        for (i = 0; i < drawnAll.length; i++) frag.appendChild(drawnAll[i].el);
-        container.appendChild(frag);
-        commit(drawnAll);
-        return;
-      }
-
-      for (i = 0; i < entries.length; i++) {
-        if (!nextByKey[entries[i].key]) container.removeChild(entries[i].el);
-      }
-      // A changed item takes the place of its old element, so it keeps its old position.
-      var changed = draw(redraw);
-      for (i = 0; i < changed.length; i++) replace(byKey[changed[i].key].el, changed[i].el);
-      draw(fresh);
-
-      var kept = [];
-      for (i = 0; i < next.length; i++) kept.push(next[i].el ? next[i].old : -1);
-      var stay = increasing(kept);
-      var ref = null;
-      for (i = next.length - 1; i >= 0; i--) {
-        var e = next[i];
-        if (!e.el) continue;                       // render failed: skipped
-        if (!stay[i] || e.el.parentNode !== container) container.insertBefore(e.el, ref);
-        ref = e.el;
-      }
       var shown = [];
-      for (i = 0; i < next.length; i++) if (next[i].el && next[i].el.parentNode === container) shown.push(next[i]);
-      commit(shown);
-    }
-
-    function commit(list) {
-      entries = list;
+      if (next.length === fresh.length) {
+        // Nothing kept: start from an empty container (the fast path for create and clear).
+        container.textContent = '';
+        shown = draw(next);
+        var frag = document.createDocumentFragment();
+        for (i = 0; i < shown.length; i++) frag.appendChild(shown[i].el);
+        container.appendChild(frag);
+      } else {
+        for (i = 0; i < entries.length; i++) {
+          if (!nextByKey[entries[i].key]) container.removeChild(entries[i].el);
+        }
+        // A changed item takes the place of its old element, so it keeps its old position.
+        var changed = draw(redraw);
+        for (i = 0; i < changed.length; i++) replace(byKey[changed[i].key].el, changed[i].el);
+        draw(fresh);
+        var kept = [];
+        for (i = 0; i < next.length; i++) kept.push(next[i].el ? next[i].old : -1);
+        var stay = increasing(kept);
+        var ref = null;
+        for (i = next.length - 1; i >= 0; i--) {
+          var e = next[i];
+          if (!e.el) continue;                       // render failed: skipped
+          if (!stay[i] || e.el.parentNode !== container) container.insertBefore(e.el, ref);
+          ref = e.el;
+        }
+        for (i = 0; i < next.length; i++) if (next[i].el && next[i].el.parentNode === container) shown.push(next[i]);
+      }
+      entries = shown;
       byKey = Object.create(null);
-      for (var i = 0; i < list.length; i++) {
-        list[i].index = i;
-        byKey[list[i].key] = list[i];
+      for (i = 0; i < shown.length; i++) {
+        shown[i].index = i;
+        byKey[shown[i].key] = shown[i];
       }
     }
 

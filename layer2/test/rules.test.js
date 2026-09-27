@@ -32,9 +32,11 @@ function offenders(list, pattern) {
   return list.filter((f) => pattern.test(f.code)).map((f) => f.path);
 }
 
-test('only _internal/vf.js imports layer 1, and layer 2 never touches internal engine members', () => {
-  const importsLayer1 = js.filter((f) => /from\s+['"][^'"]*layer1\//.test(f.code)).map((f) => f.path);
-  assert.deepEqual(importsLayer1, ['src/_internal/vf.js']);
+test('only _internal/vf.js (the engine) and _internal/list.js (the list plugin, D-045) import layer 1, and layer 2 never touches internal engine members', () => {
+  const importsLayer1 = js.filter((f) => /from\s+['"][^'"]*layer1\//.test(f.code)).map((f) => f.path).sort();
+  assert.deepEqual(importsLayer1, ['src/_internal/list.js', 'src/_internal/vf.js']);
+  const listImport = js.find((f) => f.path === 'src/_internal/list.js');
+  assert.match(listImport.code, /from '\.\.\/\.\.\/\.\.\/layer1\/plugins\/list\.js'/, 'only the public plugin module');
   assert.deepEqual(offenders(js, /\bvf\._|\$node\._|\.\s*_(?:cfg|hook|listeners|mounted|destroyed|adopted|accessors)\b/), []);
 });
 
