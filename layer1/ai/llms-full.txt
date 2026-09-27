@@ -620,6 +620,10 @@ Give the `base`, `grid` and `chart` suites in `layer2/adapters/_contract/` a fac
 
 Give the prompt `layer2/ai/en/prompt-integrate-third-party.md` (Korean: `layer2/ai/ko/…`) the library name and exact version, its documentation link and the level you want: it writes the component or adapter, a sample page and the contract test setup by the steps above. Check the result with the contract tests.
 
+### Sharing adapters and questions
+
+To share an adapter or an app wrapper you made, or to ask where an integration got stuck, use the [Adapters category of Discussions](https://github.com/vidkid-indy/vfunc/discussions/categories/adapters). Publish yours as a separate package named `vfunc-adapter-*` and post it there, and we list it on this site. To propose an official adapter, discuss it there first and follow the steps in [CONTRIBUTING](https://github.com/vidkid-indy/vfunc/blob/main/CONTRIBUTING.md#adapters--어댑터-기여).
+
 ## Deployment and cache
 
 ### Files

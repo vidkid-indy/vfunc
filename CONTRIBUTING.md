@@ -53,8 +53,8 @@ layer2의 내장 문구는 `layer2/src/locales/`에 있습니다. 새 언어는 
 
 ## Adapters / 어댑터 기여
 
-Other adapters are welcome as separate packages named `vfunc-adapter-*`; we list them on the site. An **official** adapter (in this repository) follows these steps:
-그 밖의 어댑터는 `vfunc-adapter-*` 이름의 별도 패키지로 만들어 주시면 사이트에 소개합니다. **공식** 어댑터(이 저장소)는 아래 절차를 따릅니다.
+Other adapters are welcome as separate packages named `vfunc-adapter-*`: post yours in the [Adapters category of Discussions](https://github.com/vidkid-indy/vfunc/discussions/categories/adapters) and we list it on the site. To propose an **official** adapter (in this repository), start a discussion there before the pull request; it then follows these steps:
+그 밖의 어댑터는 `vfunc-adapter-*` 이름의 별도 패키지로 만들어 [Discussions의 Adapters 카테고리](https://github.com/vidkid-indy/vfunc/discussions/categories/adapters)에 올려 주시면 사이트에 소개합니다. **공식** 어댑터(이 저장소)는 PR 전에 그곳에서 먼저 논의하고, 아래 절차를 따릅니다.
 
 1. **License and support.** The vendor is MIT, Apache-2.0, BSD or ISC (no revenue-based or commercial-only terms). Pin the exact version; state its browser support. / 라이선스와 정확한 버전, 브라우저 지원.
 2. **Template.** Copy `layer2/adapters/_template/vfunc-kind-vendor.js` to `layer2/adapters/<kind>-<vendor>/index.js` and fill in its `TODO(1)`–`TODO(14)`. The name is `vf` + kind + vendor (`vfGridAg`). The vendor is never bundled: `lib` prop or its global. / 템플릿에서 시작하고 벤더는 번들하지 않습니다.

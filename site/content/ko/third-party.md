@@ -77,3 +77,7 @@
 ## AI로 가져오기
 
 프롬프트 `layer2/ai/ko/prompt-integrate-third-party.md`(영어판 `layer2/ai/en/…`)에 라이브러리 이름과 정확한 버전, 문서 링크, 원하는 수준을 주면 위 절차대로 컴포넌트나 어댑터, 샘플 페이지, 계약 테스트 설정을 만들어 줍니다. 결과는 계약 테스트로 확인하세요.
+
+## 어댑터 공유와 질문
+
+만든 어댑터나 앱 전용 래퍼를 공유하거나 통합하다 막힌 곳을 물을 때는 [Discussions의 Adapters 카테고리](https://github.com/vidkid-indy/vfunc/discussions/categories/adapters)를 쓰세요. `vfunc-adapter-*` 이름의 별도 패키지로 만들어 그곳에 올려 주시면 이 사이트에 소개합니다. 공식 어댑터로 제안하려면 먼저 그곳에서 논의하고 [CONTRIBUTING](https://github.com/vidkid-indy/vfunc/blob/main/CONTRIBUTING.md#adapters--어댑터-기여)의 절차를 따릅니다.
