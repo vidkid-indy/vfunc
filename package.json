@@ -33,11 +33,11 @@
     "pack:dry": "npm pack --dry-run ./build/out/npm"
   },
   "devDependencies": {
-    "@babel/core": "8.0.6",
-    "@babel/preset-env": "8.0.6",
+    "@babel/core": "8.0.7",
+    "@babel/preset-env": "8.0.7",
     "es-check": "9.8.1",
     "esbuild": "0.28.2",
-    "happy-dom": "^20.14.5",
-    "playwright": "1.63.0"
+    "happy-dom": "^21.0.1",
+    "playwright": "1.64.0"
   }
 }
