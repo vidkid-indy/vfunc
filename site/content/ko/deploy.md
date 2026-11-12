@@ -7,8 +7,9 @@
 | `vfunc.js` / `vfunc.min.js` | `<script>`용 개발 / 운영(전역 `vf`) |
 | `vfunc.esm.js` / `vfunc.esm.min.js` | ES 모듈 개발 / 운영 |
 | `vfunc.legacy.min.js` | IE11·Edge IE 모드 |
-| `plugins/update.min.js`, `plugins/update.esm.js` | update 플러그인 |
-| `css/vfunc.tokens.css` | 선택형 토큰 |
+| `plugins/{update,shortcut,list}.min.js`, `….esm.js` | 공식 플러그인 |
+| `vfunc-ui.js`·`vfunc-ui-data.js`(+ `.min`, `.esm`, `.legacy.min`) | 컴포넌트(선택) |
+| `css/vfunc.tokens.css`, `css/vfunc-ui.css` | 선택형 토큰, 컴포넌트 스타일 |
 
 모든 파일에 소스맵이 있고, 미니파이만 하고 난독화는 하지 않습니다.
 

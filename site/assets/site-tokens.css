@@ -1,0 +1,87 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * The site's own colors (D-048): a vanilla palette over the library tokens (layer1/css/vfunc.tokens.css,
+ * loaded first). Only this site uses it; the library's default tokens stay as they are, and the
+ * examples, the gallery and the tutorial's step pages keep them. --site-* names belong to this site only.
+ * 사이트 전용 색(바닐라). 라이브러리 기본 토큰 위에 덮어씁니다. 원시 값은 이 파일에만 둡니다.
+ */
+
+:root {
+  --vf-color-primary: #7a4a1f;
+  --vf-color-primary-hover: #633b17;
+  --vf-color-primary-active: #4e2e11;
+  --vf-color-primary-soft: #f6e7c8;
+  --vf-color-on-primary: #ffffff;
+
+  --vf-color-bg: #fffbf2;
+  --vf-color-surface: #ffffff;
+  --vf-color-surface-muted: #f7eedc;
+  --vf-color-overlay: rgba(43, 29, 18, 0.5);
+
+  --vf-color-text: #2b1d12;
+  --vf-color-text-muted: #6b5a48;
+  --vf-color-text-disabled: #a89880;
+  --vf-color-text-inverse: #ffffff;
+
+  --vf-color-border: #eadfc8;
+  --vf-color-border-strong: #cdbb98;
+  --vf-color-focus: #a8691b;
+  --vf-focus-ring: 0 0 0 3px rgba(168, 105, 27, 0.4);
+
+  --vf-shadow-1: 0 1px 2px rgba(43, 29, 18, 0.06);
+  --vf-shadow-2: 0 4px 6px -1px rgba(43, 29, 18, 0.1), 0 2px 4px -2px rgba(43, 29, 18, 0.08);
+  --vf-shadow-3: 0 10px 15px -3px rgba(43, 29, 18, 0.12), 0 4px 6px -4px rgba(43, 29, 18, 0.1);
+
+  --site-hero-bg: #f3e2a9;
+  --site-hero-text: #2b1d12;
+  --site-icon: #7a4a1f;
+}
+
+/* Dark: espresso and caramel. Follows the OS unless data-theme="light". / 다크: 에스프레소와 캐러멜 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --vf-color-primary: #e9c27a;
+    --vf-color-primary-hover: #f2d294;
+    --vf-color-primary-active: #f7e0b0;
+    --vf-color-primary-soft: #3a2d1c;
+    --vf-color-on-primary: #2b1d12;
+    --vf-color-bg: #17120d;
+    --vf-color-surface: #211a13;
+    --vf-color-surface-muted: #2b2219;
+    --vf-color-overlay: rgba(10, 7, 4, 0.7);
+    --vf-color-text: #f5ebdd;
+    --vf-color-text-muted: #c4b39c;
+    --vf-color-text-disabled: #7d6d5a;
+    --vf-color-text-inverse: #2b1d12;
+    --vf-color-border: #3a2f24;
+    --vf-color-border-strong: #57483a;
+    --vf-color-focus: #e9c27a;
+    --vf-focus-ring: 0 0 0 3px rgba(233, 194, 122, 0.45);
+    --site-hero-bg: #2b2219;
+    --site-hero-text: #f5ebdd;
+    --site-icon: #e9c27a;
+  }
+}
+
+/* The same dark values, forced with data-theme="dark". / 강제 다크 */
+:root[data-theme="dark"] {
+  --vf-color-primary: #e9c27a;
+  --vf-color-primary-hover: #f2d294;
+  --vf-color-primary-active: #f7e0b0;
+  --vf-color-primary-soft: #3a2d1c;
+  --vf-color-on-primary: #2b1d12;
+  --vf-color-bg: #17120d;
+  --vf-color-surface: #211a13;
+  --vf-color-surface-muted: #2b2219;
+  --vf-color-overlay: rgba(10, 7, 4, 0.7);
+  --vf-color-text: #f5ebdd;
+  --vf-color-text-muted: #c4b39c;
+  --vf-color-text-disabled: #7d6d5a;
+  --vf-color-text-inverse: #2b1d12;
+  --vf-color-border: #3a2f24;
+  --vf-color-border-strong: #57483a;
+  --vf-color-focus: #e9c27a;
+  --vf-focus-ring: 0 0 0 3px rgba(233, 194, 122, 0.45);
+  --site-hero-bg: #2b2219;
+  --site-hero-text: #f5ebdd;
+  --site-icon: #e9c27a;
+}

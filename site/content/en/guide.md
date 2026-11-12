@@ -33,7 +33,7 @@ The event object is `{ sender, event, eventType, target, id, data }`. **Hang sel
 
 ## Existing HTML — `vf.attach`
 
-The core idea of vfunc: keep the publisher's HTML and add behaviour.
+Keep the publisher's HTML and add behaviour to it.
 
 ```js
 // Without render: adopt the element as it is (markup, typed values and styles stay)

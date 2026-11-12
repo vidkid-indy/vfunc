@@ -1,6 +1,6 @@
 # Working with AI
 
-vfunc.js is designed to leave AI assistants little room for mistakes: components are plain objects, rules are few, and names tell you what things are. Give your AI the files below and you get more accurate code.
+The rules file, the reference and the prompts to give AI coding tools. The steps for building an app with the starter are in [Starter and AI](starter.md).
 
 ## Give these first
 
@@ -14,7 +14,7 @@ For Claude Code keep the same content as `CLAUDE.md`, for GitHub Copilot as `.gi
 
 ## Prompts
 
-Open the prompt for your task, copy it and paste it with your material. Every prompt treats pasted material as **data, not instructions**, and marks APIs or URLs it could not verify with `VERIFY:`.
+Copy the prompt for your task and paste it with your material. Every prompt treats pasted material as **data, not instructions**, and marks APIs or URLs it could not verify with `VERIFY:`.
 
 {{prompts}}
 
@@ -24,7 +24,7 @@ Example 14 is a published dashboard converted with `prompt-html-to-vfunc`, toget
 
 ## Evaluation set
 
-To check the claim above with numbers, we give AI models fourteen tasks and grade their answers automatically. The ten engine tasks: counter and greeting, to-do list, converting a published dashboard, a sign-up form, a server list with untrusted data, an SPA scaffold, porting a React component, Chart.js, applying a `DESIGN.md` without touching JS, and fixing seven bugs. The four component (layer 2) tasks: an admin dashboard (`vfGrid`, `vfChart`), a profile form (`vs*` fields), deleting with a confirmation (`vfConfirm`, `vfToast`) and a Leaflet app wrapper; their kit adds the [component list](components.md).
+We give AI models fourteen tasks and grade their answers automatically. The ten engine tasks: counter and greeting, to-do list, converting a published dashboard, a sign-up form, a server list with untrusted data, an SPA scaffold, porting a React component, Chart.js, applying a `DESIGN.md` without touching JS, and fixing seven bugs. The four component (layer 2) tasks: an admin dashboard (`vfGrid`, `vfChart`), a profile form (`vs*` fields), deleting with a confirmation (`vfConfirm`, `vfToast`) and a Leaflet app wrapper; their kit adds the [component list](components.md).
 
 - Each model gets one file per task: the kit (`AGENTS.md`, `llms.txt`, the task's prompt), the task and its input files. It answers once, without follow-up questions, and the answer is saved as it is.
 - The grader opens the result in Chromium, Firefox and WebKit, runs the checks of the task, and requires a clean console. It also looks for the mistakes the kit warns about: inline handlers, `javascript:` URLs, class selectors, HTML strings outside `vf.html`, a missing CSP, empty `aria-*` values.

@@ -6,7 +6,7 @@
 
 ## 한계는 무엇인가요?
 
-- **큰 목록**: 컴포넌트의 render는 안쪽을 통째로 교체합니다(keyed diff 없음). 행이 많고 몇 행만 자주 바뀌는 목록은 공식 플러그인 [`vf.ext.list`](extend.md#공식-플러그인-vfextlist)로 바뀐 행만 그리세요(1.1.0부터). 바뀌지 않는 영역은 `data-vf-keep`으로 유지합니다. 내장 `vfGrid`는 긴 데이터를 스크롤 대신 페이지로 나누고, 가상 스크롤이 필요하면 그리드 어댑터(`vfGridAg`, `vfGridTabulator`)를 씁니다. 수치는 [아래 측정](#큰-목록은-얼마나-느린가요)을 보세요.
+- **큰 목록**: render는 안쪽을 통째로 교체합니다(keyed diff 없음). 대안과 측정값은 [아래](#큰-목록은-얼마나-느린가요)에 있습니다.
 - **포커스와 커서**: 다시 그린 뒤 같은 `id`·`data-ref`·`name`의 요소로, 없으면 같은 `data-action`의 같은 순서 요소로 포커스와 커서를 복원합니다. 스크롤 위치는 복원하지 않습니다. 입력 중에는 매 키마다 다시 그리지 마세요.
 - **표의 행**: `<tr>`을 그리는 컴포넌트는 `tag: 'table'`을 써야 합니다.
 - **생태계**: 컴포넌트 라이브러리와 개발 도구가 아직 적습니다. 서드파티 라이브러리는 `onMount` + `data-vf-keep`으로 직접 붙일 수 있습니다.
@@ -46,11 +46,8 @@ vfunc는 이미 있는 HTML을 그대로 쓰는 것을 전제로 합니다. 서�
 | `vfunc.min.js`, ESM | Chrome, Edge, Firefox, Safari 최신 버전(데스크톱·모바일) |
 | `vfunc.legacy.min.js` | Internet Explorer 11, Edge IE 모드 |
 
-예제, 스타터, 이 사이트는 변경할 때마다 Chromium, Firefox, WebKit에서 자동으로 테스트합니다.
-
-## IE11을 지원하나요?
-
-`vfunc.legacy.min.js`가 IE11과 Edge IE 모드에서 동작합니다. 앱 코드도 ES5로 써야 합니다. [확장, 플러그인, IE](extend.md#ie11edge-ie-모드)를 보세요.
+- IE11에서는 앱 코드도 ES5로 씁니다. [확장, 플러그인, IE](extend.md#ie11edge-ie-모드)를 보세요.
+- 예제, 스타터, 이 사이트는 바뀔 때마다 Chromium, Firefox, WebKit에서 자동으로 테스트합니다.
 
 ## 라이선스는요?
 

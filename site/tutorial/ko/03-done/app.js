@@ -5,7 +5,7 @@ const row = (item) => vf.html`
   <li class="todo__item" data-id="${item.id}" data-state="${item.done ? 'done' : 'open'}">
     <input type="checkbox" id="done-${item.id}" data-action="toggle" ${item.done ? 'checked' : ''}>
     <label class="todo__text" for="done-${item.id}">${item.text}</label>
-    <button class="todo__remove" type="button" data-action="remove" aria-label="삭제">✕</button>
+    <button class="todo__remove" type="button" data-action="remove">삭제</button>
   </li>`;
 
 // 이벤트가 일어난 줄의 data-id를 숫자로 돌려줍니다.

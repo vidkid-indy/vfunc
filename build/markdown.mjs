@@ -31,7 +31,8 @@ export function slug(text) {
     .replace(/\s+/g, '-') || 'section';
 }
 
-function inline(text, options) {
+/** Inline Markdown only (code, links, bold, italic), everything else escaped. Used by the landing page too. */
+export function inline(text, options) {
   const codes = [];
   let out = String(text).replace(/`([^`]+)`/g, (all, code) => {
     codes.push('<code>' + esc(code) + '</code>');

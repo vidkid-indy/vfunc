@@ -6,6 +6,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { markdown, safeHref, slug } from './markdown.mjs';
 import { tutorialBlocks } from './site.mjs';
+import { readTokens, checkContrast } from '../layer1/starter/tools/design-check.mjs';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const read = (path) => readFileSync(ROOT + path, 'utf8').replace(/\r\n/g, '\n');
@@ -51,8 +52,19 @@ test('heading ids work for English and Korean', () => {
 
 const config = JSON.parse(read('site/pages.json'));
 
+// The shape of a landing JSON: every key path, with array lengths. / 랜딩 JSON의 모양(키와 배열 길이)
+const shape = (value, path) => Array.isArray(value) ? [path + '[' + value.length + ']'].concat(...value.map((v, i) => shape(v, path + '.' + i)))
+  : value && typeof value === 'object' ? [].concat(...Object.keys(value).sort().map((k) => shape(value[k], path + '.' + k))) : [path];
+
+test('landing pages have the same keys in every language (D-048)', () => {
+  const landing = config.pages.filter((p) => p.landing);
+  assert.ok(landing.length >= 1);
+  const shapes = config.languages.map((lang) => shape(JSON.parse(read('site/landing/' + lang + '.json')), ''));
+  assert.deepEqual(shapes[1], shapes[0]);
+});
+
 test('every page exists in every language, with the same sections', () => {
-  for (const page of config.pages) {
+  for (const page of config.pages.filter((p) => !p.landing)) {
     const counts = config.languages.map((lang) => {
       const path = 'site/content/' + lang + '/' + page.slug + '.md';
       assert.ok(existsSync(ROOT + path), path);
@@ -114,4 +126,16 @@ test('tutorial: every screenshot the pages show exists', () => {
       assert.ok(existsSync(ROOT + path), path);
     }
   }
+});
+
+test('the site palette over the library tokens meets WCAG AA in light and dark (D-048)', () => {
+  const tokens = readTokens(read('layer1/css/vfunc.tokens.css'));
+  readTokens(read('site/assets/site-tokens.css'), tokens);
+  assert.deepEqual(checkContrast(tokens, 'site-tokens.css').filter((f) => f.level === 'error'), []);
+});
+
+test('site pages use SVG icons, not symbol characters (D-048)', () => {
+  const files = ['site/templates/page.html', 'site/templates/root.html'].concat(
+    config.languages.flatMap((lang) => config.pages.filter((p) => !p.landing).map((p) => 'site/content/' + lang + '/' + p.slug + '.md')).concat(config.languages.map((lang) => 'site/landing/' + lang + '.json')));
+  for (const file of files) assert.doesNotMatch(read(file), /[①-⓿■-◿☀-➿⭐⭕]|[\ud83c-\ud83e][\udc00-\udfff]/u, file);
 });

@@ -102,11 +102,11 @@ test('islands: theme, copy, search, navigation and the home demo', async () => {
     await page.click('#home-demo [data-action="add"]');
     await page.waitForFunction(() => document.querySelector('[data-ref="count"]').textContent === '1');
 
-    // copy button on the install snippet
-    const copy = page.locator('[data-copy-root]', { hasText: 'integrity=' }).first().locator('[data-action="copy"]');
+    // copy button on the landing page's install line (D-048)
+    const copy = page.locator('[data-copy-root]', { hasText: 'npm i vfunc@' }).first().locator('[data-action="copy"]');
     await copy.click();
     await page.waitForFunction(() => document.querySelector('[data-action="copy"][data-state="copied"]'));
-    assert.match(await page.evaluate(() => window.__copied), /integrity="sha384-/);
+    assert.match(await page.evaluate(() => window.__copied), /^npm i vfunc@\d+\.\d+\.\d+$/);
 
     // search
     await page.fill('[data-ref="query"]', 'router');
@@ -151,4 +151,20 @@ test('the install snippet uses the package version and the dist SRI', async () =
   assert.match(html, new RegExp('vfunc@' + pkg.version.replace(/\./g, '\\.') + '/dist/vfunc\\.min\\.js'));
   assert.doesNotMatch(html, /@VERSION@/);
   assert.match(html, /integrity=&quot;sha384-[A-Za-z0-9+/]{64}&quot;/);
+});
+
+test('every page fits a 360px phone screen: nothing scrolls sideways but code and tables (D-048)', async () => {
+  const wide = [];
+  for (const lang of config.languages) {
+    for (const p of config.pages) {
+      const { page, context } = await open('/' + lang + '/' + p.slug + '.html', { viewport: { width: 360, height: 740 } });
+      try {
+        const size = await page.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
+        if (size[0] > size[1]) wide.push(lang + '/' + p.slug + ' ' + size.join('/'));
+      } finally {
+        await context.close();
+      }
+    }
+  }
+  assert.deepEqual(wide, []);
 });

@@ -10,6 +10,7 @@
   <link rel="icon" href="data:,">
   <link rel="alternate" hreflang="{{otherLang}}" href="{{otherHref}}">
   <link rel="stylesheet" href="{{root}}layer1/css/vfunc.tokens.css">
+  <link rel="stylesheet" href="{{root}}assets/site-tokens.css">
   <link rel="stylesheet" href="{{root}}assets/site.css">
   <script src="{{root}}assets/theme-early.js"></script>
 </head>
@@ -22,17 +23,18 @@
       <div class="search-results" id="search-results" aria-live="polite"></div>
     </form>
     <nav class="topbar__tools" aria-label="Site">
+      <a class="topbar__link" href="./getting-started.html">{{docs}}</a>
       <a class="topbar__link" href="{{otherHref}}" hreflang="{{otherLang}}" lang="{{otherLang}}" data-ref="other-lang">{{other}}</a>
       <a class="topbar__link" href="https://github.com/vidkid-indy/vfunc" rel="noopener">{{source}}</a>
-      <button class="topbar__button" type="button" id="theme-toggle" data-action="theme" aria-label="{{theme}}" data-state="system">◐</button>
-      <button class="topbar__button topbar__menu" type="button" id="nav-toggle" data-action="nav" aria-expanded="false" aria-controls="site-nav">{{menu}}</button>
+      <button class="topbar__button topbar__theme" type="button" id="theme-toggle" data-action="theme" aria-label="{{theme}}" data-state="system"><svg class="icon" data-icon="system" aria-hidden="true"><use href="{{root}}assets/icons.svg#theme-system"/></svg><svg class="icon" data-icon="light" aria-hidden="true"><use href="{{root}}assets/icons.svg#theme-light"/></svg><svg class="icon" data-icon="dark" aria-hidden="true"><use href="{{root}}assets/icons.svg#theme-dark"/></svg></button>
+      <button class="topbar__button topbar__menu" type="button" id="nav-toggle" data-action="nav" aria-expanded="false" aria-controls="site-nav"><svg class="icon" aria-hidden="true"><use href="{{root}}assets/icons.svg#menu"/></svg>{{menu}}</button>
     </nav>
   </header>
-  <div class="layout">
+  <div class="{{layout}}">
     <nav class="sidenav" id="site-nav" aria-label="Docs" data-state="closed">
 {{nav}}
     </nav>
-    <main class="page" id="content" tabindex="-1">
+    <main class="{{main}}" id="content" tabindex="-1">
 {{content}}
     </main>
     <aside class="toc" aria-label="{{onThisPage}}">

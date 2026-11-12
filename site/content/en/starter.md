@@ -30,7 +30,7 @@ cd my-app
 python -m http.server 8080
 ```
 
-Without Node.js, download **Code → Download ZIP** from the [repository](https://github.com/vidkid-indy/vfunc), unzip it and copy just the `layer1/starter` folder. Start a server in that folder and open `http://localhost:8080/`: an app with home, list and settings screens appears.
+Without Node.js, download [vfunc-starter-@VERSION@.zip](../downloads/vfunc-starter-@VERSION@.zip) and unzip it. Start a server in that folder and open `http://localhost:8080/`: an app with home, list and settings screens appears.
 
 ## First setup
 
@@ -104,7 +104,7 @@ export { default } from './vfunc.esm.js';
 
 ## When you need a database (sql.js)
 
-Projects marked ◆ use SQLite. This page suggests [sql.js](https://github.com/sql-js/sql.js) (MIT license), which runs SQLite inside the browser with no server. It is not part of vfunc; the app loads it.
+Projects marked (DB) use SQLite. This page suggests [sql.js](https://github.com/sql-js/sql.js) (MIT license), which runs SQLite inside the browser with no server. It is not part of vfunc; the app loads it.
 
 1. Get `sql-wasm.js` and `sql-wasm.wasm` of the same version and put them in `lib/sql/` (from `dist/` of the `sql.js` npm package or a GitHub release). Keep its license file with them.
 2. In `index.html`, load `<script src="./lib/sql/sql-wasm.js"></script>` before `app.js`. It creates the global `initSqlJs`.
@@ -131,20 +131,20 @@ Store the data in SQLite inside the browser with sql.js (lib/sql/sql-wasm.js, gl
 
 ## Ten practice projects
 
-All of them are front end only. Difficulty goes from ★ (easy) to ★★★. Copy the details below into the request's "App · Screens · Data".
+All of them are front end only. Difficulty is easy, medium or hard. Copy the details below into the request's "App · Screens · Data".
 
 | # | Project | Difficulty | Screens and features | What you practice |
 |---|---|---|---|---|
-| 1 | **Markdown viewer** | ★★ | open or drop an `.md` file, table of contents, code blocks, dark mode | the File API, third-party code (marked + DOMPurify), safe HTML |
-| 2 | **Kanban board** | ★★ | to do · doing · done columns, add and move cards (buttons and dragging), localStorage | state, event delegation, the list plugin |
-| 3 | **Household budget** ◆ | ★★★ | income and spending, monthly totals, a chart by category, CSV export | forms, `vf.fmt` currency, vfChart, sql.js |
-| 4 | **Notes** ◆ | ★★ | note list and editor, tags, search, Markdown preview | router, store, sql.js |
-| 5 | **CSV and JSON viewer** | ★★ | open a file as a table, sort, filter, pages, export | vfGrid, the File API |
-| 6 | **Pomodoro timer** | ★ | 25/5-minute timer, today's log, a sound at the end | cleaning up timers (`onDestroy`), the shortcut plugin |
-| 7 | **Vocabulary cards** ◆ | ★★ | add words, flip cards, a quiz, review missed words | screen changes, state flow, sql.js |
-| 8 | **Photo gallery** | ★★ | open local images, a grid, a lightbox, arrow keys | vfModal, keyboard access, `URL.createObjectURL` |
-| 9 | **Survey builder** ◆ | ★★★ | edit questions → answer screen → result charts | dynamic forms, vfChart, sql.js |
-| 10 | **GitHub repository dashboard** | ★★ | stars, issues and languages of a repository as cards and charts | fetch, loading and error states, CSP `connect-src` |
+| 1 | **Markdown viewer** | medium | open or drop an `.md` file, table of contents, code blocks, dark mode | the File API, third-party code (marked + DOMPurify), safe HTML |
+| 2 | **Kanban board** | medium | to do · doing · done columns, add and move cards (buttons and dragging), localStorage | state, event delegation, the list plugin |
+| 3 | **Household budget** (DB) | hard | income and spending, monthly totals, a chart by category, CSV export | forms, `vf.fmt` currency, vfChart, sql.js |
+| 4 | **Notes** (DB) | medium | note list and editor, tags, search, Markdown preview | router, store, sql.js |
+| 5 | **CSV and JSON viewer** | medium | open a file as a table, sort, filter, pages, export | vfGrid, the File API |
+| 6 | **Pomodoro timer** | easy | 25/5-minute timer, today's log, a sound at the end | cleaning up timers (`onDestroy`), the shortcut plugin |
+| 7 | **Vocabulary cards** (DB) | medium | add words, flip cards, a quiz, review missed words | screen changes, state flow, sql.js |
+| 8 | **Photo gallery** | medium | open local images, a grid, a lightbox, arrow keys | vfModal, keyboard access, `URL.createObjectURL` |
+| 9 | **Survey builder** (DB) | hard | edit questions → answer screen → result charts | dynamic forms, vfChart, sql.js |
+| 10 | **GitHub repository dashboard** | medium | stars, issues and languages of a repository as cards and charts | fetch, loading and error states, CSP `connect-src` |
 
 What to add to the request for each project:
 
@@ -154,7 +154,7 @@ What to add to the request for each project:
 - **6 Timer**: stop the timer when leaving the screen (`onDestroy`), and keep the time right after the tab was hidden.
 - **8 Gallery**: photos stay in the browser and are never sent to a server.
 - **10 Dashboard**: the GitHub API limits requests per hour without a login. Keep results for a while (cache) and show a message when the limit is hit. Add `https://api.github.com` to CSP `connect-src`.
-- **◆ projects**: add the request from "When you need a database" above.
+- **(DB) projects**: add the request from "When you need a database" above.
 
 ## Tell us how it went
 

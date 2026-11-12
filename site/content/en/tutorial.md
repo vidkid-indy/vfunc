@@ -152,5 +152,5 @@ If it still does not work, read the [FAQ](faq.md) or ask in [GitHub Discussions]
 
 - [Build apps with the starter and AI](starter.md): take an app skeleton with several screens, Korean/English and themes, and have an AI add features. There are ten practice projects.
 - [Core concepts](guide.md): components, state, events and controlling existing HTML in detail.
-- [Components](components.md): about sixty more besides the ones in step 5.
+- [Components](components.md): more than forty besides the ones in step 5.
 - [Examples](examples.md): the source and a running page for 21 examples.

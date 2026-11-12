@@ -40,7 +40,7 @@ ES 모듈은 전역 `window.vf`를 만들지 않습니다. 번들러의 운영 �
 
 ## 스타터로 시작하기
 
-라우터, 공용 상태, 한국어/영어, 테마, 배포 도구까지 갖춘 앱 골격입니다.
+라우터, 공용 상태, 한국어/영어, 테마, 배포 도구를 갖춘 앱 골격입니다. AI에게 기능을 시키는 방법과 연습 과제는 [스타터와 AI](starter.md)에 있습니다.
 
 ```bash
 npx degit vidkid-indy/vfunc/layer1/starter my-app
@@ -60,6 +60,7 @@ python -m http.server 8080
 
 ## 다음으로 읽을 것
 
+- [따라하기](tutorial.md): 할 일 앱을 단계별로 만들기(화면 캡처 포함)
 - [핵심 개념](guide.md): 컴포넌트, 상태, 이벤트, 기존 HTML 제어, 안전한 HTML
 - [SPA](spa.md): 라우터, store, 다국어
 - [예제](examples.md): 21종, 모두 소스 링크가 있습니다

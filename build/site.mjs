@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 // The website (D-020): static pages from site/content/{ko,en}/*.md, with vfunc "islands" for the
-// parts that need behaviour (theme, copy buttons, navigation, search, the home demo). No build
+// parts that need behaviour (theme, copy buttons, navigation, search, the landing demo). No build
 // step for users; this is our deploy step for GitHub Pages.
 //
 //   node build/site.mjs              → build/out/site/
@@ -12,9 +12,11 @@
 
 import { readFileSync, writeFileSync, mkdirSync, rmSync, readdirSync, statSync, copyFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { gzipSync } from 'node:zlib';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { markdown, esc } from './markdown.mjs';
+import { markdown, esc, inline, slug } from './markdown.mjs';
+import { zipFolder } from './zip.mjs';
 import { manualTotal } from '../layer1/ai/eval/tools/report.mjs';
 import { VARIANTS as BENCH_VARIANTS, environmentLine, summaryRows } from '../layer1/bench/report.mjs';
 
@@ -217,9 +219,125 @@ export function componentsBlock(lang) {
     rows.join('') + '</tbody></table></div>';
 }
 
-function demoBlock(lang) {
-  return '<div class="demo" id="home-demo" data-state="static"><p class="muted">' +
-    (lang === 'ko' ? '이 데모는 JavaScript가 켜져 있을 때 동작합니다.' : 'This demo runs with JavaScript enabled.') + '</p></div>';
+// ---- landing page (D-048) -------------------------------------------------------------------------
+
+const gzipKB = (path) => (gzipSync(readFileSync(join(ROOT, path)), { level: 9 }).length / 1024).toFixed(1);
+
+/** The numbers the landing page shows, from the built files, the catalog and the latest evaluation runs. */
+export function landingNumbers(lang) {
+  const dir = join(ROOT, 'layer1/ai/eval/results');
+  const runs = existsSync(dir) ? readdirSync(dir).filter((name) => existsSync(join(dir, name, 'results.json'))).sort().reverse() : [];
+  const latest = {};
+  let tasks = 0;
+  for (const name of runs) {
+    const run = json('layer1/ai/eval/results/' + name + '/run.json');
+    if (latest[run.lang]) continue;
+    const s = json('layer1/ai/eval/results/' + name + '/results.json').summary;
+    latest[run.lang] = { model: run.model, text: s.tasksPassed + '/' + s.tasks };
+    tasks = Math.max(tasks, s.tasks);
+  }
+  const names = lang === 'ko' ? { en: '영어', ko: '한국어' } : { en: 'English', ko: 'Korean' };
+  // "Claude Sonnet 5 — English 13/14, Korean 10/14"; the model is named once when both runs share it.
+  const langs = Object.keys(names).filter((l) => latest[l]);
+  const models = langs.map((l) => latest[l].model).filter((m, i, all) => all.indexOf(m) === i);
+  const evalRuns = models.map((m) => m + ' — ' + langs.filter((l) => latest[l].model === m).map((l) => names[l] + ' ' + latest[l].text).join(', ')).join('; ');
+  return {
+    engine: gzipKB('layer1/dist/vfunc.min.js'),
+    ui: gzipKB('layer2/dist/vfunc-ui.min.js'),
+    components: String(json('layer2/catalog.json').components.length),
+    evalTasks: String(tasks),
+    evalRuns: evalRuns
+  };
+}
+
+/**
+ * The landing page of a language from site/landing/<lang>.json (texts with inline Markdown and
+ * {name} numbers) → { html, title, description, headings }. The demo island is site.js's #home-demo.
+ */
+export function landingPage(lang, version, t, link) {
+  const L = json('site/landing/' + lang + '.json');
+  const numbers = landingNumbers(lang);
+  const fillNumbers = (text) => String(text).replace(/\{(\w+)\}/g, (all, key) => (hasNumber(key) ? numbers[key] : all));
+  const hasNumber = (key) => Object.prototype.hasOwnProperty.call(numbers, key);
+  const md = (text) => inline(fillNumbers(text), { link: link });
+  const href = (target) => esc(link(target));
+  const icon = (id, cls) => '<svg class="icon' + (cls ? ' ' + cls : '') + '" aria-hidden="true"><use href="../assets/icons.svg#' + id + '"/></svg>';
+  const headings = [];
+  const section = (key, title, body) => {
+    const id = slug(title);
+    headings.push({ level: 2, text: title, id: id });
+    return '<section class="landing__section landing__section--' + key + '" aria-labelledby="' + esc(id) + '"><h2 id="' + esc(id) + '">' +
+      esc(title) + '</h2>' + body + '</section>';
+  };
+  const more = (l) => '<p class="landing__more"><a href="' + href(l.href) + '">' + esc(l.label) + icon('arrow') + '</a></p>';
+  const code = (text, language) => '<div class="code" data-copy-root><button class="code__copy" type="button" data-action="copy">' +
+    esc(t.copy) + '</button><pre data-lang="' + language + '"><code>' + esc(text) + '</code></pre></div>';
+
+  const h = L.hero;
+  const hero = '<section class="hero"><p class="hero__eyebrow">' + esc(h.eyebrow) + ' · v' + esc(version) + '</p>' +
+    '<h1 class="hero__title">' + h.title.split('\n').map(esc).join('<br>') + '</h1><p class="hero__lead">' + md(h.lead) + '</p>' +
+    '<p class="hero__actions"><a class="button button--primary" href="' + href(h.primary.href) + '">' + esc(h.primary.label) + icon('arrow') + '</a>' +
+    '<a class="button" href="' + href(h.secondary.href) + '">' + esc(h.secondary.label) + '</a>' +
+    '<a class="button button--ghost" href="https://github.com/vidkid-indy/vfunc" rel="noopener">GitHub</a></p>' +
+    code('npm i vfunc@' + version, 'bash') + '<p class="hero__note">' + md(h.install) + '</p></section>';
+
+  const d = L.demo;
+  const demoCode = [
+    'const demo = vf.vfunc({',
+    "  state: { name: 'vfunc', count: 0 },",
+    '  render: (s) => vf.html`',
+    '    <label>' + d.name,
+    '      <input id="demo-name" value="${s.name}" data-action="name">',
+    '    </label>',
+    '    <p>' + d.hello + ', <strong>${s.name}</strong>!</p>',
+    '    <button type="button" data-action="add">+1</button> ' + (lang === 'ko' ? '${s.count}' + d.clicks : '${s.count} ' + d.clicks) + '`,',
+    '  delegates: [',
+    "    { selector: '[data-action=\"name\"]', eventType: 'input',",
+    '      onEvent: (e) => { e.sender.name = e.target.value; } },',
+    "    { selector: '[data-action=\"add\"]', eventType: 'click',",
+    '      onEvent: (e) => { e.sender.count++; } }',
+    '  ]',
+    '});',
+    "demo.mount('#demo');"
+  ].join('\n');
+  const demo = section('demo', d.title, '<p>' + md(d.lead) + '</p><div class="landing__split">' + code(demoCode, 'js') +
+    '<div class="demo" id="home-demo" data-state="static" data-name="' + esc(d.name) + '" data-hello="' + esc(d.hello) + '" data-clicks="' +
+    esc(d.clicks) + '"></div></div><p class="landing__hint">' + md(d.hint) + '</p>');
+
+  const card = (iconId, title, text, extra) => '<div class="landing__card">' + icon(iconId, 'icon--lg') + '<h3>' + esc(title) + '</h3><p>' + md(text) + '</p>' + (extra || '') + '</div>';
+  const layers = section('layers', L.layers.title, '<div class="landing__grid landing__grid--2">' +
+    card('engine', L.layers.engine.name, L.layers.engine.text, '<p class="landing__size">' + esc(fillNumbers(L.layers.engine.size)) + '</p>') +
+    card('components', L.layers.ui.name, L.layers.ui.text, '<p class="landing__size">' + esc(fillNumbers(L.layers.ui.size)) + '</p>') + '</div>');
+  const features = section('features', L.features.title, '<div class="landing__grid landing__grid--4">' +
+    L.features.items.map((f) => card(f.icon, f.title, f.text)).join('') + '</div>');
+
+  const c = L.compare;
+  const compare = section('compare', c.title, '<div class="table"><table><thead><tr>' + c.head.map((x) => '<th>' + esc(x) + '</th>').join('') +
+    '</tr></thead><tbody>' + c.rows.map((r) => '<tr><th scope="row">' + md(r[0]) + '</th>' + r.slice(1).map((x) => '<td>' + md(x) + '</td>').join('') + '</tr>').join('') +
+    '</tbody></table></div>' + more(c.link));
+
+  const k = L.components;
+  const components = section('components', k.title, '<p>' + md(k.lead) + '</p><figure class="figure landing__shot"><img src="../assets/img/gallery.png" alt="' +
+    esc(k.image) + '" loading="lazy" decoding="async"></figure><p class="landing__links"><a href="' + href(k.link.href) + '">' + esc(k.link.label) + icon('arrow') +
+    '</a> <a href="' + href(k.gallery.href) + '">' + esc(k.gallery.label) + icon('arrow') + '</a></p>');
+
+  const a = L.ai;
+  const ai = section('ai', a.title, '<ul class="landing__list">' + a.items.map((x) => '<li>' + md(x) + '</li>').join('') + '</ul>' +
+    '<p class="landing__links"><a href="' + href(a.link.href) + '">' + esc(a.link.label) + icon('arrow') + '</a> <a href="' + href(a.kit.href) + '">' +
+    esc(a.kit.label) + icon('arrow') + '</a></p>');
+
+  const start = section('start', L.start.title, '<ol class="landing__steps">' + L.start.steps.map((s) => '<li><a class="landing__step" href="' +
+    href(s.href) + '"><strong>' + esc(s.title) + '</strong><span>' + md(s.text) + '</span></a></li>').join('') + '</ol>');
+
+  const q = L.faq;
+  const faq = section('faq', q.title, q.items.map((x) => '<details class="landing__faq"><summary>' + esc(x.q) + '</summary><p>' + md(x.a) + '</p></details>').join('') + more(q.link));
+
+  return {
+    html: hero + demo + layers + features + compare + components + ai + start + faq,
+    title: L.title,
+    description: L.description,
+    headings: headings
+  };
 }
 
 // ---- pages --------------------------------------------------------------------------------------
@@ -266,6 +384,10 @@ export function buildSite(outDir) {
     const sources = {};
     const titles = {};
     for (const page of config.pages) {
+      if (page.landing) {
+        titles[page.slug] = json('site/landing/' + lang + '.json').title;
+        continue;
+      }
       const file = 'site/content/' + lang + '/' + page.slug + '.md';
       if (!existsSync(join(ROOT, file))) throw new Error('site: missing ' + file);
       // @VERSION@ in the text becomes the package version (exact versions in every example).
@@ -280,19 +402,16 @@ export function buildSite(outDir) {
       eval: evalBlock(lang),
       bench: benchBlock(lang),
       components: componentsBlock(lang),
-      demo: demoBlock(lang),
       ...tutorialBlocks(lang, version, t)
     };
     const search = [];
     mkdirSync(join(out, lang), { recursive: true });
+    const link = (href) => href.replace(/^([\w-]+)\.md(#.*)?$/, './$1.html$2');
     for (const page of config.pages) {
-      const doc = markdown(sources[page.slug], {
-        blocks: blocks,
-        copyLabel: t.copy,
-        link: (href) => href.replace(/^([\w-]+)\.md(#.*)?$/, './$1.html$2')
-      });
+      // The landing page (D-048) comes from site/landing/<lang>.json; every other page from Markdown.
+      const doc = page.landing ? landingPage(lang, version, t, link) : markdown(sources[page.slug], { blocks: blocks, copyLabel: t.copy, link: link });
       const firstPara = (/<p>([\s\S]*?)<\/p>/.exec(doc.html) || [])[1] || '';
-      const description = firstPara.replace(/<[^>]+>/g, '').slice(0, 160);
+      const description = page.landing ? esc(doc.description) : firstPara.replace(/<[^>]+>/g, '').slice(0, 160);
       const html = fill(template, {
         lang: lang,
         otherLang: other,
@@ -310,8 +429,11 @@ export function buildSite(outDir) {
         menu: esc(t.menu),
         onThisPage: esc(t.onThisPage),
         nav: navHtml(config.pages, lang, page.slug, titles, t),
+        layout: page.landing ? 'layout layout--landing' : 'layout',
+        main: page.landing ? 'page landing' : 'page',
+        docs: esc(t.docs),
         content: doc.html,
-        toc: tocHtml(doc.headings, t),
+        toc: page.landing ? '' : tocHtml(doc.headings, t),
         footer: esc(t.footer),
         version: esc(version)
       });
@@ -333,6 +455,9 @@ export function buildSite(outDir) {
   copyDir(join(SITE, 'assets'), join(out, 'assets'));
   // The tutorial's step pages and screenshots (they load ../../../layer1/… from the site root).
   copyDir(join(SITE, 'tutorial'), join(out, 'tutorial'));
+  // The starter as one download for readers without Node (D-048). / Node 없이 받는 스타터
+  mkdirSync(join(out, 'downloads'), { recursive: true });
+  writeFileSync(join(out, 'downloads', 'vfunc-starter-' + version + '.zip'), zipFolder(join(ROOT, 'layer1/starter'), 'vfunc-starter'));
   for (const file of ['vfunc.esm.min.js', 'vfunc.esm.min.js.map']) {
     mkdirSync(join(out, 'lib'), { recursive: true });
     copyFileSync(join(ROOT, 'layer1/dist', file), join(out, 'lib', file));

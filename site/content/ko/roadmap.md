@@ -2,7 +2,7 @@
 
 | 단계 | 내용 | 상태 |
 |---|---|---|
-| 1단계 | 엔진 `vf.vfunc`와 헬퍼, 라우터, store, 다국어, IE legacy 파일, 토큰, update 플러그인, 예제, 스타터, AI 프롬프트 킷, 이 사이트 | 1.0 |
+| 1단계 | 엔진 `vf.vfunc`와 헬퍼, 라우터, store, 다국어, IE legacy 파일, 토큰, update·shortcut·list 플러그인, 예제, 스타터, AI 프롬프트 킷, 이 사이트 | 1.0(list 플러그인은 1.1) |
 | 2단계 | 클래스 없는 컴포넌트 `vf.vs*`(마크업)·`vf.vf*`(인스턴스), 기본 그리드와 차트, 서드파티 어댑터(AG Grid, Tabulator, Chart.js, ECharts), 컴포넌트 갤러리, `design-check` | 1.0(테마 빌더는 나중에) |
 | 3단계 | 클래스 기반 `vf.VClass` 계열, 템플릿, 도구 | 계획 |
 
@@ -14,12 +14,12 @@
 |---|---|---|
 | 소문자 | 1단계 기능 | `vf.vfunc`, `vf.attach`, `vf.router` |
 | `vs*` | 항상 문자열을 돌려주는 컴포넌트(2단계) | `vf.vsButton` |
-| `vf*` | 항상 인스턴스를 돌려주는 컴포넌트(2단계) | `vf.vfButton` |
+| `vf*` | 항상 인스턴스를 돌려주는 컴포넌트(2단계) | `vf.vfTabs` |
 | `vf` + 종류 + 벤더 | 서드파티 어댑터(2단계) | `vf.vfGridAg`, `vf.vfChartEcharts` |
 | PascalCase | 클래스(3단계) | `vf.VClass` |
 | `vf.ext.*` | 사용자 확장 | `vf.ext.company` |
 
 ## 참여
 
-- 질문과 아이디어는 GitHub Discussions(저장소 공개 후)에, 버그와 기능 요청은 Issues에 남겨 주세요.
+- 질문과 아이디어는 [GitHub Discussions](https://github.com/vidkid-indy/vfunc/discussions)에, 버그와 기능 요청은 [Issues](https://github.com/vidkid-indy/vfunc/issues)에 남겨 주세요.
 - 기여 방법은 저장소의 `CONTRIBUTING.md`, 확장 규칙은 `EXTENDING.md`에 있습니다.

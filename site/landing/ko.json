@@ -1,0 +1,82 @@
+{
+  "title": "vfunc.js — HTML은 그대로, 제어가 필요하거나 재사용하고 싶은 곳만",
+  "description": "빌드 도구 없이 script 한 줄로 쓰는 JavaScript UI 라이브러리. 있는 HTML에 동작을 붙이거나 작은 SPA를 만듭니다.",
+  "hero": {
+    "eyebrow": "순수 JavaScript UI 라이브러리",
+    "title": "HTML은 그대로,\n제어가 필요하거나\n재사용하고 싶은 곳만",
+    "lead": "빌드 도구 없이 `<script>` 한 줄로 씁니다. 이미 있는 페이지에 동작을 붙이고, 반복되는 화면 조각은 컴포넌트로 만들어 여러 곳에서 다시 씁니다. 작은 SPA도 처음부터 만들 수 있습니다.",
+    "primary": { "label": "따라하기", "href": "tutorial.md" },
+    "secondary": { "label": "시작하기", "href": "getting-started.md" },
+    "install": "CDN 주소와 SRI는 [시작하기](getting-started.md)에 있습니다."
+  },
+  "demo": {
+    "title": "코드와 결과",
+    "lead": "왼쪽 코드가 오른쪽 화면을 그립니다. 이름을 바꾸고 버튼을 눌러 보세요.",
+    "name": "이름",
+    "hello": "안녕하세요",
+    "clicks": "번 눌렀습니다",
+    "hint": "`<b>굵게</b>`를 넣어도 글자로 나옵니다."
+  },
+  "layers": {
+    "title": "파일은 두 개",
+    "engine": { "name": "vfunc.js", "text": "컴포넌트, 안전한 HTML, 라우터, 공용 상태, 다국어. 의존성이 없습니다.", "size": "gzip {engine}KB" },
+    "ui": { "name": "vfunc-ui (선택)", "text": "버튼, 폼, 표, 대화상자, 알림 등 컴포넌트 {components}개. 필요한 페이지에서만 불러옵니다.", "size": "gzip {ui}KB" }
+  },
+  "features": {
+    "title": "무엇이 다른가",
+    "items": [
+      { "icon": "bolt", "title": "빌드가 없습니다", "text": "번들러도 JSX도 없습니다. 개발자 도구에 보이는 코드가 직접 쓴 코드입니다." },
+      { "icon": "html", "title": "있는 HTML에 붙입니다", "text": "퍼블리셔가 만든 페이지를 다시 쓰지 않습니다. 검색창이나 표처럼 필요한 곳에만 `vf.attach`로 동작을 붙입니다." },
+      { "icon": "shield", "title": "기본이 안전합니다", "text": "`vf.html`이 값이 들어가는 위치에 맞게 이스케이프합니다. `onclick` 속성과 `javascript:` 주소는 막힙니다." },
+      { "icon": "chat", "title": "AI가 덜 틀립니다", "text": "컴포넌트는 `state`, `render`, `delegates`로 된 평범한 객체입니다. AI용 규칙 파일과 레퍼런스를 함께 제공합니다." }
+    ]
+  },
+  "compare": {
+    "title": "다른 방식과 비교",
+    "head": ["", "Vanilla", "vfunc.js", "React / Vue"],
+    "rows": [
+      ["빌드", "없음", "없음", "필요"],
+      ["크기(gzip)", "0", "약 {engine}KB", "약 34~45KB + 앱"],
+      ["있는 HTML에 동작만 붙이기", "직접", "`vf.attach`", "어려움"],
+      ["수백 행 이상의 목록", "직접 최적화", "`vfList` 플러그인", "유리"],
+      ["IE11", "직접", "legacy 파일", "어려움"]
+    ],
+    "link": { "label": "같은 기능을 코드로 비교", "href": "compare.md" }
+  },
+  "components": {
+    "title": "컴포넌트",
+    "lead": "`vs*`는 HTML 조각을, `vf*`는 동작하는 인스턴스를 돌려줍니다. 문구는 한국어·영어, 색은 디자인 토큰을 따릅니다.",
+    "image": "컴포넌트 갤러리 화면",
+    "link": { "label": "전체 목록", "href": "components.md" },
+    "gallery": { "label": "갤러리 열기", "href": "../layer2/examples/gallery/index.html" }
+  },
+  "ai": {
+    "title": "AI 코딩 도구와 함께",
+    "items": [
+      "규칙 파일 `AGENTS.md`와 레퍼런스 `llms.txt`를 AI에게 줍니다.",
+      "화면 추가, 퍼블리싱 HTML 변환, 디버그용 프롬프트가 있습니다.",
+      "평가 과제 {evalTasks}개를 AI가 한 번에 풀게 한 최근 결과: {evalRuns}"
+    ],
+    "link": { "label": "스타터와 AI로 앱 만들기", "href": "starter.md" },
+    "kit": { "label": "프롬프트 킷", "href": "ai.md" }
+  },
+  "start": {
+    "title": "시작하는 순서",
+    "steps": [
+      { "title": "따라하기", "text": "파일 세 개로 할 일 앱을 만들며 기본을 익힙니다.", "href": "tutorial.md" },
+      { "title": "스타터 받기", "text": "라우터, 다국어, 테마가 들어 있는 앱 골격입니다.", "href": "starter.md#스타터-받기" },
+      { "title": "AI에게 규칙 주기", "text": "`AGENTS.md`와 `llms.txt`를 AI 도구에 줍니다.", "href": "starter.md#처음-설정" },
+      { "title": "화면 하나씩 요청", "text": "연습 과제 10개 중 하나로 시작해 보세요.", "href": "starter.md#연습-과제-10개" }
+    ]
+  },
+  "faq": {
+    "title": "자주 묻는 질문",
+    "items": [
+      { "q": "React나 Vue 대신 쓸 수 있나요?", "a": "업무 화면, 퍼블리싱 페이지, 사내 시스템, 작은 SPA에는 충분합니다. 수천 행을 자주 바꾸는 화면이나 큰 팀의 대형 앱에는 React·Vue가 맞을 수 있습니다." },
+      { "q": "큰 목록은 느리지 않나요?", "a": "`render`는 안쪽을 통째로 다시 그립니다. 몇 행만 자주 바뀌는 긴 목록은 공식 플러그인 `vfList`로 바뀐 행만 그립니다. 측정값은 FAQ에 있습니다." },
+      { "q": "검색 엔진에 잡히나요?", "a": "HTML은 서버나 정적 파일이 만들고 vfunc는 동작만 붙이므로, 검색 엔진은 그 HTML을 그대로 읽습니다. 이 사이트도 그렇게 만들었습니다." },
+      { "q": "IE11도 되나요?", "a": "`vfunc.legacy.min.js`를 쓰면 됩니다. API는 같고, 앱 코드는 ES5로 씁니다." }
+    ],
+    "link": { "label": "질문 더 보기", "href": "faq.md" }
+  }
+}

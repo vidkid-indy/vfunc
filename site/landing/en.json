@@ -1,0 +1,82 @@
+{
+  "title": "vfunc.js — Keep your HTML. Control or reuse only what you need.",
+  "description": "A JavaScript UI library you use with one script tag and no build step. Add behaviour to the HTML you have, or build a small SPA.",
+  "hero": {
+    "eyebrow": "A plain JavaScript UI library",
+    "title": "Keep your HTML.\nControl or reuse\nonly what you need.",
+    "lead": "One `<script>` tag, no build tools. Add behaviour to pages you already have, and turn repeated parts of the screen into components you use again. Small SPAs work from scratch too.",
+    "primary": { "label": "Tutorial", "href": "tutorial.md" },
+    "secondary": { "label": "Get started", "href": "getting-started.md" },
+    "install": "The CDN address with SRI is in [Get started](getting-started.md)."
+  },
+  "demo": {
+    "title": "Code and result",
+    "lead": "The code on the left draws the screen on the right. Change the name and press the button.",
+    "name": "Name",
+    "hello": "Hello",
+    "clicks": "clicks",
+    "hint": "Type `<b>bold</b>`: it shows up as text."
+  },
+  "layers": {
+    "title": "Two files",
+    "engine": { "name": "vfunc.js", "text": "Components, safe HTML, a router, shared state and i18n. No dependencies.", "size": "{engine} KB gzipped" },
+    "ui": { "name": "vfunc-ui (optional)", "text": "{components} components: buttons, forms, tables, dialogs, toasts and more. Load it only on the pages that need it.", "size": "{ui} KB gzipped" }
+  },
+  "features": {
+    "title": "What is different",
+    "items": [
+      { "icon": "bolt", "title": "No build step", "text": "No bundler and no JSX. The code in the browser's developer tools is the code you wrote." },
+      { "icon": "html", "title": "Works with the HTML you have", "text": "Pages from a designer stay as they are. Add behaviour only where it is needed, such as a search box or a table, with `vf.attach`." },
+      { "icon": "shield", "title": "Safe by default", "text": "`vf.html` escapes each value for where it goes. `onclick` attributes and `javascript:` addresses are blocked." },
+      { "icon": "chat", "title": "Fewer AI mistakes", "text": "A component is a plain object of `state`, `render` and `delegates`. Rules and a reference for AI tools come with it." }
+    ]
+  },
+  "compare": {
+    "title": "Compared with other ways",
+    "head": ["", "Vanilla", "vfunc.js", "React / Vue"],
+    "rows": [
+      ["Build step", "none", "none", "needed"],
+      ["Size (gzip)", "0", "about {engine} KB", "about 34–45 KB + app"],
+      ["Add behaviour to existing HTML", "by hand", "`vf.attach`", "hard"],
+      ["Lists of hundreds of rows", "optimize by hand", "`vfList` plugin", "strong"],
+      ["IE11", "by hand", "legacy build", "hard"]
+    ],
+    "link": { "label": "The same feature in code", "href": "compare.md" }
+  },
+  "components": {
+    "title": "Components",
+    "lead": "`vs*` returns a piece of HTML; `vf*` returns a live instance. Texts come in English and Korean; colors follow the design tokens.",
+    "image": "The component gallery",
+    "link": { "label": "The full list", "href": "components.md" },
+    "gallery": { "label": "Open the gallery", "href": "../layer2/examples/gallery/index.html" }
+  },
+  "ai": {
+    "title": "With AI coding tools",
+    "items": [
+      "Give the AI the rules file `AGENTS.md` and the reference `llms.txt`.",
+      "Prompts for adding screens, converting published HTML and debugging.",
+      "Latest results of AI solving the {evalTasks} evaluation tasks in one go: {evalRuns}"
+    ],
+    "link": { "label": "Build apps with the starter and AI", "href": "starter.md" },
+    "kit": { "label": "Prompt kit", "href": "ai.md" }
+  },
+  "start": {
+    "title": "Where to start",
+    "steps": [
+      { "title": "Tutorial", "text": "Build a to-do app from three files and learn the basics.", "href": "tutorial.md" },
+      { "title": "Get the starter", "text": "An app skeleton with a router, two languages and themes.", "href": "starter.md#get-the-starter" },
+      { "title": "Give the AI the rules", "text": "Hand `AGENTS.md` and `llms.txt` to your AI tool.", "href": "starter.md#first-setup" },
+      { "title": "Ask for one screen at a time", "text": "Start with one of the ten practice projects.", "href": "starter.md#ten-practice-projects" }
+    ]
+  },
+  "faq": {
+    "title": "Questions",
+    "items": [
+      { "q": "Can it replace React or Vue?", "a": "For business screens, published pages, in-house systems and small SPAs, yes. For screens that update thousands of rows often, or large apps built by big teams, React or Vue may fit better." },
+      { "q": "Are long lists slow?", "a": "`render` redraws the whole inside. For long lists where a few rows change often, the official `vfList` plugin draws only the changed rows. The FAQ has the measurements." },
+      { "q": "Can search engines read the pages?", "a": "The server or static files make the HTML and vfunc only adds behaviour, so search engines read that HTML as it is. This site is built that way." },
+      { "q": "Does it work in IE11?", "a": "Use `vfunc.legacy.min.js`. The API is the same; write the app code in ES5." }
+    ],
+    "link": { "label": "More questions", "href": "faq.md" }
+  }
+}

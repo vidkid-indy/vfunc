@@ -40,7 +40,7 @@ The ES modules never create a global `window.vf`. Bundlers pick the minified fil
 
 ## Start from the starter
 
-A copyable app with a router, shared state, Korean/English, themes and release tools.
+A copyable app with a router, shared state, Korean/English, themes and release tools. How to have an AI add features, with practice projects, is in [Starter and AI](starter.md).
 
 ```bash
 npx degit vidkid-indy/vfunc/layer1/starter my-app
@@ -60,6 +60,7 @@ python -m http.server 8080
 
 ## Read next
 
+- [Tutorial](tutorial.md): build a to-do app step by step, with screenshots
 - [Core concepts](guide.md): components, state, events, existing HTML, safe HTML
 - [SPA](spa.md): router, store, i18n
 - [Examples](examples.md): 21 of them, each with a source link

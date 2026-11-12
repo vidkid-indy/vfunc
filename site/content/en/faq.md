@@ -6,7 +6,7 @@ For most business screens, behaviour on published pages, intranet systems and sm
 
 ## What are the limits?
 
-- **Large lists**: a component's render replaces its whole inside (no keyed diff). For long lists where a few rows change often, draw only the changed rows with the official plugin [`vf.ext.list`](extend.md#official-plugin-vfextlist) (since 1.1.0). Keep unchanged areas with `data-vf-keep`. The built-in `vfGrid` pages long data instead of scrolling it; for virtual scrolling use a grid adapter (`vfGridAg`, `vfGridTabulator`). For numbers, see [the measurements below](#how-slow-are-large-lists).
+- **Large lists**: render replaces the whole inside (no keyed diff). The alternatives and measurements are [below](#how-slow-are-large-lists).
 - **Focus and caret**: after a render, focus and caret move back to the element with the same `id`, `data-ref` or `name`, else to the same `data-action` at the same position. Scroll positions are not restored. Do not render on every keystroke.
 - **Table rows**: a component that renders `<tr>` needs `tag: 'table'`.
 - **Ecosystem**: few component libraries and tools so far. Third-party libraries can be attached directly with `onMount` + `data-vf-keep`.
@@ -20,6 +20,7 @@ The operations of js-framework-benchmark, measured four ways. Naive: one compone
 - Creating rows and clearing them are close to vanilla in all four.
 - Operations that change a few rows (partial update, swap, remove) redraw the whole list when drawn with render, several to tens of times slower: the cost of having no keyed diff. With vfList they stay within 1.5 times vanilla in all three engines.
 - For operations that change only attributes (selection, expanding), change the attribute instead of drawing the row again (the recommended page): a new row element makes the browser lay out the whole table again.
+- For long lists where a few rows change often, use the official plugin [`vf.ext.list`](extend.md#official-plugin-vfextlist). Keep unchanged areas with `data-vf-keep`. The built-in `vfGrid` pages long data; for virtual scrolling use a grid adapter (`vfGridAg`, `vfGridTabulator`).
 - The numbers depend on the machine and the browser. How they are measured and how to run them yourself: `layer1/bench/README.md` in the repository. To compare with other frameworks, see the [js-framework-benchmark results](https://krausest.github.io/js-framework-benchmark/).
 
 ## What about server rendering and SEO?
@@ -46,11 +47,8 @@ Type declarations (`types/vfunc.d.ts`) ship with the package. Plain scripts with
 | `vfunc.min.js`, ESM | Current Chrome, Edge, Firefox and Safari (desktop and mobile) |
 | `vfunc.legacy.min.js` | Internet Explorer 11, Edge IE mode |
 
-The examples, the starter and this site are tested automatically in Chromium, Firefox and WebKit on every change.
-
-## Is IE11 supported?
-
-`vfunc.legacy.min.js` runs in IE11 and Edge IE mode; your app code must be ES5 as well. See [Extensions, plugins, IE](extend.md#ie11-edge-ie-mode).
+- In IE11 your app code must be ES5 as well. See [Extensions, plugins, IE](extend.md#ie11-edge-ie-mode).
+- The examples, the starter and this site are tested automatically in Chromium, Firefox and WebKit on every change.
 
 ## What is the license?
 

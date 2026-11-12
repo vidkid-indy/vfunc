@@ -7,8 +7,9 @@
 | `vfunc.js` / `vfunc.min.js` | `<script>` development / production (global `vf`) |
 | `vfunc.esm.js` / `vfunc.esm.min.js` | ES module development / production |
 | `vfunc.legacy.min.js` | IE11 / Edge IE mode |
-| `plugins/update.min.js`, `plugins/update.esm.js` | the update plugin |
-| `css/vfunc.tokens.css` | optional tokens |
+| `plugins/{update,shortcut,list}.min.js`, `….esm.js` | official plugins |
+| `vfunc-ui.js`, `vfunc-ui-data.js` (+ `.min`, `.esm`, `.legacy.min`) | components (optional) |
+| `css/vfunc.tokens.css`, `css/vfunc-ui.css` | optional tokens, component styles |
 
 Every file has a source map. Files are minified, never obfuscated.
 

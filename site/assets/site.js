@@ -12,7 +12,7 @@ const store = {
   set(key, value) { try { window.localStorage.setItem(key, value); } catch (e) { /* storage unavailable */ } }
 };
 
-// ① Theme: system → light → dark. The attribute on <html> is all; tokens do the rest.
+// 1. Theme: system → light → dark. The attribute on <html> is all; tokens do the rest.
 const THEMES = ['system', 'light', 'dark'];
 vf.attach('#theme-toggle', {
   delegates: [{
@@ -31,7 +31,7 @@ vf.attach('#theme-toggle', {
   onMount: (inst) => inst.$node.setAttribute('data-state', document.documentElement.getAttribute('data-theme') || 'system')
 });
 
-// ② Navigation on small screens. / 작은 화면의 메뉴
+// 2. Navigation on small screens. / 작은 화면의 메뉴
 vf.attach('#nav-toggle', {
   delegates: [{
     selector: '[data-action="nav"]',
@@ -44,12 +44,12 @@ vf.attach('#nav-toggle', {
   }]
 });
 
-// ③ Remember the language when the reader switches. / 언어 전환을 기억
+// 3. Remember the language when the reader switches. / 언어 전환을 기억
 const other = vf.$('[data-ref="other-lang"]');
 if (other) other.addEventListener('click', () => store.set('vf-site-lang', other.getAttribute('hreflang')));
 store.set('vf-site-lang', lang);
 
-// ④ Copy buttons on every code block and prompt. / 코드 블록 복사 버튼
+// 4. Copy buttons on every code block and prompt. / 코드 블록 복사 버튼
 vf.attach('#content', {
   delegates: [{
     selector: '[data-action="copy"]',
@@ -69,7 +69,7 @@ vf.attach('#content', {
   }]
 });
 
-// ⑤ Search: headings of every page in this language, loaded on first use. / 첫 입력 때 색인을 불러옴
+// 5. Search: headings of every page in this language, loaded on first use. / 첫 입력 때 색인을 불러옴
 let index = null;
 // The aria-live element stays in the page; only its inside is rendered. / 알림 영역은 그대로, 안쪽만 그림
 const results = vf.attach('#search-results', {
@@ -113,19 +113,17 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') results.setState({ query: '', hits: [] });
 });
 
-// ⑥ The home page demo: a live component, escaping included. / 홈 데모
-if (vf.$('#home-demo')) {
-  const L = lang === 'ko'
-    ? { title: '직접 해 보세요', name: '이름', hello: '안녕하세요', clicks: '클릭', add: '+1', hint: '<b>굵게</b>를 입력해 보세요. 이스케이프되어 글자로 보입니다.' }
-    : { title: 'Try it', name: 'Name', hello: 'Hello', clicks: 'clicks', add: '+1', hint: 'Type <b>bold</b>: it is escaped and shown as text.' };
-  vf.attach('#home-demo', {
+// 6. The landing page demo: the component its code block shows, escaping included. The texts are the
+// page's own (data-* from site/landing/<lang>.json). / 랜딩 데모. 문구는 페이지의 data-* 속성
+const demoRoot = vf.$('#home-demo');
+if (demoRoot) {
+  const L = { name: demoRoot.getAttribute('data-name'), hello: demoRoot.getAttribute('data-hello'), clicks: demoRoot.getAttribute('data-clicks') };
+  vf.attach(demoRoot, {
     state: { name: 'vfunc', count: 0 },
     render: (s) => vf.html`
-        <p class="demo__title">${L.title}</p>
         <label class="demo__field">${L.name} <input class="demo__input" id="demo-name" value="${s.name}" data-action="name" autocomplete="off"></label>
         <p class="demo__output" data-ref="greeting">${L.hello}, <strong>${s.name}</strong>!</p>
-        <p><button class="demo__button" type="button" data-action="add">${L.add}</button> <span data-ref="count">${s.count}</span> ${L.clicks}</p>
-        <p class="muted">${L.hint}</p>`,
+        <p><button class="demo__button" type="button" data-action="add">+1</button> <span data-ref="count">${s.count}</span>${lang === 'ko' ? '' : ' '}${L.clicks}</p>`,
     onMount: (inst) => inst.$node.setAttribute('data-state', 'live'),
     delegates: [
       { selector: '[data-action="name"]', eventType: 'input', onEvent: (e) => { e.sender.name = e.target.value; } },
