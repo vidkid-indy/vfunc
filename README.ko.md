@@ -22,8 +22,8 @@ vfunc.js는 인터랙티브한 페이지와 SPA를 만드는 작은 바닐라 �
 
 ```html
 <div id="counter"></div>
-<script src="https://cdn.jsdelivr.net/npm/vfunc@1.2.0/dist/vfunc.min.js"
-        integrity="sha384-yTR0o8US3nk+D1XIBAsv1O/lMFA5tV3V021xPo8yxyqnBNSxi1rqINVvBOykAEkK"
+<script src="https://cdn.jsdelivr.net/npm/vfunc@1.2.1/dist/vfunc.min.js"
+        integrity="sha384-+kleQE/S7bDSPGLy6WVcNGh7Fq+gLkXXxD2mzDqRdR/jYNTH2fZpYUIX/fIMElcd"
         crossorigin="anonymous"></script>
 <script src="app.js"></script>
 ```

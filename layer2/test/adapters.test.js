@@ -96,6 +96,21 @@ class MockTabulator {
   destroy() { if (this.timer) clearTimeout(this.timer); while (this.host.firstChild) this.host.removeChild(this.host.firstChild); }
 }
 
+test('vfGridTabulator: Tabulator puts a column title and the placeholder in as HTML, so both are escaped (a label made with vf.html too)', async () => {
+  const evil = '<img src=x onerror=alert(1)>';
+  const inst = vfGridTabulator({ lib: MockTabulator, columns: [{ key: 'a', label: evil }, { key: 'b', label: vf.html`<b>${evil}</b>` }, { key: 'c', label: 'Plain & simple' }], data: [] });
+  await inst.mount(document.body);
+  const options = inst.instance.o;
+  assert.equal(options.columns[0].title, '&lt;img src=x onerror=alert(1)&gt;');
+  assert.equal(options.columns[1].title, '&lt;img src=x onerror=alert(1)&gt;', 'the text of a safe label is escaped again for the vendor');
+  assert.equal(options.columns[2].title, 'Plain &amp; simple');
+  assert.ok(options.placeholder.indexOf('<') < 0);
+  inst.setColumns([{ key: 'a', label: evil }]);
+  await new Promise((resolve) => setTimeout(resolve, 10));
+  assert.equal(inst.instance.o.columns[0].title, '&lt;img src=x onerror=alert(1)&gt;', 'setColumns too');
+  inst.destroy();
+});
+
 gridContract({
   name: 'vfGridTabulator (mock Tabulator)',
   factory: (props) => vfGridTabulator(Object.assign({}, props, { lib: MockTabulator })),

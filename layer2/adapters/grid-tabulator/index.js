@@ -17,7 +17,7 @@ function columnDefs(columns) {
   for (let i = 0; i < (columns || []).length; i++) {
     const c = columns[i];
     out.push({
-      title: textOf(c.label),
+      title: vf.esc(textOf(c.label)), // Tabulator puts the title in as HTML: escaped here
       field: c.key,
       headerSort: !!c.sortable,
       hozAlign: ALIGN[c.align] || undefined,
@@ -93,7 +93,7 @@ export function vfGridTabulator(props) {
         pagination: true,
         paginationSize: Math.max(1, Math.floor(Number(s.pageSize) || 10)),
         selectableRows: s.selectable === 'multiple' ? true : (s.selectable === 'single' ? 1 : false),
-        placeholder: vf.t('emptyState.title')
+        placeholder: vf.esc(vf.t('emptyState.title'))
       }, p.options);
       table = new Lib(hostOf(self), options);
       self.state.instance = table;

@@ -5,6 +5,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-11-13
+
+### Security
+- `vfGridTabulator`: a column `label` reached Tabulator as HTML, also when it was made with `vf.html`, because Tabulator writes a title as markup. A label that comes from user data could run a script on a page without a strict Content Security Policy. The title and the "no rows" text are escaped now. Versions 1.0.0 to 1.2.0 of the adapter have this problem: update, or escape the labels yourself with `vf.esc`.
+
 ## [1.2.0] - 2026-09-27
 
 ### Changed

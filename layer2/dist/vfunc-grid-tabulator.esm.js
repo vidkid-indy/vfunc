@@ -1,4 +1,4 @@
-/*! vfunc-ui (vfunc.js layer 2) v1.2.0 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
+/*! vfunc-ui (vfunc.js layer 2) v1.2.1 | Apache-2.0 | (c) 2026 vidkid | https://github.com/vidkid-indy/vfunc */
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
@@ -158,7 +158,8 @@ function columnDefs(columns) {
   for (let i = 0; i < (columns || []).length; i++) {
     const c = columns[i];
     out.push({
-      title: textOf(c.label),
+      title: default2.esc(textOf(c.label)),
+      // Tabulator puts the title in as HTML: escaped here
       field: c.key,
       headerSort: !!c.sortable,
       hozAlign: ALIGN[c.align] || void 0,
@@ -249,7 +250,7 @@ function vfGridTabulator(props) {
         pagination: true,
         paginationSize: Math.max(1, Math.floor(Number(s.pageSize) || 10)),
         selectableRows: s.selectable === "multiple" ? true : s.selectable === "single" ? 1 : false,
-        placeholder: default2.t("emptyState.title")
+        placeholder: default2.esc(default2.t("emptyState.title"))
       }, p.options);
       table = new Lib(hostOf(self), options);
       self.state.instance = table;
